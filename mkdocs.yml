@@ -1,0 +1,106 @@
+site_name: Safe Job Platform
+site_description: Secure platform connecting legitimate hiring agencies with temporary workers in the Netherlands
+site_author: Safe Job Team
+site_url: https://pawel-org.github.io/safe-job/
+
+# Repository
+repo_name: pawel-org/safe-job
+repo_url: https://github.com/pawel-org/safe-job
+edit_uri: edit/main/docs/
+
+# Theme configuration
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.highlight
+    - search.share
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+
+# Extensions
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Overview: getting-started/overview.md
+    - Quick Start: getting-started/quick-start.md
+    - Development Workflow: getting-started/development-workflow.md
+  - Business:
+    - Business Concept: business/business-concept.md
+    - Product Requirements: business/prd.md
+  - Architecture:
+    - System Architecture: architecture/architecture.md
+    - Authentication: architecture/authentication.md
+    - Internationalization: architecture/internationalization.md
+  - Implementation:
+    - Project Plan: plan.md
+    - Phase 1 - Foundation: phases/phase-1-foundation.md
+    - Phase 2 - Authentication: phases/phase-2-authentication.md
+    - Phase 3 - Business Models: phases/phase-3-business-models.md
+    - Phase 4 - Applications: phases/phase-4-applications-matching.md
+    - Phase 5 - Messaging: phases/phase-5-messaging-system.md
+    - Phase 6 - Documents: phases/phase-6-document-management.md
+    - Phase 7 - Admin: phases/phase-7-admin-interface.md
+    - Phase 8 - Frontend: phases/phase-8-frontend-polish.md
+    - Phase 9 - Deployment: phases/phase-9-aws-deployment.md
+
+# Plugins
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+
+# Extra
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/pawel-org/safe-job
+  version:
+    provider: mike
