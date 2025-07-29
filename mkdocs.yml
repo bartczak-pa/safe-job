@@ -1,11 +1,11 @@
 site_name: Safe Job Platform
 site_description: Secure platform connecting legitimate hiring agencies with temporary workers in the Netherlands
 site_author: Safe Job Team
-site_url: https://pawel-org.github.io/safe-job/
+site_url: https://bartczak-pa.github.io/safe-job/
 
 # Repository
-repo_name: pawel-org/safe-job
-repo_url: https://github.com/pawel-org/safe-job
+repo_name: safe-job
+repo_url: https://github.com/bartczak-pa/safe-job
 edit_uri: edit/main/docs/
 
 # Theme configuration
@@ -101,6 +101,6 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/pawel-org/safe-job
+      link: https://github.com/bartczak-pa/safe-job
   version:
     provider: mike
