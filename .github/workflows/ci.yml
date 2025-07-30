@@ -9,7 +9,7 @@ on:
 # Cancel in-progress workflows when a new commit is pushed
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: "true"
+  cancel-in-progress: true
 
 env:
   # Django settings
@@ -170,7 +170,7 @@ jobs:
 
       - name: Run MyPy (Type Checking)
         working-directory: ./backend
-        continue-on-error: "true"  # Type checking is optional for now
+        continue-on-error: true
         run: |
           poetry run mypy .
 
