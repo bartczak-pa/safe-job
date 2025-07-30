@@ -12,7 +12,7 @@ This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](ht
 
 1. **Install Dependencies**
    ```bash
-   pip install -r requirements-docs.txt
+   pip install -r docs/requirements.txt
    ```
 
 2. **Start Development Server**

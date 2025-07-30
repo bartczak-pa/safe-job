@@ -9,13 +9,13 @@ on:
 # Cancel in-progress workflows when a new commit is pushed
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: "true"
 
 env:
   # Django settings
   DJANGO_SETTINGS_MODULE: config.settings.test
   SECRET_KEY: test-secret-key-for-ci-only-not-secure
-  DEBUG: False
+  DEBUG: "false"
 
   # Database settings
   POSTGRES_DB: safejob_test
@@ -30,8 +30,8 @@ env:
   # Other test settings
   ALLOWED_HOSTS: localhost,127.0.0.1,testserver
   EMAIL_BACKEND: django.core.mail.backends.locmem.EmailBackend
-  CORS_ALLOW_ALL_ORIGINS: True
-  RATELIMIT_ENABLE: False
+  CORS_ALLOW_ALL_ORIGINS: "true"
+  RATELIMIT_ENABLE: "false"
 
 jobs:
   test:
@@ -88,8 +88,8 @@ jobs:
         uses: snok/install-poetry@v1.4.1
         with:
           version: 1.8.3
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+          virtualenvs-create: "true"
+          virtualenvs-in-project: "true"
 
       - name: Cache Poetry dependencies
         uses: actions/cache@v4.2.0
@@ -170,7 +170,7 @@ jobs:
 
       - name: Run MyPy (Type Checking)
         working-directory: ./backend
-        continue-on-error: true  # Type checking is optional for now
+        continue-on-error: "true"  # Type checking is optional for now
         run: |
           poetry run mypy .
 

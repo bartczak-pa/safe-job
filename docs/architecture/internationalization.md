@@ -429,6 +429,11 @@ class LegalComplianceLocalizer:
             'contract_terms': 'Ta umowa o pracę podlega prawu holenderskiemu.',
             'worker_rights': 'Ma Pan/Pani prawo do godziwego wynagrodzenia.',
         },
+        'en': {  # English fallback to avoid KeyError
+            'gdpr_notice': 'Your data is processed in accordance with the GDPR.',
+            'contract_terms': 'This employment contract is governed by Dutch law.',
+            'worker_rights': 'You are entitled to fair pay under the CLA.',
+        },
     }
 
     @classmethod

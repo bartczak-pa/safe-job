@@ -168,7 +168,7 @@ safe-job/
 │   ├── business/            # Business requirements
 │   ├── phases/              # Implementation phases
 │   ├── Dockerfile           # Documentation container
-│   └── requirements-docs.txt # Documentation dependencies
+│   └── requirements.txt # Documentation dependencies
 ├── .envs/                     # Environment configurations
 │   ├── .env.example         # Template for all environments
 │   ├── .env.development.local # Active development config
@@ -179,7 +179,7 @@ safe-job/
 ├── Makefile                   # Development commands
 ├── mkdocs.yml                # Documentation configuration
 ├── .pre-commit-config.yaml   # Code quality hooks
-└── requirements-docs.txt      # Documentation dependencies
+└── requirements.txt      # Documentation dependencies
 ```
 
 ## 🔧 Common Development Tasks
@@ -372,7 +372,7 @@ make clean
 make setup
 
 # Update documentation dependencies
-pip install -r requirements-docs.txt
+pip install -r docs/requirements.txt
 make docs-serve
 ```
 

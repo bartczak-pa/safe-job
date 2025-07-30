@@ -104,6 +104,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
 from .models import Conversation, Message
 from .services import MessageEncryptionService, ModerationService
 
@@ -195,11 +196,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send_error(f'Message blocked: {moderation_result["reason"]}')
             return
 
-        # Save message to database
-        message = await self.save_message(content, moderation_result.get('filtered_content'))
-
-        # Encrypt message for storage
+        # Encrypt message before persisting
         encrypted_content = await self.encrypt_message_content(content)
+
+        # Save encrypted content to database
+        message = await self.save_message(
+            encrypted_content,
+            moderation_result.get('filtered_content')
+        )
 
         # Broadcast message to conversation group
         await self.channel_layer.group_send(

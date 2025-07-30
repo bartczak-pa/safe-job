@@ -264,10 +264,7 @@ resource "aws_ecs_task_definition" "backend" {
           name  = "DEBUG"
           value = "False"
         },
-        {
-          name  = "DATABASE_URL"
-          value = "postgresql://${aws_db_instance.main.username}:${var.db_password}@${aws_db_instance.main.endpoint}/${aws_db_instance.main.db_name}"
-        },
+        # DATABASE_URL moved to secrets section for security
         {
           name  = "REDIS_URL"
           value = "redis://${aws_elasticache_replication_group.main.primary_endpoint}:6379"
@@ -290,6 +287,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name      = "DATABASE_PASSWORD"
           valueFrom = aws_ssm_parameter.db_password.arn
+        },
+        {
+          name      = "DATABASE_URL"
+          valueFrom = aws_ssm_parameter.database_url.arn
         }
       ]
 
@@ -529,7 +530,7 @@ resource "aws_db_instance" "read_replica" {
 # KMS Key for encryption
 resource "aws_kms_key" "main" {
   description             = "${var.project_name} ${var.environment} encryption key"
-  deletion_window_in_days = 7
+  deletion_window_in_days = var.environment == "production" ? 30 : 7
 
   tags = {
     Name = "${var.project_name}-kms-key-${var.environment}"
@@ -544,7 +545,7 @@ resource "aws_kms_alias" "main" {
 # Separate KMS key for RDS
 resource "aws_kms_key" "rds" {
   description             = "${var.project_name} ${var.environment} RDS encryption key"
-  deletion_window_in_days = 7
+  deletion_window_in_days = var.environment == "production" ? 30 : 7
 
   tags = {
     Name = "${var.project_name}-rds-kms-key-${var.environment}"
@@ -768,6 +769,17 @@ resource "aws_ssm_parameter" "db_password" {
 
   tags = {
     Name = "${var.project_name}-db-password-${var.environment}"
+  }
+}
+
+resource "aws_ssm_parameter" "database_url" {
+  name   = "/${var.project_name}/${var.environment}/DATABASE_URL"
+  type   = "SecureString"
+  value  = "postgresql://${aws_db_instance.main.username}:${var.db_password}@${aws_db_instance.main.endpoint}/${aws_db_instance.main.db_name}"
+  key_id = aws_kms_key.main.key_id
+
+  tags = {
+    Name = "${var.project_name}-database-url-${var.environment}"
   }
 }
 
