@@ -12,10 +12,14 @@ TESTING = True
 # Use in-memory SQLite for faster tests
 DATABASES = {
     "default": {
-        "ENGINE": "django.contrib.gis.db.backends.spatialite",
-        "NAME": ":memory:",
-        "OPTIONS": {
-            "init_command": 'SELECT load_extension("mod_spatialite")',
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": ":test_safejob_db:",
+        "USER": "test_safejob_user",
+        "PASSWORD": "test_safejob_password",
+        "HOST": "localhost",
+        "PORT": "5432",
+        "TEST": {
+            "NAME": "test_safejob_db",
         },
     }
 }
