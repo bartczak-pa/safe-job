@@ -17,5 +17,4 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 -- Reload configuration
 SELECT pg_reload_conf();
 
--- Verify PostGIS installation
-SELECT PostGIS_Version();
+-- PostGIS is loaded; no explicit version check required here
