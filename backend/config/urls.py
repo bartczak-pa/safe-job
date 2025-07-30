@@ -12,7 +12,7 @@ urlpatterns = [
     path("", include("apps.core.urls")),
 ]
 
-# Serve media files in development
-if settings.DEBUG:
+# Serve media files in development and testing
+if settings.DEBUG or getattr(settings, "TESTING", False):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

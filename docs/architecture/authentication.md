@@ -88,7 +88,7 @@ class MagicLinkService:
         return raw_token, token_hash
 
     @staticmethod
-    def create_magic_link(user_email: str) -> MagicLinkToken:
+    def create_magic_link(user_email: str, request=None) -> MagicLinkToken:
         """Create magic link token with security controls"""
         raw_token, token_hash = MagicLinkService.generate_token()
 

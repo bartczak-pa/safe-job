@@ -2,10 +2,12 @@
 Development settings for Safe Job Platform.
 """
 
+import os
+
 from .base import *  # noqa: F403
 
-# Debug settings
-DEBUG = True
+# Debug settings - configurable via environment
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
 # Development middleware
 # MIDDLEWARE += [
