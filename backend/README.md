@@ -35,6 +35,7 @@ poetry run python manage.py runserver
 ## 🏗️ Architecture
 
 ### Technology Stack
+
 - **Python 3.13** - Latest Python version
 - **Django 5.2.4** - Web framework
 - **Django REST Framework** - API framework
@@ -59,11 +60,13 @@ apps/
 ## 🐳 Docker Configuration
 
 ### Services
+
 - **backend** - Django application
 - **db** - PostgreSQL with PostGIS
 - **redis** - Redis for caching
 
 ### Development Features
+
 - **Hot reload** - Code changes trigger automatic restart
 - **Volume mounting** - Local code synced to container
 - **Health checks** - Automatic service monitoring
@@ -72,6 +75,7 @@ apps/
 ## 🛠️ Development Tools
 
 ### Code Quality
+
 ```bash
 # Linting with Ruff
 poetry run ruff check .
@@ -84,6 +88,7 @@ poetry run mypy .
 ```
 
 ### Testing
+
 ```bash
 # Run tests
 poetry run pytest
@@ -96,6 +101,7 @@ poetry run pytest apps/users/tests/
 ```
 
 ### Database Operations
+
 ```bash
 # Create migrations
 poetry run python manage.py makemigrations
@@ -113,6 +119,7 @@ poetry run python manage.py loaddata fixtures/sample_data.json
 ## 📚 API Documentation
 
 Once running, API documentation is available at:
+
 - **Swagger UI**: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
 - **ReDoc**: [http://localhost:8000/api/redoc/](http://localhost:8000/api/redoc/)
 - **OpenAPI Schema**: [http://localhost:8000/api/schema/](https://localhost:8000/api/schema/)
@@ -120,6 +127,7 @@ Once running, API documentation is available at:
 ## 🔧 Configuration
 
 ### Environment Variables
+
 Key environment variables (see `.envs/.env.example`):
 
 ```bash
@@ -151,6 +159,7 @@ config/settings/
 ## 🚨 Health Checks
 
 The backend includes health check endpoints:
+
 - **Basic health**: `GET /health/`
 - **Database health**: `GET /health/db/`
 - **Redis health**: `GET /health/redis/`
@@ -158,6 +167,7 @@ The backend includes health check endpoints:
 ## 📝 Logging
 
 Logs are written to:
+
 - Console (development)
 - File: `logs/django.log`
 - Structured JSON format in production
