@@ -17,8 +17,9 @@ The Safe Job Platform is architected as a **Modular Django Monolith with Real-ti
 The platform implements a carefully structured Django monolith with clean domain separation through dedicated Django apps, enhanced with real-time capabilities via Django Channels.
 
 **Why This Pattern:**
+
 - ✅ **Single Developer Optimized**: Django's batteries-included approach maximizes solo developer productivity
-- ✅ **Proven Technology**: Leverages existing Django expertise with minimal learning curve  
+- ✅ **Proven Technology**: Leverages existing Django expertise with minimal learning curve
 - ✅ **AWS Free Tier Compatible**: Simple deployment model fits within cost constraints
 - ✅ **Built-in Admin**: Django admin provides immediate workflow management
 - ✅ **Future-Ready**: Modular apps enable extraction to microservices when scaling demands require
@@ -28,27 +29,27 @@ The platform implements a carefully structured Django monolith with clean domain
 ```mermaid
 graph TD
     subgraph "External Users"
-        C[Candidates<br/>Job Seekers]
-        E[Employers<br/>Staffing Agencies]
-        A[Platform Admins<br/>Content Moderators]
+        C["Candidates<br/>Job Seekers"]
+        E["Employers<br/>Staffing Agencies"]
+        A["Platform Admins<br/>Content Moderators"]
     end
-    
+
     subgraph "Safe Job Platform"
-        FE[React Frontend<br/>Mobile-First PWA]
-        API[Django REST API<br/>API Gateway]
-        WS[WebSocket Layer<br/>Django Channels]
-        AUTH[Authentication<br/>Magic Links + JWT]
-        DB[(PostgreSQL + PostGIS<br/>Primary Database)]
-        CACHE[(Redis<br/>Sessions + Messages)]
+        FE["React Frontend<br/>Mobile-First PWA"]
+        API["Django REST API<br/>API Gateway"]
+        WS["WebSocket Layer<br/>Django Channels"]
+        AUTH["Authentication<br/>Magic Links + JWT"]
+        DB[("PostgreSQL + PostGIS<br/>Primary Database")]
+        CACHE[("Redis<br/>Sessions + Messages")]
     end
-    
+
     subgraph "External Services"
-        EMAIL[Resend<br/>Email Delivery]
-        STORAGE[AWS S3<br/>Document Storage]
-        CDN[CloudFront<br/>Global CDN]
-        VERIFY[External APIs<br/>KvK, VAT (Future)]
+        EMAIL["Resend<br/>Email Delivery"]
+        STORAGE["AWS S3<br/>Document Storage"]
+        CDN["CloudFront<br/>Global CDN"]
+        VERIFY["External APIs<br/>KvK, VAT (Future)"]
     end
-    
+
     C --> FE
     E --> FE
     A --> FE
@@ -106,7 +107,7 @@ The platform implements clean domain separation through 8 specialized Django app
 ```
 backend/src/safe_job/
 ├── core/                    # Shared utilities, base models, notifications
-├── users/                   # Core user management & magic link authentication  
+├── users/                   # Core user management & magic link authentication
 ├── candidates/              # Candidate profiles, skills, preferences
 ├── employers/               # Employer profiles, verification, subaccounts
 ├── jobs/                    # Job posting, admin approval, geospatial search
@@ -123,6 +124,7 @@ backend/src/safe_job/
 **Purpose**: Shared utilities and base functionality
 
 **Key Components:**
+
 - Base model classes with audit fields
 - Notification system framework
 - Shared validators and utilities
@@ -135,6 +137,7 @@ backend/src/safe_job/
 **Purpose**: Core user management and authentication
 
 **Key Components:**
+
 - Custom User model with email-based auth
 - Magic link token generation and verification
 - JWT token management
@@ -148,6 +151,7 @@ backend/src/safe_job/
 **Purpose**: Candidate profiles and job seeker functionality
 
 **Key Components:**
+
 - Candidate profile management
 - Skills and qualifications tracking
 - Language proficiency management
@@ -161,6 +165,7 @@ backend/src/safe_job/
 **Purpose**: Employer profiles and verification
 
 **Key Components:**
+
 - Employer profile management
 - Company verification workflow
 - Subaccount system with role-based permissions
@@ -174,6 +179,7 @@ backend/src/safe_job/
 **Purpose**: Job posting and management
 
 **Key Components:**
+
 - Job creation and editing
 - Admin approval workflow
 - PostGIS geospatial search
@@ -187,6 +193,7 @@ backend/src/safe_job/
 **Purpose**: Job application workflow
 
 **Key Components:**
+
 - Application submission
 - Status tracking and updates
 - Basic candidate-job matching
@@ -200,6 +207,7 @@ backend/src/safe_job/
 **Purpose**: Real-time communication
 
 **Key Components:**
+
 - Django Channels WebSocket consumers
 - Conversation management
 - Message encryption capabilities
@@ -213,6 +221,7 @@ backend/src/safe_job/
 **Purpose**: File upload and verification
 
 **Key Components:**
+
 - Secure file upload to S3
 - PDF preview generation
 - Admin verification interface
@@ -226,6 +235,7 @@ backend/src/safe_job/
 **Purpose**: Centralized API management
 
 **Key Components:**
+
 - API versioning (`/api/v1/`)
 - Custom permission classes
 - Rate limiting and throttling
@@ -343,6 +353,7 @@ erDiagram
 #### 5.1.2 Geospatial Design
 
 **PostGIS Integration:**
+
 - Job locations stored as `POINT` geometry with SRID 4326 (WGS 84)
 - Candidate location preferences with radius-based matching
 - Spatial indexes for fast proximity queries
@@ -352,7 +363,7 @@ erDiagram
 ```sql
 -- Find jobs within 25km of candidate location
 SELECT j.*, ST_Distance(j.geo_location, ST_Point(5.1214, 52.0907)::geography) / 1000 as distance_km
-FROM jobs_job j 
+FROM jobs_job j
 WHERE ST_DWithin(j.geo_location, ST_Point(5.1214, 52.0907)::geography, 25000)
 ORDER BY distance_km;
 ```
@@ -360,6 +371,7 @@ ORDER BY distance_km;
 #### 5.1.3 Audit and Compliance
 
 **GDPR Compliance Features:**
+
 - Soft deletion with `deleted_at` timestamps
 - Comprehensive audit logging for all user data operations
 - Data export functionality for subject access requests
@@ -374,7 +386,7 @@ class BaseModel(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    
+
     class Meta:
         abstract = True
 ```
@@ -382,12 +394,14 @@ class BaseModel(models.Model):
 ### 5.2 Caching Strategy
 
 **Redis Integration:**
+
 - **Session Storage**: Django sessions for user state
 - **WebSocket Messages**: Real-time message broker
 - **API Caching**: Frequently accessed job listings and profiles
 - **Rate Limiting**: Request throttling and brute force protection
 
 **Cache Hierarchy:**
+
 1. **L1 Cache**: Application-level caching (Django cache framework)
 2. **L2 Cache**: Redis cluster for shared cache across instances
 3. **L3 Cache**: CloudFront CDN for static assets and documents
@@ -401,6 +415,7 @@ class BaseModel(models.Model):
 #### 6.1.1 Magic Link Authentication
 
 **Flow Design:**
+
 1. User requests magic link with email address
 2. Secure token generated with configurable expiration (15 minutes default)
 3. Token sent via Resend with rate limiting (3 attempts per hour)
@@ -408,6 +423,7 @@ class BaseModel(models.Model):
 5. JWT tokens used for subsequent API authentication
 
 **Security Features:**
+
 - Cryptographically secure token generation
 - Single-use tokens with automatic cleanup
 - IP address binding (optional)
@@ -417,6 +433,7 @@ class BaseModel(models.Model):
 #### 6.1.2 JWT Token Management
 
 **Token Strategy:**
+
 - **Access Tokens**: Short-lived (15 minutes), stateless verification
 - **Refresh Tokens**: Long-lived (7 days), secure storage and rotation
 - **Token Blacklisting**: Immediate revocation capability
@@ -433,7 +450,7 @@ class IsCandidate(BasePermission):
 
 class IsVerifiedEmployer(BasePermission):
     def has_permission(self, request, view):
-        return (request.user.user_type == 'employer' and 
+        return (request.user.user_type == 'employer' and
                 request.user.employer_profile.verification_status == 'approved')
 ```
 
@@ -442,11 +459,13 @@ class IsVerifiedEmployer(BasePermission):
 #### 6.2.1 Encryption
 
 **Data at Rest:**
+
 - AWS RDS encryption with KMS keys
 - S3 server-side encryption (SSE-KMS)
 - Application-level encryption for sensitive fields
 
 **Data in Transit:**
+
 - TLS 1.3 for all HTTP communications
 - WSS (WebSocket Secure) for real-time messaging
 - Pre-signed URLs for secure file access
@@ -454,6 +473,7 @@ class IsVerifiedEmployer(BasePermission):
 #### 6.2.2 Input Validation
 
 **Multi-Layer Validation:**
+
 1. **Frontend**: TypeScript type checking and form validation
 2. **API**: Django REST Framework serializers
 3. **Database**: Django model validation and constraints
@@ -462,6 +482,7 @@ class IsVerifiedEmployer(BasePermission):
 ### 6.3 Security Monitoring
 
 **Security Controls:**
+
 - **Rate Limiting**: Django-ratelimit for API endpoints
 - **CSRF Protection**: Django CSRF middleware
 - **XSS Prevention**: Django template auto-escaping
@@ -469,6 +490,7 @@ class IsVerifiedEmployer(BasePermission):
 - **File Upload Security**: Type validation, size limits, quarantine
 
 **Monitoring and Alerting:**
+
 - Failed authentication attempt tracking
 - Suspicious activity pattern detection
 - File upload anomaly monitoring
@@ -481,6 +503,7 @@ class IsVerifiedEmployer(BasePermission):
 ### 7.1 Performance Targets
 
 **Response Time Objectives:**
+
 - API endpoints: <200ms (95th percentile)
 - WebSocket messages: <100ms delivery
 - File uploads: <5 seconds processing
@@ -504,6 +527,7 @@ CREATE INDEX idx_jobs_fulltext ON jobs_job USING GIN (to_tsvector('english', tit
 ```
 
 **Query Optimization:**
+
 - Database query analysis with Django Debug Toolbar
 - `select_related()` and `prefetch_related()` for N+1 prevention
 - Database connection pooling with pgbouncer
@@ -527,6 +551,7 @@ def candidate_skills(self):
 #### 7.2.3 Frontend Optimization
 
 **React Performance:**
+
 - Code splitting with dynamic imports
 - Lazy loading for non-critical components
 - React.memo for expensive components
@@ -548,20 +573,20 @@ graph TD
             ALB[Application Load Balancer]
             NAT[NAT Gateway]
         end
-        
+
         subgraph "Private Subnet"
             ECS[ECS Fargate Cluster]
             RDS[(RDS PostgreSQL)]
             REDIS[(ElastiCache Redis)]
         end
     end
-    
+
     subgraph "Global Services"
         CF[CloudFront CDN]
         S3[S3 Bucket]
         SES[Resend/SES]
     end
-    
+
     Internet --> CF
     CF --> ALB
     ALB --> ECS
@@ -575,6 +600,7 @@ graph TD
 #### 8.1.2 ECS Service Configuration
 
 **Service Design:**
+
 - **Web Service**: Django application with auto-scaling (2-10 instances)
 - **Worker Service**: Background tasks (future Celery integration)
 - **WebSocket Service**: Django Channels consumers
@@ -603,6 +629,7 @@ websocket_service:
 #### 8.1.3 Database Configuration
 
 **RDS PostgreSQL Setup:**
+
 - **Instance Class**: db.t3.micro (Free Tier)
 - **Storage**: 20GB GP2 with auto-scaling
 - **Backup**: 7-day retention with point-in-time recovery
@@ -624,7 +651,7 @@ jobs:
     steps:
       - name: Test Backend
         run: pytest backend/tests/
-      - name: Test Frontend  
+      - name: Test Frontend
         run: npm test -- --coverage
 
   deploy:
@@ -678,8 +705,8 @@ import structlog
 logger = structlog.get_logger()
 
 # Application logging
-logger.info("User authentication successful", 
-           user_id=user.id, 
+logger.info("User authentication successful",
+           user_id=user.id,
            ip_address=request.META.get('REMOTE_ADDR'),
            user_agent=request.META.get('HTTP_USER_AGENT'))
 
@@ -691,6 +718,7 @@ logger.error("Database connection failed",
 ```
 
 **Log Aggregation:**
+
 - **CloudWatch Logs**: Centralized log collection
 - **Log Groups**: Separate groups for application, access, and error logs
 - **Log Retention**: 30 days for application logs, 90 days for audit logs
@@ -713,6 +741,7 @@ def api_view(request):
 ```
 
 **Infrastructure Metrics:**
+
 - ECS service CPU/memory utilization
 - RDS connection count and query performance
 - Redis memory usage and connection count
@@ -732,12 +761,13 @@ class HealthCheckView(APIView):
             'storage': self.check_s3(),
             'email': self.check_email_service()
         }
-        
+
         status = 200 if all(checks.values()) else 503
         return Response(checks, status=status)
 ```
 
 **Alerting Strategy:**
+
 - **Critical Alerts**: Database unavailable, application errors >5%
 - **Warning Alerts**: High response times, resource utilization >80%
 - **Info Alerts**: Deployment completions, significant user activity
@@ -781,6 +811,7 @@ class HealthCheckView(APIView):
 ### 11.1 Phase 1: Foundation (Weeks 1-3)
 
 **Week 1: Project Setup**
+
 - [ ] Django project initialization with modular app structure
 - [ ] PostgreSQL + PostGIS database setup and configuration
 - [ ] Docker development environment with docker-compose
@@ -788,6 +819,7 @@ class HealthCheckView(APIView):
 - [ ] AWS account configuration and IAM role setup
 
 **Week 2: Authentication System**
+
 - [ ] Custom User model with email-based authentication
 - [ ] Magic link token generation and verification system
 - [ ] JWT integration with Django REST Framework
@@ -795,6 +827,7 @@ class HealthCheckView(APIView):
 - [ ] Rate limiting implementation for authentication endpoints
 
 **Week 3: Core Models and Admin**
+
 - [ ] User, CandidateProfile, EmployerProfile models
 - [ ] Job, Application, Document core models
 - [ ] Django admin configuration with custom interfaces
@@ -804,6 +837,7 @@ class HealthCheckView(APIView):
 ### 11.2 Phase 2: Core Features (Weeks 4-6)
 
 **Week 4: Job Management System**
+
 - [ ] Job creation and editing with structured forms
 - [ ] Admin approval workflow for job postings
 - [ ] PostGIS integration for geospatial job search
@@ -811,6 +845,7 @@ class HealthCheckView(APIView):
 - [ ] Job versioning and audit trail implementation
 
 **Week 5: Application Workflow**
+
 - [ ] Candidate job application submission
 - [ ] Application status tracking and updates
 - [ ] Basic candidate-job matching algorithm
@@ -818,6 +853,7 @@ class HealthCheckView(APIView):
 - [ ] Email notification system foundation
 
 **Week 6: Real-time Features**
+
 - [ ] Django Channels setup and WebSocket consumers
 - [ ] Real-time messaging between candidates and employers
 - [ ] Notification delivery system via WebSocket
@@ -827,6 +863,7 @@ class HealthCheckView(APIView):
 ### 11.3 Phase 3: Integration and Deployment (Weeks 7-8)
 
 **Week 7: Frontend Development**
+
 - [ ] React application with TypeScript setup
 - [ ] Authentication flow with magic link integration
 - [ ] Job search and application user interface
@@ -835,6 +872,7 @@ class HealthCheckView(APIView):
 - [ ] API integration with proper error handling
 
 **Week 8: Production Deployment**
+
 - [ ] AWS ECS Fargate cluster configuration
 - [ ] RDS PostgreSQL and ElastiCache Redis setup
 - [ ] S3 bucket and CloudFront CDN configuration
@@ -845,6 +883,7 @@ class HealthCheckView(APIView):
 ### 11.4 Success Criteria
 
 **Technical Milestones:**
+
 - ✅ All core user journeys functional (registration → job posting → application → messaging)
 - ✅ API response times consistently <200ms
 - ✅ Real-time messaging with <100ms latency
@@ -852,6 +891,7 @@ class HealthCheckView(APIView):
 - ✅ Comprehensive test coverage >80%
 
 **Business Milestones:**
+
 - ✅ 10+ active employers successfully posting jobs
 - ✅ 50+ registered candidates with complete profiles
 - ✅ 100+ job applications submitted through platform
@@ -859,6 +899,7 @@ class HealthCheckView(APIView):
 - ✅ Zero critical security vulnerabilities
 
 **Operational Milestones:**
+
 - ✅ Automated deployment pipeline functional
 - ✅ Monitoring and alerting operational
 - ✅ Documentation complete for all major components
@@ -871,16 +912,19 @@ class HealthCheckView(APIView):
 ### 12.1 Phase 2: Enhanced Features (Months 3-4)
 
 **Advanced Matching Algorithm:**
+
 - Machine learning-based candidate-job matching
 - Skill gap analysis and recommendations
 - Performance-based ranking system
 
 **Subscription System:**
+
 - Stripe integration for payment processing
 - Tiered subscription plans with feature gating
 - Usage tracking and billing automation
 
 **Analytics Dashboard:**
+
 - Employer analytics with placement metrics
 - Platform usage insights and reporting
 - Performance optimization recommendations
@@ -888,12 +932,14 @@ class HealthCheckView(APIView):
 ### 12.2 Phase 3: Internationalization (Months 5-6)
 
 **Multi-language Support:**
+
 - Django i18n framework activation
 - React i18next integration
 - Professional translation workflow
 - DeepL/Google Translate API integration
 
 **Enhanced Security:**
+
 - End-to-end encryption for sensitive communications
 - Advanced audit logging and compliance reporting
 - Penetration testing and security certifications
@@ -901,16 +947,19 @@ class HealthCheckView(APIView):
 ### 12.3 Phase 4: Scale and Expansion (Months 6+)
 
 **Microservices Migration:**
+
 - Extract high-load services (search, matching, messaging)
 - Implement API gateway with service discovery
 - Independent service scaling and deployment
 
 **Geographic Expansion:**
+
 - Multi-region AWS deployment
 - Localized compliance and verification
 - Partnership development in new markets
 
 **Advanced Features:**
+
 - Mobile applications (iOS/Android)
 - Couple application workflow
 - AI-powered job recommendation engine
@@ -923,9 +972,10 @@ class HealthCheckView(APIView):
 The Safe Job Platform architecture provides a robust, scalable foundation that directly supports the MVP business objectives while establishing a clear path for future growth. The modular Django monolith approach optimizes for single-developer productivity while maintaining the flexibility to scale into microservices as business demands require.
 
 **Key Architectural Strengths:**
+
 1. **Proven Technology Stack**: Mature, well-documented technologies minimize implementation risk
 2. **Cost-Effective Deployment**: AWS Free Tier optimization keeps infrastructure costs minimal
-3. **Security by Design**: Built-in GDPR compliance and comprehensive security controls  
+3. **Security by Design**: Built-in GDPR compliance and comprehensive security controls
 4. **Performance Optimized**: Sub-200ms response times with geospatial search capabilities
 5. **Future-Ready**: Clear scaling path from MVP to enterprise-level platform
 
@@ -935,6 +985,6 @@ This architecture has been thoroughly validated through systematic analysis of b
 
 ---
 
-*Architecture Document Version: 2.0*  
-*Last Updated: July 2025*  
+*Architecture Document Version: 2.0*
+*Last Updated: July 2025*
 *Validation Status: Complete - Ready for Implementation*

@@ -1,9 +1,12 @@
 # Phase 5: Real-time Messaging System - Detailed Implementation Plan
 
-**Duration**: Week 5 (7 days)  
-**Dependencies**: Phase 4 completion  
-**Risk Level**: High (Django Channels complexity, WebSocket management)  
-**Team**: 1 full-stack developer + Claude Code  
+**Duration**: Week 5 (7 days)
+
+**Dependencies**: Phase 4 completion
+
+**Risk Level**: High (Django Channels complexity, WebSocket management)
+
+**Team**: 1 full-stack developer + Claude Code
 
 ## Overview
 
@@ -23,11 +26,15 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 ### 5.1 Django Channels Setup
 
 #### 5.1.1 Real-time Infrastructure Setup
-**Duration**: 2 days  
-**Priority**: Critical  
+
+**Duration**: 2 days
+
+**Priority**: Critical
+
 **Risk Level**: High
 
 **Tasks:**
+
 - [ ] Configure Django Channels with Redis channel layer
 - [ ] Set up WebSocket routing and authentication
 - [ ] Create message queue system for reliable delivery
@@ -35,6 +42,7 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 - [ ] Build WebSocket authentication and authorization system
 
 **Acceptance Criteria:**
+
 - WebSocket connections establish reliably across different browsers
 - Redis channel layer handles message routing efficiently
 - Authentication prevents unauthorized access to conversations
@@ -172,7 +180,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_chat_message(self, data):
         """Handle incoming chat message"""
         content = data.get('content', '').strip()
-        
+
         if not content:
             await self.send_error('Message content cannot be empty')
             return
@@ -212,7 +220,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_typing_indicator(self, data):
         """Handle typing indicator"""
         is_typing = data.get('is_typing', False)
-        
+
         await self.channel_layer.group_send(
             self.conversation_group_name,
             {
@@ -266,7 +274,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, content, filtered_content=None):
         """Save message to database"""
         conversation = Conversation.objects.get(id=self.conversation_id)
-        
+
         message = Message.objects.create(
             conversation=conversation,
             sender=self.user,
@@ -274,11 +282,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             original_content=content if filtered_content else None,
             message_type='text'
         )
-        
+
         # Update conversation last activity
         conversation.last_activity_at = timezone.now()
         conversation.save()
-        
+
         return message
 
     @database_sync_to_async
@@ -307,9 +315,9 @@ class Conversation(models.Model):
         ('blocked', 'Blocked'),
         ('reported', 'Reported')
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Participants
     candidate = models.ForeignKey(
         'candidates.CandidateProfile',
@@ -321,7 +329,7 @@ class Conversation(models.Model):
         on_delete=models.CASCADE,
         related_name='conversations'
     )
-    
+
     # Related job application (if any)
     job_application = models.ForeignKey(
         'applications.JobApplication',
@@ -329,30 +337,30 @@ class Conversation(models.Model):
         null=True, blank=True,
         related_name='conversations'
     )
-    
+
     # Conversation metadata
     status = models.CharField(max_length=20, choices=CONVERSATION_STATUS_CHOICES, default='active')
     subject = models.CharField(max_length=200, blank=True)
-    
+
     # Activity tracking
     last_activity_at = models.DateTimeField(auto_now=True)
     last_message_at = models.DateTimeField(null=True, blank=True)
     message_count = models.PositiveIntegerField(default=0)
-    
+
     # Read status tracking
     candidate_last_read_at = models.DateTimeField(null=True, blank=True)
     employer_last_read_at = models.DateTimeField(null=True, blank=True)
-    
+
     # Moderation
     is_flagged = models.BooleanField(default=False)
     flagged_reason = models.TextField(blank=True)
     flagged_at = models.DateTimeField(null=True, blank=True)
     flagged_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         db_table = 'messaging_conversation'
         unique_together = ['candidate', 'employer', 'job_application']
@@ -362,10 +370,10 @@ class Conversation(models.Model):
             models.Index(fields=['last_activity_at']),
         ]
         ordering = ['-last_activity_at']
-    
+
     def __str__(self):
         return f"Conversation: {self.candidate.user.get_full_name()} ↔ {self.employer.company_name}"
-    
+
     def get_unread_count_for_user(self, user):
         """Get unread message count for specific user"""
         if hasattr(user, 'candidate_profile') and user.candidate_profile == self.candidate:
@@ -374,21 +382,21 @@ class Conversation(models.Model):
             last_read = self.employer_last_read_at
         else:
             return 0
-        
+
         if not last_read:
             return self.message_count
-        
+
         return self.messages.filter(created_at__gt=last_read).count()
-    
+
     def mark_read_for_user(self, user):
         """Mark conversation as read for specific user"""
         now = timezone.now()
-        
+
         if hasattr(user, 'candidate_profile') and user.candidate_profile == self.candidate:
             self.candidate_last_read_at = now
         elif hasattr(user, 'employer_profile') and user.employer_profile == self.employer:
             self.employer_last_read_at = now
-        
+
         self.save(update_fields=['candidate_last_read_at', 'employer_last_read_at'])
 
 class Message(models.Model):
@@ -399,56 +407,56 @@ class Message(models.Model):
         ('interview_invite', 'Interview Invitation'),
         ('status_update', 'Status Update')
     ]
-    
+
     MESSAGE_STATUS_CHOICES = [
         ('sent', 'Sent'),
         ('delivered', 'Delivered'),
         ('read', 'Read'),
         ('failed', 'Failed')
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    
+
     # Message content
     content = models.TextField(max_length=2000)
     original_content = models.TextField(blank=True, help_text="Original content before moderation")
     message_type = models.CharField(max_length=20, choices=MESSAGE_TYPE_CHOICES, default='text')
-    
+
     # File attachment (if applicable)
     attachment = models.FileField(upload_to='message_attachments/%Y/%m/', null=True, blank=True)
     attachment_name = models.CharField(max_length=255, blank=True)
     attachment_size = models.PositiveIntegerField(null=True, blank=True)
-    
+
     # Message status
     status = models.CharField(max_length=20, choices=MESSAGE_STATUS_CHOICES, default='sent')
-    
+
     # Encryption
     is_encrypted = models.BooleanField(default=False)
     encryption_key_id = models.CharField(max_length=100, blank=True)
-    
+
     # Moderation
     is_flagged = models.BooleanField(default=False)
     moderation_score = models.FloatField(null=True, blank=True)
     was_filtered = models.BooleanField(default=False)
-    
+
     # Read receipts
     read_at = models.DateTimeField(null=True, blank=True)
     read_by = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        null=True, blank=True, 
+        User,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
         related_name='read_messages'
     )
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     # Soft delete
     deleted_at = models.DateTimeField(null=True, blank=True)
-    
+
     class Meta:
         db_table = 'messaging_message'
         indexes = [
@@ -457,14 +465,14 @@ class Message(models.Model):
             models.Index(fields=['status']),
         ]
         ordering = ['created_at']
-    
+
     def __str__(self):
         return f"Message from {self.sender.get_full_name()} at {self.created_at}"
-    
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        
+
         if is_new:
             # Update conversation message count and last message time
             self.conversation.message_count += 1
@@ -477,16 +485,19 @@ class UserPresence(models.Model):
     is_online = models.BooleanField(default=False)
     last_seen_at = models.DateTimeField(auto_now=True)
     active_conversations = models.JSONField(default=list, help_text="List of conversation IDs user is actively viewing")
-    
+
     class Meta:
         db_table = 'messaging_user_presence'
 ```
 
 #### 5.1.2 Messaging Models and API
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Create comprehensive Message and Conversation models
 - [ ] Implement message encryption for sensitive communications
 - [ ] Build message history and search functionality
@@ -494,6 +505,7 @@ class UserPresence(models.Model):
 - [ ] Create message moderation and safety features
 
 **Acceptance Criteria:**
+
 - Message models support various content types and metadata
 - Encryption protects sensitive conversation data
 - Message history loads efficiently with pagination
@@ -510,26 +522,26 @@ from typing import Dict, List
 
 class MessageEncryptionService:
     """Handle message encryption/decryption"""
-    
+
     @classmethod
     def encrypt_message(cls, content: str) -> str:
         """Encrypt message content"""
         if not settings.MESSAGE_ENCRYPTION_KEY:
             # Development mode - no encryption
             return content
-        
+
         key = settings.MESSAGE_ENCRYPTION_KEY.encode()
         f = Fernet(key)
         encrypted_content = f.encrypt(content.encode())
         return base64.urlsafe_b64encode(encrypted_content).decode()
-    
+
     @classmethod
     def decrypt_message(cls, encrypted_content: str) -> str:
         """Decrypt message content"""
         if not settings.MESSAGE_ENCRYPTION_KEY:
             # Development mode - no encryption
             return encrypted_content
-        
+
         try:
             key = settings.MESSAGE_ENCRYPTION_KEY.encode()
             f = Fernet(key)
@@ -541,25 +553,25 @@ class MessageEncryptionService:
 
 class ModerationService:
     """Content moderation for messages"""
-    
+
     # Basic profanity filter - in production, use more sophisticated service
     BLOCKED_WORDS = [
         # Add inappropriate words here
         'spam', 'scam', 'fraud'
     ]
-    
+
     SUSPICIOUS_PATTERNS = [
         r'\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b',  # Credit card numbers
         r'\b\d{3}-\d{2}-\d{4}\b',  # SSN patterns
         r'whatsapp.*\+?\d+',  # WhatsApp sharing
         r'telegram.*@\w+',  # Telegram sharing
     ]
-    
+
     @classmethod
     def moderate_message_content(cls, content: str) -> Dict:
         """Check message content for policy violations"""
         content_lower = content.lower()
-        
+
         # Check for blocked words
         for word in cls.BLOCKED_WORDS:
             if word in content_lower:
@@ -568,7 +580,7 @@ class ModerationService:
                     'reason': 'Contains inappropriate content',
                     'violation_type': 'profanity'
                 }
-        
+
         # Check for suspicious patterns
         for pattern in cls.SUSPICIOUS_PATTERNS:
             if re.search(pattern, content, re.IGNORECASE):
@@ -577,7 +589,7 @@ class ModerationService:
                     'reason': 'Contains potentially sensitive information',
                     'violation_type': 'personal_info'
                 }
-        
+
         # Check for excessive caps (potential spam)
         if len(content) > 20 and sum(1 for c in content if c.isupper()) / len(content) > 0.7:
             filtered_content = content.lower().capitalize()
@@ -586,12 +598,12 @@ class ModerationService:
                 'filtered_content': filtered_content,
                 'reason': 'Excessive capitals filtered'
             }
-        
+
         return {
             'allowed': True,
             'reason': None
         }
-    
+
     @classmethod
     def flag_conversation(cls, conversation, reason: str, flagged_by):
         """Flag conversation for admin review"""
@@ -600,27 +612,27 @@ class ModerationService:
         conversation.flagged_at = timezone.now()
         conversation.flagged_by = flagged_by
         conversation.save()
-        
+
         # Notify admin team
         NotificationService.notify_admin_conversation_flagged(conversation, reason)
 
 class ConversationService:
     """Business logic for conversation management"""
-    
+
     @classmethod
     def create_conversation(cls, candidate, employer, job_application=None, subject=''):
         """Create new conversation between candidate and employer"""
-        
+
         # Check if conversation already exists
         existing = Conversation.objects.filter(
             candidate=candidate,
             employer=employer,
             job_application=job_application
         ).first()
-        
+
         if existing:
             return existing
-        
+
         # Create new conversation
         conversation = Conversation.objects.create(
             candidate=candidate,
@@ -628,34 +640,34 @@ class ConversationService:
             job_application=job_application,
             subject=subject or f"Regarding: {job_application.job.title if job_application else 'General Inquiry'}"
         )
-        
+
         # Send system message
         if job_application:
             system_message = f"Conversation started regarding application for {job_application.job.title}"
         else:
             system_message = "Conversation started"
-        
+
         Message.objects.create(
             conversation=conversation,
             sender=candidate.user,  # Use candidate as initial sender
             content=system_message,
             message_type='system'
         )
-        
+
         return conversation
-    
+
     @classmethod
     def get_conversations_for_user(cls, user, status='active'):
         """Get conversations for specific user"""
         conversations = Conversation.objects.filter(status=status)
-        
+
         if hasattr(user, 'candidate_profile'):
             conversations = conversations.filter(candidate=user.candidate_profile)
         elif hasattr(user, 'employer_profile'):
             conversations = conversations.filter(employer=user.employer_profile)
         else:
             return Conversation.objects.none()
-        
+
         return conversations.select_related(
             'candidate__user',
             'employer__user',
@@ -666,10 +678,13 @@ class ConversationService:
 ### 5.2 Real-time Frontend Integration
 
 #### 5.2.1 WebSocket Client Implementation
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Build WebSocket connection management with reconnection logic
 - [ ] Create real-time message sending and receiving
 - [ ] Implement typing indicators and user presence
@@ -677,6 +692,7 @@ class ConversationService:
 - [ ] Build chat interface with message history
 
 **Acceptance Criteria:**
+
 - WebSocket connections are stable with automatic reconnection
 - Messages send and receive in real-time without delays
 - Typing indicators provide smooth user experience
@@ -707,25 +723,25 @@ class WebSocketService {
   private reconnectDelay = 1000
   private messageQueue: any[] = []
   private listeners: Map<string, Function[]> = new Map()
-  
+
   constructor() {
     this.setupEventListeners()
   }
-  
+
   connect(conversationId: string, token: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.conversationId = conversationId
       const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/chat/${conversationId}/?token=${token}`
-      
+
       this.ws = new WebSocket(wsUrl)
-      
+
       this.ws.onopen = () => {
         console.log('WebSocket connected')
         this.reconnectAttempts = 0
         this.flushMessageQueue()
         resolve()
       }
-      
+
       this.ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data)
@@ -734,52 +750,52 @@ class WebSocketService {
           console.error('Error parsing WebSocket message:', error)
         }
       }
-      
+
       this.ws.onclose = (event) => {
         console.log('WebSocket disconnected:', event.code, event.reason)
         this.handleDisconnection()
       }
-      
+
       this.ws.onerror = (error) => {
         console.error('WebSocket error:', error)
         reject(error)
       }
     })
   }
-  
+
   disconnect(): void {
     if (this.ws) {
       this.ws.close(1000, 'User initiated disconnect')
       this.ws = null
     }
   }
-  
+
   sendMessage(content: string): void {
     const message = {
       type: 'chat_message',
       content: content.trim()
     }
-    
+
     this.sendWebSocketMessage(message)
   }
-  
+
   sendTypingIndicator(isTyping: boolean): void {
     const message = {
       type: 'typing_indicator',
       is_typing: isTyping
     }
-    
+
     this.sendWebSocketMessage(message)
   }
-  
+
   markAsRead(): void {
     const message = {
       type: 'mark_read'
     }
-    
+
     this.sendWebSocketMessage(message)
   }
-  
+
   private sendWebSocketMessage(message: any): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message))
@@ -788,7 +804,7 @@ class WebSocketService {
       this.messageQueue.push(message)
     }
   }
-  
+
   private handleMessage(message: WebSocketMessage): void {
     switch (message.type) {
       case 'message':
@@ -806,7 +822,7 @@ class WebSocketService {
         break
     }
   }
-  
+
   private handleDisconnection(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       setTimeout(() => {
@@ -822,14 +838,14 @@ class WebSocketService {
       this.emit('connectionLost', {})
     }
   }
-  
+
   private flushMessageQueue(): void {
     while (this.messageQueue.length > 0) {
       const message = this.messageQueue.shift()
       this.sendWebSocketMessage(message)
     }
   }
-  
+
   private showNotification(messageData: MessageData): void {
     if ('Notification' in window && Notification.permission === 'granted') {
       if (document.hidden) { // Only show if tab is not active
@@ -841,13 +857,13 @@ class WebSocketService {
       }
     }
   }
-  
+
   private setupEventListeners(): void {
     // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission()
     }
-    
+
     // Handle page visibility changes
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
@@ -856,7 +872,7 @@ class WebSocketService {
       }
     })
   }
-  
+
   // Event system
   on(event: string, callback: Function): void {
     if (!this.listeners.has(event)) {
@@ -864,7 +880,7 @@ class WebSocketService {
     }
     this.listeners.get(event)!.push(callback)
   }
-  
+
   off(event: string, callback: Function): void {
     const callbacks = this.listeners.get(event)
     if (callbacks) {
@@ -874,7 +890,7 @@ class WebSocketService {
       }
     }
   }
-  
+
   private emit(event: string, data: any): void {
     const callbacks = this.listeners.get(event) || []
     callbacks.forEach(callback => callback(data))
@@ -885,10 +901,13 @@ export const websocketService = new WebSocketService()
 ```
 
 #### 5.2.2 Messaging UI Components
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Create conversation list with unread message indicators
 - [ ] Build message input with file attachment support
 - [ ] Implement message bubbles with status indicators
@@ -896,6 +915,7 @@ export const websocketService = new WebSocketService()
 - [ ] Create conversation search and filtering
 
 **Acceptance Criteria:**
+
 - Conversation list shows real-time updates and unread counts
 - Message input supports text and file attachments
 - Message bubbles display clearly with proper formatting
@@ -934,38 +954,38 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
   const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { user, token } = useAuthStore()
-  
+
   useEffect(() => {
     connectToWebSocket()
-    
+
     return () => {
       websocketService.disconnect()
     }
   }, [conversationId])
-  
+
   const connectToWebSocket = async () => {
     try {
       await websocketService.connect(conversationId, token!)
       setIsConnected(true)
       setError(null)
-      
+
       // Set up event listeners
       websocketService.on('newMessage', handleNewMessage)
       websocketService.on('typingIndicator', handleTypingIndicator)
       websocketService.on('error', handleError)
       websocketService.on('connectionLost', handleConnectionLost)
-      
+
     } catch (error) {
       setError('Failed to connect to chat')
       setIsConnected(false)
     }
   }
-  
+
   const handleNewMessage = (messageData: Message) => {
     setMessages(prev => [...prev, messageData])
     scrollToBottom()
   }
-  
+
   const handleTypingIndicator = (data: { user_id: string, user_name: string, is_typing: boolean }) => {
     setTypingUsers(prev => {
       if (data.is_typing) {
@@ -975,28 +995,28 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
       }
     })
   }
-  
+
   const handleError = (error: any) => {
     setError(error.message || 'An error occurred')
   }
-  
+
   const handleConnectionLost = () => {
     setIsConnected(false)
     setError('Connection lost. Please refresh the page.')
   }
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  
+
   const sendMessage = (content: string) => {
     websocketService.sendMessage(content)
   }
-  
+
   const sendTypingIndicator = (isTyping: boolean) => {
     websocketService.sendTypingIndicator(isTyping)
   }
-  
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -1012,7 +1032,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
       </div>
     )
   }
-  
+
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
@@ -1031,7 +1051,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
           </button>
         </div>
       </div>
-      
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
@@ -1041,14 +1061,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
             isOwn={message.sender_id === user?.id}
           />
         ))}
-        
+
         {typingUsers.length > 0 && (
           <TypingIndicator users={typingUsers} />
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
-      
+
       {/* Message Input */}
       <div className="border-t p-4">
         <MessageInput
@@ -1065,22 +1085,26 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Risk Mitigation Strategies
 
 ### Technical Risks
+
 1. **WebSocket Connection Stability**
    - **Risk**: Unreliable connections causing message loss
    - **Mitigation**: Automatic reconnection, message queuing, fallback to HTTP polling
    - **Testing**: Extensive connection failure testing
 
 2. **Real-time Performance**
+
    - **Risk**: High message volume could overwhelm system
    - **Mitigation**: Message rate limiting, connection pooling, Redis optimization
    - **Monitoring**: Real-time performance metrics
 
 3. **Message Encryption Complexity**
+
    - **Risk**: Encryption could impact performance or cause errors
    - **Mitigation**: Efficient encryption algorithms, error handling, optional encryption
    - **Fallback**: Store messages without encryption in development
 
 ### Security Risks
+
 1. **WebSocket Authentication**
    - **Risk**: Unauthorized access to conversations
    - **Mitigation**: Token-based authentication, conversation access validation
@@ -1094,6 +1118,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Testing Strategy
 
 ### WebSocket Testing
+
 - [ ] Test connection establishment and authentication
 - [ ] Test message sending and receiving reliability
 - [ ] Test reconnection logic with various failure scenarios
@@ -1101,6 +1126,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Test performance under high message volume
 
 ### Message System Testing
+
 - [ ] Test message encryption and decryption
 - [ ] Test content moderation rules
 - [ ] Test conversation access permissions
@@ -1108,6 +1134,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Test file attachment handling
 
 ### Frontend Testing
+
 - [ ] Test UI responsiveness across different screen sizes
 - [ ] Test real-time updates and state synchronization
 - [ ] Test error handling and user feedback
@@ -1117,12 +1144,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Performance Considerations
 
 ### Backend Optimization
+
 - Redis connection pooling and cluster configuration
 - Database indexing for message queries
 - Efficient WebSocket connection management
 - Message queuing for high-volume scenarios
 
 ### Frontend Optimization
+
 - Virtual scrolling for long message histories
 - Message batching for better performance
 - Efficient state updates and re-renders
@@ -1131,12 +1160,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Documentation Requirements
 
 ### Technical Documentation
+
 - [ ] WebSocket API documentation
 - [ ] Message encryption implementation guide
 - [ ] Real-time architecture overview
 - [ ] Performance tuning guidelines
 
 ### User Documentation
+
 - [ ] Chat interface user guide
 - [ ] Notification settings documentation
 - [ ] Privacy and security information
@@ -1145,6 +1176,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Deliverables Checklist
 
 ### Backend Deliverables
+
 - [ ] Django Channels WebSocket infrastructure
 - [ ] Message and conversation models
 - [ ] Real-time message handling
@@ -1152,6 +1184,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Message encryption implementation
 
 ### Frontend Deliverables
+
 - [ ] WebSocket client service
 - [ ] Chat interface components
 - [ ] Real-time state management
@@ -1159,6 +1192,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Message history and search
 
 ### Security Deliverables
+
 - [ ] Authentication and authorization system
 - [ ] Content moderation rules
 - [ ] Encryption implementation
@@ -1167,6 +1201,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Next Phase Preparation
 
 ### Phase 6 Prerequisites
+
 - [ ] Document upload requirements for messaging
 - [ ] S3 integration architecture defined
 - [ ] File security and validation strategies planned

@@ -19,7 +19,7 @@ This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](ht
    ```bash
    mkdocs serve
    ```
-   
+
 3. **Access Documentation**
    - Local: http://localhost:8000
    - Auto-reloads on file changes

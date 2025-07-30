@@ -67,7 +67,12 @@ docker-compose.override.yml
 # AWS
 .aws/
 
-# Secrets
+# Environment and secrets
+.env
+.env.local
+.env.production
+.env.staging
+.envs/.env.*.local
 *.pem
 *.key
 secrets/
