@@ -120,7 +120,7 @@ Once running, API documentation is available at:
 ## 🔧 Configuration
 
 ### Environment Variables
-Key environment variables (see `.env.example`):
+Key environment variables (see `.envs/.env.example`):
 
 ```bash
 # Django
