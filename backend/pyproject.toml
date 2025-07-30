@@ -60,11 +60,15 @@ ruff = "^0.12.0"
 black = "^24.10.0"
 isort = "^5.13.2"
 mypy = "^1.11.0"
-django-stubs = "^5.1.0"
+django-stubs = {extras = ["compatible-mypy"], version = "^5.1.0"}
 
 # Development tools
 pre-commit = "^4.2.0"
 ipython = "^8.29.0"
+
+# Security scanning
+safety = "^3.2.10"
+bandit = "^1.7.10"
 
 [build-system]
 requires = ["poetry-core"]
@@ -136,7 +140,7 @@ plugins = ["mypy_django_plugin.main"]
 django_settings_module = "config.settings.development"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.testing"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 addopts = "--cov=apps --cov=config --cov-report=html --cov-report=term-missing --reuse-db"
 testpaths = ["tests"]
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
