@@ -22,7 +22,7 @@ COPY mkdocs.yml .
 EXPOSE 8001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
   CMD curl -f http://localhost:8001/ || exit 1
 
 # Default command to serve documentation
