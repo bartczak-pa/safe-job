@@ -22,8 +22,8 @@ curl -sSL https://install.python-poetry.org | python3 -
 # Install dependencies
 poetry install
 
-# Copy environment file
-cp .env.example .env
+# Copy environment file from the .envs directory
+cp ../.envs/.env.example .env
 
 # Run migrations (after DB is up)
 poetry run python manage.py migrate
@@ -113,9 +113,9 @@ poetry run python manage.py loaddata fixtures/sample_data.json
 ## 📚 API Documentation
 
 Once running, API documentation is available at:
-- **Swagger UI**: http://localhost:8000/api/docs/
-- **ReDoc**: http://localhost:8000/api/redoc/
-- **OpenAPI Schema**: http://localhost:8000/api/schema/
+- **Swagger UI**: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+- **ReDoc**: [http://localhost:8000/api/redoc/](http://localhost:8000/api/redoc/)
+- **OpenAPI Schema**: [http://localhost:8000/api/schema/](https://localhost:8000/api/schema/)
 
 ## 🔧 Configuration
 
