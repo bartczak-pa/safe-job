@@ -81,7 +81,7 @@ jobs:
             libgdal-dev \
             libgeos-dev \
             libproj-dev \
-            libspatialite7 \
+            libspatialite-dev \
             spatialite-bin
 
       - name: Install Poetry
@@ -125,7 +125,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5.1.1
         with:
-          file: ./backend/coverage.xml
+          files: ./backend/coverage.xml
           flags: backend
           name: backend-coverage
           fail_ci_if_error: false
@@ -152,7 +152,6 @@ jobs:
         working-directory: ./backend
         run: |
           poetry install --only=main,dev
-          poetry add ruff black isort mypy
 
       - name: Run Black (Code Formatting)
         working-directory: ./backend
@@ -196,8 +195,7 @@ jobs:
       - name: Install dependencies
         working-directory: ./backend
         run: |
-          poetry install --only=main
-          poetry add safety bandit
+          poetry install --only=main,dev
 
       - name: Run Safety (Dependency Security)
         working-directory: ./backend
@@ -278,14 +276,14 @@ jobs:
         uses: actions/cache@v4.2.0
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-docs-${{ hashFiles('requirements-docs.txt') }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('docs/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-docs-
 
       - name: Install documentation dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-docs.txt
+          pip install -r docs/requirements.txt
 
       - name: Test documentation build
         run: |
