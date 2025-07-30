@@ -71,6 +71,7 @@ Safe Job is a job board specifically designed for temporary workers and hiring a
 ## Pricing Architecture
 
 ### Free Tier
+
 - **1 job posting** with basic features
 - Perfect for small agencies testing the platform
 
@@ -116,7 +117,7 @@ Safe Job is a job board specifically designed for temporary workers and hiring a
 | **Tier 3 - Enterprise** | 3 agencies | €600 |
 | **Job Packs** | Various | €300 |
 
-**Total Monthly Recurring Revenue (MRR): €2,100**
+### **Total Monthly Recurring Revenue (MRR): €2,100**
 
 *Revenue scales proportionally as user base grows*
 

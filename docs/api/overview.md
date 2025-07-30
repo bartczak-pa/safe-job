@@ -126,7 +126,7 @@ API requests are rate limited to prevent abuse:
 
 Rate limit headers are included in responses:
 
-```
+```http
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
 X-RateLimit-Reset: 1640995200
