@@ -77,20 +77,20 @@ Safe Job is a job board specifically designed for temporary workers and hiring a
 
 ### Subscription Tiers
 
-**Tier 1 - Starter** - €50/month
+#### Tier 1 – Starter – €50 /month
 
 - 5 job postings
 - Basic matching features
 - Standard support
 
-**Tier 2 - Professional** - €100/month
+#### Tier 2 – Professional – €100 /month
 
 - 15 job postings
 - Advanced matching algorithms
 - Reporting and analytics dashboard
 - Priority support
 
-**Tier 3 - Enterprise** - €200/month
+#### Tier 3 – Enterprise – €200 /month
 
 - Unlimited job postings
 - Custom features and integrations
