@@ -265,22 +265,34 @@ jobs:
           echo "⏳ Waiting for services to become healthy..."
           timeout=120
           while [ $timeout -gt 0 ]; do
-            # Check container health status
-            backend_health=$(docker compose ps --format json | jq -r '.[] | select(.Service=="backend") | .Health')
-            echo "Backend health status: $backend_health"
-
-            if [ "$backend_health" = "healthy" ]; then
+            # Check if backend container is running and healthy
+            if docker compose ps backend | grep -q "healthy"; then
               echo "✅ Backend container is healthy"
               break
-            elif [ "$backend_health" = "unhealthy" ]; then
+            elif docker compose ps backend | grep -q "unhealthy"; then
               echo "❌ Backend container is unhealthy"
+              echo "Container status:"
+              docker compose ps backend
+              echo "Container logs:"
               docker compose logs backend
               exit 1
+            else
+              echo "⏳ Backend container status: $(docker compose ps backend --format 'table {{.State}} {{.Status}}')"
             fi
 
             sleep 10
             timeout=$((timeout - 10))
           done
+
+          # Check if we timed out
+          if [ $timeout -le 0 ]; then
+            echo "❌ Timeout waiting for backend container to become healthy"
+            echo "Final container status:"
+            docker compose ps backend
+            echo "Container logs:"
+            docker compose logs backend
+            exit 1
+          fi
 
           # Final health check
           if ! curl -f http://localhost:8000/health/; then
