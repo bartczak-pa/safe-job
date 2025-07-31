@@ -21,6 +21,7 @@ Our Docker architecture provides:
 graph TD
     subgraph "Docker Compose Stack"
         FE[Frontend Container<br/>React 18 + Vite<br/>Port 3000]
+        FE[Frontend Container<br/>React 18 + Vite<br/>Port 3000]
         BE[Backend Container<br/>Django 5.2.4<br/>Port 8000]
         DB[(Database<br/>PostgreSQL 16 + PostGIS<br/>Port 5432)]
         REDIS[(Cache<br/>Redis 7.4<br/>Port 6379)]
@@ -42,13 +43,15 @@ graph TD
 
 ### Container Details
 
-| Service         | Container             | Purpose                     | Ports      | Health Check                         |
-|-----------------|-----------------------|-----------------------------|------------|--------------------------------------|
-| **Frontend**    | `safejob_frontend`    | React development server    | 3000:5173  | `curl -f http://localhost:3000/`     |
-| **Backend**     | `safejob_backend`     | Django API server           | 8000:8000  | `curl -f http://localhost:8000/health/` |
-| **Database**    | `safejob_db`          | PostgreSQL + PostGIS        | 5432:5432  | `pg_isready -U safejob -d safejob`   |
-| **Redis**       | `safejob_redis`       | Cache and sessions          | 6379:6379  | `redis-cli ping`                     |
-| **Documentation** | `safejob_docs`      | MkDocs server               | 8001:8001  | `curl -f http://localhost:8001/`     |
+| Service | Container | Purpose | Ports | Health Check |
+|---------|-----------|---------|-------|--------------|
+| **Frontend** | `safejob_frontend` | React development server | 3000:5173 | `curl -f http://localhost:3000/` |
+| **Backend** | `safejob_backend` | Django API server | 8000:8000 | `curl -f http://localhost:8000/health/` |
+| **Database** | `safejob_db` | PostgreSQL + PostGIS | 5432:5432 | `pg_isready -U safejob -d safejob` |
+| **Redis** | `safejob_redis` | Cache and sessions | 6379:6379 | `redis-cli ping` |
+| **Documentation** | `safejob_docs` | MkDocs server | 8001:8001 | `curl -f http://localhost:8001/` |
+
+> **Note**: Port mapping format is `HOST_PORT:CONTAINER_PORT`. For example, `3000:5173` means host port 3000 maps to container port 5173 (Vite dev server).
 
 ## 🚀 Quick Start
 

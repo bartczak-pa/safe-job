@@ -29,7 +29,7 @@ Safe Job addresses critical issues in the Dutch temporary work sector by creatin
 | **Backend** | Django 5.2.4 + DRF | ✅ **Implemented** |
 | **Database** | PostgreSQL 16 + PostGIS | ✅ **Implemented** |
 | **Cache/Sessions** | Redis 7.4 | ✅ **Implemented** |
-| **Frontend** | React 19 + TypeScript + Vite | ✅ **Implemented** |
+| **Frontend** | React 18 + TypeScript + Vite | ✅ **Implemented** |
 | **Styling** | Tailwind CSS v3.4 | ✅ **Implemented** |
 | **State Management** | Zustand + React Query | ✅ **Implemented** |
 | **Containerization** | Docker + Docker Compose | ✅ **Implemented** |
@@ -54,8 +54,9 @@ backend/apps/
 └── documents/     # 🚧 File upload and management (Phase 6)
 ```
 
-**Frontend Structure (React 19 + TypeScript):**
-```
+**Frontend Structure (React 18 + TypeScript):**
+
+```text
 frontend/src/
 ├── components/     # ✅ Reusable UI components (Button, Input, Modal, etc.)
 ├── pages/         # ✅ Route-based page components (Login, Dashboard, etc.)
@@ -90,7 +91,7 @@ frontend/src/
 
 - **Phase 1**: Project Foundation ✅ **COMPLETED**
   - ✅ Backend Infrastructure (Django 5.2.4, PostgreSQL 16 + PostGIS, Redis)
-  - ✅ Frontend Foundation (React 19, TypeScript, Vite, Tailwind CSS)
+  - ✅ Frontend Foundation (React 18, TypeScript, Vite, Tailwind CSS)
   - ✅ Docker Integration (Multi-stage builds, Docker Compose, health checks)
   - ✅ CI/CD Pipeline (GitHub Actions, comprehensive testing, security scanning)
   - ✅ Development Environment (Makefile, pre-commit hooks, documentation)

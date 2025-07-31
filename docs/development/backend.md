@@ -117,6 +117,8 @@ The project uses environment-specific settings for better configuration manageme
 
 ```python
 # config/settings/base.py - Common settings
+import os
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -513,6 +515,7 @@ CORS_ALLOW_CREDENTIALS = True
 # apps/core/views.py
 from django_ratelimit.decorators import ratelimit
 from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 
 class APIRateLimitMixin:
     """Mixin to add rate limiting to API views."""
@@ -755,6 +758,7 @@ class BaseViewSet(ViewSet):
 ### Code Quality Tools
 
 #### Ruff Configuration
+
 ```toml
 # pyproject.toml
 [tool.ruff]
@@ -779,6 +783,7 @@ ignore = [
 ```
 
 #### Black Configuration
+
 ```toml
 # pyproject.toml
 [tool.black]
@@ -793,6 +798,7 @@ extend-exclude = '''
 ```
 
 #### MyPy Configuration
+
 ```toml
 # pyproject.toml
 [tool.mypy]

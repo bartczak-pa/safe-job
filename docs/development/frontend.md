@@ -6,7 +6,7 @@ The Safe Job Platform frontend is built with React 18, TypeScript, and modern de
 
 ### Core Framework
 
-- **React 19**: Latest React version with modern features
+- **React 18**: Stable React version with modern features
 - **TypeScript**: Full type safety and enhanced developer experience
 - **Vite**: Lightning-fast build tool and development server
 
@@ -265,6 +265,7 @@ describe('Button', () => {
 - **Prettier**: Consistent code formatting
 
 ### Development Commands
+
 ```bash
 # Using Make (recommended for full-stack development)
 make test-frontend          # Run frontend tests
@@ -282,6 +283,7 @@ npm run format             # Format code
 ## 🎯 Component Patterns
 
 ### Component Structure
+
 ```typescript
 // Standard component structure
 interface ComponentProps {
@@ -307,6 +309,7 @@ export const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
 ```
 
 ### Custom Hooks
+
 ```typescript
 // Custom hook for API integration
 export const useApi = <T>(endpoint: string) => {
@@ -330,6 +333,7 @@ export const useApi = <T>(endpoint: string) => {
 - **2xl**: 1536px and up
 
 ### Mobile-First Approach
+
 ```jsx
 // Example responsive component
 <div className="
