@@ -3,23 +3,28 @@ Test settings for Safe Job Platform.
 Optimized for running tests quickly and safely.
 """
 
+from decouple import config
+
 from .base import *  # noqa: F403
 
 # Test specific overrides
 DEBUG = False
 TESTING = True
 
-# Use in-memory SQLite for faster tests
+# Use PostgreSQL for tests to match production environment
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": ":test_safejob_db:",
-        "USER": "test_safejob_user",
-        "PASSWORD": "test_safejob_password",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": config("POSTGRES_DB", default="safejob_test"),
+        "USER": config("POSTGRES_USER", default="safejob_test"),
+        "PASSWORD": config("POSTGRES_PASSWORD", default="test_password"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
         "TEST": {
-            "NAME": "test_safejob_db",
+            "NAME": config("POSTGRES_DB", default="safejob_test"),
+        },
+        "OPTIONS": {
+            "sslmode": "disable",  # Disable SSL for test environment
         },
     }
 }
@@ -36,7 +41,7 @@ class DisableMigrations:
 
 MIGRATION_MODULES = DisableMigrations()
 
-# Use in-memory cache for tests
+# Use in-memory cache for tests (faster than Redis)
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
