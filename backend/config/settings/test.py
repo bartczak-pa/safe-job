@@ -23,7 +23,10 @@ DATABASES = {
         "HOST": config("DB_HOST", default="localhost"),
         "PORT": config("DB_PORT", default="5432"),
         "TEST": {
-            "NAME": config("POSTGRES_DB", default="safejob_test"),
+            "NAME": "test_"
+            + config(
+                "POSTGRES_DB", default="safejob_test"
+            ),  # Different name for Django test DB
         },
         "OPTIONS": {
             "sslmode": "disable",  # Disable SSL for test environment
