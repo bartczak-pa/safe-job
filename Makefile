@@ -1,7 +1,7 @@
 # Safe Job Platform - Development Makefile
 # Simplifies common development tasks
 
-.PHONY: help setup test lint format clean docker-build docker-up docker-down docs
+.PHONY: help setup test lint format clean docker-build docker-up docker-down docs frontend-test frontend-lint frontend-build frontend-shell update-deps-backend update-deps-frontend install-deps-backend install-deps-frontend
 
 # Default target
 help: ## Show this help message
@@ -15,9 +15,20 @@ setup: ## Set up development environment
 	./scripts/setup-dev.sh
 
 # Testing
-test: ## Run Django tests
-	@echo "🧪 Running tests..."
+test: ## Run all tests (backend + frontend)
+	@echo "🧪 Running all tests..."
+	@echo "🐍 Running backend tests..."
 	docker compose exec backend python manage.py test
+	@echo "⚛️  Running frontend tests..."
+	docker compose exec frontend npm run test
+
+test-backend: ## Run Django tests only
+	@echo "🧪 Running backend tests..."
+	docker compose exec backend python manage.py test
+
+test-frontend: ## Run frontend tests only
+	@echo "🧪 Running frontend tests..."
+	docker compose exec frontend npm run test
 
 test-local: ## Run tests with local Poetry environment
 	@echo "🧪 Running tests locally..."
@@ -30,20 +41,36 @@ test-coverage: ## Run tests with coverage report
 	cd backend && poetry run coverage html
 
 # Code quality
-lint: ## Run all linting and formatting checks
-	@echo "🔍 Running linting checks..."
-	pre-commit run --all-files
+lint: ## Run all linting and formatting checks (backend + frontend)
+	@echo "🔍 Running all linting checks..."
+	@echo "🐍 Running backend linting..."
+	$(MAKE) lint-backend
+	@echo "⚛️  Running frontend linting..."
+	$(MAKE) lint-frontend
 
-format: ## Format code with Black and isort
-	@echo "✨ Formatting code..."
+format: ## Format all code (backend + frontend)
+	@echo "✨ Formatting all code..."
+	@echo "🐍 Formatting backend code..."
 	cd backend && poetry run black .
 	cd backend && poetry run isort .
+	@echo "⚛️  Formatting frontend code..."
+	docker compose exec frontend npm run format
 
 lint-backend: ## Run backend-specific linting
 	@echo "🔍 Running backend linting..."
 	cd backend && poetry run ruff check .
 	cd backend && poetry run mypy .
 	cd backend && poetry run bandit -r .
+
+lint-frontend: ## Run frontend-specific linting
+	@echo "🔍 Running frontend linting..."
+	docker compose exec frontend npm run lint
+	docker compose exec frontend npm run format:check
+	docker compose exec frontend npm run type-check
+
+frontend-build: ## Build frontend for production
+	@echo "🏗️  Building frontend for production..."
+	docker compose exec frontend npm run build
 
 # Django management
 migrate: ## Run Django migrations
@@ -56,6 +83,9 @@ makemigrations: ## Create Django migrations
 
 shell: ## Open Django shell
 	docker compose exec backend python manage.py shell
+
+frontend-shell: ## Open frontend container shell
+	docker compose exec frontend bash
 
 dbshell: ## Open database shell
 	docker compose exec db psql -U safejob -d safejob
@@ -90,8 +120,10 @@ dev: ## Start development environment
 	docker compose up -d
 	@echo "✅ Development environment ready!"
 	@echo "📡 Backend API: http://localhost:8000"
+	@echo "⚛️  Frontend App: http://localhost:3000"
 	@echo "🗄️  Database: localhost:5432"
 	@echo "🔴 Redis: localhost:6379"
+	@echo "📖 Documentation: http://localhost:8001"
 
 stop: ## Stop development environment
 	@echo "⏹️  Stopping development environment..."
@@ -133,13 +165,35 @@ docs-deploy: ## Deploy documentation (for maintainers)
 	mkdocs gh-deploy
 
 # Dependency management
-update-deps: ## Update Python dependencies
-	@echo "📦 Updating dependencies..."
+update-deps: ## Update all dependencies (backend + frontend)
+	@echo "📦 Updating all dependencies..."
+	@echo "🐍 Updating backend dependencies..."
+	cd backend && poetry update
+	@echo "⚛️  Updating frontend dependencies..."
+	docker compose exec frontend npm update
+
+update-deps-backend: ## Update Python dependencies only
+	@echo "📦 Updating backend dependencies..."
 	cd backend && poetry update
 
-install-deps: ## Install Python dependencies
-	@echo "📦 Installing dependencies..."
+update-deps-frontend: ## Update frontend dependencies only
+	@echo "📦 Updating frontend dependencies..."
+	docker compose exec frontend npm update
+
+install-deps: ## Install all dependencies (backend + frontend)
+	@echo "📦 Installing all dependencies..."
+	@echo "🐍 Installing backend dependencies..."
 	cd backend && poetry install --with dev
+	@echo "⚛️  Installing frontend dependencies..."
+	docker compose exec frontend npm install
+
+install-deps-backend: ## Install Python dependencies only
+	@echo "📦 Installing backend dependencies..."
+	cd backend && poetry install --with dev
+
+install-deps-frontend: ## Install frontend dependencies only
+	@echo "📦 Installing frontend dependencies..."
+	docker compose exec frontend npm install
 
 # Security
 security-check: ## Run security checks
@@ -168,6 +222,8 @@ health: ## Check health of all services
 	@echo "🏥 Checking service health..."
 	@echo "Backend API:"
 	@curl -f http://localhost:8000/health/ || echo "❌ Backend not responding"
+	@echo -e "\nFrontend App:"
+	@curl -f http://localhost:3000/ || echo "❌ Frontend not responding"
 	@echo -e "\nDatabase:"
 	@docker compose exec db pg_isready -U safejob -d safejob || echo "❌ Database not ready"
 	@echo -e "\nRedis:"
