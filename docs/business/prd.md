@@ -57,25 +57,31 @@ safe_job/
 
 ### 2.1 Business Goals
 **MVP Phase:**
+
 - Launch functional job board with core features within 8 weeks
 - Validate product-market fit with initial users (10-20 employers, 50-100 candidates)
 - Establish technical foundation for rapid feature expansion
 - Minimize infrastructure costs using AWS Free Tier
 
 **Post-MVP Growth:**
+
 - Acquire **100+ agencies** with **20%** conversion to paid subscriptions
 - Achieve **MRR of €2,100+** through subscription model
 - Foster partnerships with NGOs and labor rights organizations for credibility and outreach
 - Scale to become the leading platform for legitimate temporary work in the Netherlands
 
 ### 2.2 User Goals
-- **Candidates:**
-  - Find legitimate, safe job opportunities free from exploitation risks
-  - Communicate securely with potential employers
-- **Agencies:**
-  - Access a pool of pre-verified candidates with relevant skills and qualifications
-  - Demonstrate compliance with Dutch labor laws and industry standards
-- **Platform:** Provide a safe marketplace that prevents human trafficking and exploitation
+
+#### Candidates
+- Find legitimate, safe job opportunities free from exploitation risks
+- Communicate securely with potential employers
+
+#### Agencies
+- Access a pool of pre-verified candidates with relevant skills and qualifications
+- Demonstrate compliance with Dutch labor laws and industry standards
+
+#### Platform
+- Provide a safe marketplace that prevents human trafficking and exploitation
 
 ### 2.3 Non-Goals
 - Creating a general-purpose job board for all types of employment
@@ -172,28 +178,28 @@ safe_job/
 
 #### 3.3.1 Temporary Candidate: Piotr Nowak (28, Polish Migrant Candidate)
 
-**Background:**
+##### Background
 - Moved to the Netherlands 8 months ago seeking better wages
 - Has experience in warehouse and production line work
 - Speaks basic Dutch (A1), good English (B1), native Polish
 - Currently shares accommodation with 3 other workers
 - Completed vocational education in logistics in Poland
 
-**Goals:**
+##### Goals
 - Find stable employment with fair wages and treatment
 - Secure accommodation that is clean and affordable
 - Eventually bring his partner to the Netherlands
 - Improve Dutch language skills for better job prospects
 - Save money to eventually start his own business
 
-**Pain Points:**
+##### Pain Points
 - Has experienced wage theft from previous informal employment
 - Struggles with understanding Dutch employment contracts
 - Relies on public transport which limits job options
 - Previous agency charged excessive housing fees
 - Feels isolated due to language barriers
 
-**Behaviors:**
+##### Behaviors
 - Primarily uses smartphone for job searching (Android)
 - Checks job listings daily, often during commute
 - Prefers Polish language content when available
@@ -202,28 +208,28 @@ safe_job/
 
 #### 3.3.2 Temporary Candidates: Maria and João Silva (34 and 36, Brazilian Couple)
 
-**Background:**
+##### Background
 - Arrived in the Netherlands 3 months ago
 - Maria has experience in food processing, João in construction
 - Both speak intermediate English (B1), learning basic Dutch
 - Currently staying in temporary accommodation
 - Looking to work together at the same location if possible
 
-**Goals:**
+##### Goals
 - Find jobs that allow them to work at the same location
 - Secure stable housing suitable for a couple
 - Build savings for eventual permanent residency application
 - Develop skills that increase their employability
 - Create a support network in their new country
 
-**Pain Points:**
+##### Pain Points
 - Difficulty finding employers willing to hire couples
 - Housing options often don't accommodate couples
 - Limited understanding of Dutch labor rights
 - Previous experience with unreliable job promises
 - Struggle with documentation requirements
 
-**Behaviors:**
+##### Behaviors
 - Share one laptop but both have smartphones
 - Actively participate in Brazilian expat Facebook groups
 - Prefer to apply to jobs together when possible
@@ -232,28 +238,28 @@ safe_job/
 
 #### 3.3.3 Freelancer (ZZP'er): Saskia de Vries (42, Independent Recruiter)
 
-**Background:**
+##### Background
 - Former corporate recruiter with 15 years experience
 - Started her own recruitment business 3 years ago
 - Specializes in logistics and manufacturing placements
 - Works with 5-7 small to medium companies regularly
 - Native Dutch, fluent English, basic German
 
-**Goals:**
+##### Goals
 - Expand client base while maintaining quality service
 - Reduce administrative burden of candidate verification
 - Build a reputation for ethical recruitment practices
 - Establish long-term relationships with reliable employers
 - Differentiate from larger agencies through personalized service
 
-**Pain Points:**
+##### Pain Points
 - Limited resources for thorough candidate screening
 - Difficulty competing with larger agencies' candidate pools
 - Administrative overhead cuts into recruitment time
 - Struggles with inconsistent client communication
 - Concerns about liability when placing vulnerable workers
 
-**Behaviors:**
+##### Behaviors
 - Works primarily from home office on laptop
 - Very active on LinkedIn for candidate sourcing
 - Prefers phone calls for important communications
@@ -262,28 +268,28 @@ safe_job/
 
 #### 3.3.4 Small Staffing Agency Owner: Dirk Bakker (51, Owner of WorkWell B.V.)
 
-**Background:**
+##### Background
 - Founded his agency 7 years ago after 20 years in operations management
 - Employs 4 staff (2 recruiters, 1 admin, 1 account manager)
 - Focuses on food production and agricultural sectors
 - Places 80-100 temporary workers annually
 - Native Dutch, business-level English
 
-**Goals:**
+##### Goals
 - Grow business while maintaining compliance with regulations
 - Reduce time spent on administrative tasks
 - Build stronger relationships with reliable clients
 - Differentiate from competitors through quality service
 - Minimize worker turnover for client satisfaction
 
-**Pain Points:**
+##### Pain Points
 - Manual verification processes are time-consuming
 - Difficulty finding qualified candidates quickly
 - Concerns about non-compliant competitors undercutting prices
 - Limited budget for technology and marketing
 - Struggles with seasonal demand fluctuations
 
-**Behaviors:**
+##### Behaviors
 - Splits time between office desktop and meetings with clients
 - Personally reviews all worker placements
 - Prefers email for documentation but phone for negotiations
@@ -292,28 +298,28 @@ safe_job/
 
 #### 3.3.5 Medium/Large Agency Recruiter: Fatima El-Mansour (36, Senior Recruiter at StaffNow)
 
-**Background:**
+##### Background
 - 8 years at current agency, which employs 50+ staff
 - Manages a team of 3 junior recruiters
 - Responsible for 200+ placements annually
 - Specializes in warehouse and distribution roles
 - Fluent in Dutch, English, Arabic, and French
 
-**Goals:**
+##### Goals
 - Meet or exceed quarterly placement targets
 - Reduce time-to-hire metrics
 - Maintain high client satisfaction ratings
 - Develop her team's capabilities
 - Identify new client opportunities
 
-**Pain Points:**
+##### Pain Points
 - Information silos between departments
 - Inefficient candidate matching processes
 - High volume of applications to screen
 - Communication challenges with diverse candidate pool
 - Pressure to fill positions quickly while ensuring quality
 
-**Behaviors:**
+##### Behaviors
 - Power user of the company's ATS and CRM systems
 - Works primarily from office but uses mobile when traveling
 - Data-driven approach to recruitment
@@ -322,28 +328,28 @@ safe_job/
 
 #### 3.3.6 Platform Administrator: Thomas Jansen (31, Compliance Specialist)
 
-**Background:**
+##### Background
 - Former labor inspector with Dutch government
 - Degree in Law with focus on labor regulations
 - 3 years experience in compliance roles
 - Extensive knowledge of Dutch employment laws
 - Native Dutch, fluent English, intermediate Polish
 
-**Goals:**
+##### Goals
 - Ensure platform maintains highest compliance standards
 - Develop efficient verification workflows
 - Protect vulnerable workers from exploitation
 - Build trust with regulatory authorities
 - Contribute to platform's reputation for safety
 
-**Pain Points:**
+##### Pain Points
 - Balancing thorough verification with processing speed
 - Keeping up with changing regulations
 - Identifying fraudulent documentation
 - Managing escalated cases requiring investigation
 - Communicating compliance requirements clearly to users
 
-**Behaviors:**
+##### Behaviors
 - Methodical approach to verification processes
 - Documents decisions thoroughly for audit purposes
 - Consults regularly with legal team on edge cases
@@ -352,28 +358,28 @@ safe_job/
 
 #### 3.3.7 Temporary Candidate: Olena Kovalenko (33, Ukrainian Refugee)
 
-**Background:**
+##### Background
 - Arrived in the Netherlands 6 months ago under temporary protection status
 - Former elementary school teacher in Ukraine
 - Speaks Ukrainian (native), Russian (native), English (B2), no Dutch yet
 - Currently staying in government-provided refugee housing
 - Bachelor's degree in Education, looking to transition to new career
 
-**Goals:**
+##### Goals
 - Find stable employment to support herself and send money to family in Ukraine
 - Secure independent housing once financially stable
 - Build a new career path in the Netherlands
 - Integrate into Dutch society while maintaining Ukrainian connections
 - Improve language skills for better opportunities
 
-**Pain Points:**
+##### Pain Points
 - Uncertain legal status and work permit limitations
 - Lack of recognition for educational qualifications
 - Limited professional network in the Netherlands
 - Psychological stress from displacement and war
 - Difficulty navigating Dutch employment system
 
-**Behaviors:**
+##### Behaviors
 - Active on Ukrainian diaspora Telegram groups
 - Uses both smartphone and library computers for job searching
 - Very responsive and punctual in communications
@@ -382,28 +388,28 @@ safe_job/
 
 #### 3.3.8 NGO Partnership Manager: Aisha Osman (45, FairWork Foundation)
 
-**Background:**
+##### Background
 - 15 years experience in labor rights advocacy
 - Works for NGO focused on migrant worker protection
 - Master's degree in International Human Rights Law
 - Regularly collaborates with government agencies on policy
 - Fluent in Dutch, English, Turkish, and Arabic
 
-**Goals:**
+##### Goals
 - Ensure vulnerable workers have access to safe employment opportunities
 - Identify and address exploitation in the temporary work sector
 - Build partnerships with ethical employment platforms
 - Collect data on labor market conditions for advocacy
 - Provide resources and support to migrant workers
 
-**Pain Points:**
+##### Pain Points
 - Limited resources to help all workers needing assistance
 - Difficulty reaching vulnerable workers before exploitation occurs
 - Complex regulatory landscape across different sectors
 - Balancing cooperation with businesses and advocacy goals
 - Measuring impact of interventions effectively
 
-**Behaviors:**
+##### Behaviors
 - Divides time between office work and field visits
 - Maintains large network of contacts across sectors
 - Evidence-based approach to program development
@@ -1178,16 +1184,16 @@ The platform implements a comprehensive payment processing system using Stripe t
 
 | Category | Details |
 | -------- | ------- |
-| **Provider & Compliance** | - Stripe (Standard or Connect) – PCI-DSS Level 1, PSD2/SCA ready<br>- Webhooks: invoice.payment_succeeded, invoice.payment_failed, customer.subscription.*, charge.refunded<br>- All card data handled by Stripe Elements; platform never stores PAN |
-| **Accepted Payment Methods** | - Credit/debit cards (Visa, Mastercard, AmEx)<br>- SEPA Direct Debit (NL/DE) – supports recurring payments<br>- iDEAL (one-off, used for credit packs)<br>- Apple Pay / Google Pay (surfaced by Stripe automatically)<br>- Bank transfer (manual) only for Enterprise ≥ Tier 3 – processed by finance team within 2 business days |
-| **Initial Checkout Flow** | 1. Employer selects tier → POST /billing/checkout<br>2. Backend creates Stripe Customer, Subscription (trial = 0 days), and PaymentIntent<br>3. Stripe Checkout returns session_url; front-end redirects<br>4. Webhook confirms payment_succeeded → platform<br>&nbsp;&nbsp;a. Sets subscription.status = active<br>&nbsp;&nbsp;b. Credits allocated<br>&nbsp;&nbsp;c. Invoice PDF stored & emailed |
-| **Recurring Billing & Dunning** | - Auto-renew every 30 days (monthly plans) or 365 days (annual)<br>- If renewal charge fails:<br>&nbsp;&nbsp;1. Day 0: Email + in-app banner "Payment failed – update method"<br>&nbsp;&nbsp;2. Day 3: Retry charge (1)<br>&nbsp;&nbsp;3. Day 7: Retry charge (2) + disable NEW job posting<br>&nbsp;&nbsp;4. Day 14: Retry charge (3) + status = cancelling, grace until period_end<br>&nbsp;&nbsp;5. Day 30: If unpaid, subscription cancelled, all live jobs archived |
-| **Mid-cycle Changes** | - Upgrade = immediate: Creates new Subscription with proration_behavior = create_prorations; extra charge collected right away<br>- Downgrade scheduled for next billing cycle; current credits remain |
-| **Credit-pack Purchases** | - One-off Stripe PaymentIntent<br>- Credits attached to employer ledger only after payment_succeeded<br>- Credits expire 12 months after purchase; non-refundable except where legally required |
-| **Refund Policy** | - Subscription: 14-day "no-questions" full refund for first-time buyers (EU consumer law)<br>- After 14 days: Prorated refund of unused days if platform terminates account; no refund for voluntary cancellation<br>- Credit packs: Non-refundable after charge succeeds unless purchase error demonstrably on platform side<br>- Approved-job credit is non-refundable (see 4.3.5); rejected or deleted-before-approval jobs auto-credit back |
-| **Additional Data Structures** | **PaymentMethod**<br>- id, employer_id, stripe_pm_id, type, last4, exp_month/year, brand, created_at<br><br>**Invoice**<br>- id, employer_id, stripe_invoice_id, amount_gross, amount_tax, currency, pdf_url, status, created_at<br><br>**Refund**<br>- id, employer_id, stripe_refund_id, invoice_id, amount, reason, processed_at |
-| **Admin Console** | - List active subscriptions with next-renewal date & current dunning step<br>- One-click "Grant free month", "Issue custom refund"<br>- CSV export of all invoices / refunds |
-| **Security & Audit** | - Signed webhook secrets rotated quarterly<br>- All billing-related table changes logged in billing_audit_log (user_id, action, metadata, ip, ts) |
+| **Provider & Compliance** | • Stripe (Standard or Connect) – PCI-DSS Level 1, PSD2/SCA ready<br>• Webhooks: invoice.payment_succeeded, invoice.payment_failed, customer.subscription.*, charge.refunded<br>• All card data handled by Stripe Elements; platform never stores PAN |
+| **Accepted Payment Methods** | • Credit/debit cards (Visa, Mastercard, AmEx)<br>• SEPA Direct Debit (NL/DE) – supports recurring payments<br>• iDEAL (one-off, used for credit packs)<br>• Apple Pay / Google Pay (surfaced by Stripe automatically)<br>• Bank transfer (manual) only for Enterprise ≥ Tier 3 – processed by finance team within 2 business days |
+| **Initial Checkout Flow** | 1. Employer selects tier → POST /billing/checkout<br>2. Backend creates Stripe Customer, Subscription (trial = 0 days), and PaymentIntent<br>3. Stripe Checkout returns session_url; front-end redirects<br>4. Webhook confirms payment_succeeded → platform<br>   a. Sets subscription.status = active<br>   b. Credits allocated<br>   c. Invoice PDF stored & emailed |
+| **Recurring Billing & Dunning** | • Auto-renew every 30 days (monthly plans) or 365 days (annual)<br>• If renewal charge fails:<br>   1. Day 0: Email + in-app banner "Payment failed – update method"<br>   2. Day 3: Retry charge (1)<br>   3. Day 7: Retry charge (2) + disable NEW job posting<br>   4. Day 14: Retry charge (3) + status = cancelling, grace until period_end<br>   5. Day 30: If unpaid, subscription cancelled, all live jobs archived |
+| **Mid-cycle Changes** | • Upgrade = immediate: Creates new Subscription with proration_behavior = create_prorations; extra charge collected right away<br>• Downgrade scheduled for next billing cycle; current credits remain |
+| **Credit-pack Purchases** | • One-off Stripe PaymentIntent<br>• Credits attached to employer ledger only after payment_succeeded<br>• Credits expire 12 months after purchase; non-refundable except where legally required |
+| **Refund Policy** | • Subscription: 14-day "no-questions" full refund for first-time buyers (EU consumer law)<br>• After 14 days: Prorated refund of unused days if platform terminates account; no refund for voluntary cancellation<br>• Credit packs: Non-refundable after charge succeeds unless purchase error demonstrably on platform side<br>• Approved-job credit is non-refundable (see 4.3.5); rejected or deleted-before-approval jobs auto-credit back |
+| **Additional Data Structures** | **PaymentMethod**<br>• id, employer_id, stripe_pm_id, type, last4, exp_month/year, brand, created_at<br><br>**Invoice**<br>• id, employer_id, stripe_invoice_id, amount_gross, amount_tax, currency, pdf_url, status, created_at<br><br>**Refund**<br>• id, employer_id, stripe_refund_id, invoice_id, amount, reason, processed_at |
+| **Admin Console** | • List active subscriptions with next-renewal date & current dunning step<br>• One-click "Grant free month", "Issue custom refund"<br>• CSV export of all invoices / refunds |
+| **Security & Audit** | • Signed webhook secrets rotated quarterly<br>• All billing-related table changes logged in billing_audit_log (user_id, action, metadata, ip, ts) |
 
 ### 4.9 Multi-Language Support **(Priority: Medium)**
 - Interface available in Dutch, Polish English initially
@@ -1442,319 +1448,295 @@ The platform implements a comprehensive payment processing system using Stripe t
 
 The platform will be pre-populated with the following skill and certification taxonomy. This catalog will be maintained and expanded over time based on industry needs and user suggestions.
 
-<details>
-<summary><strong>LOGISTICS & WAREHOUSE (Skills 1-25 | Certificates 26-40)</strong></summary>
+??? note "LOGISTICS & WAREHOUSE (Skills 1-25 | Certificates 26-40)"
 
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 1 | Skill | Manual order-picking (hand scanner) | Logistics & Warehouse |
-| 2 | Skill | Voice-picking (pick-by-voice) | Logistics & Warehouse |
-| 3 | Skill | Palletising & depalletising | Logistics & Warehouse |
-| 4 | Skill | Cross-docking operations | Logistics & Warehouse |
-| 5 | Skill | Reverse-logistics processing (returns) | Logistics & Warehouse |
-| 6 | Skill | Cycle-count & inventory reconciliation | Logistics & Warehouse |
-| 7 | Skill | Loading & unloading containers | Logistics & Warehouse |
-| 8 | Skill | Load-securing with straps & anti-slip mats | Logistics & Warehouse |
-| 9 | Skill | Stretch-wrap machine operation | Logistics & Warehouse |
-| 10 | Skill | Dangerous-goods labelling (ADR LQ) | Logistics & Warehouse |
-| 11 | Skill | Cold-store handling (-25 °C) | Logistics & Warehouse |
-| 12 | Skill | Clean-room material flow (ISO 7) | Logistics & Warehouse |
-| 13 | Skill | Kitting & light assembly in warehouse | Logistics & Warehouse |
-| 14 | Skill | WMS: SAP WM user | Logistics & Warehouse |
-| 15 | Skill | WMS: Manhattan SCALE user | Logistics & Warehouse |
-| 16 | Skill | Barcode/RF-scanner configuration | Logistics & Warehouse |
-| 17 | Skill | Kanban replenishment | Logistics & Warehouse |
-| 18 | Skill | LEAN 5S in warehouse | Logistics & Warehouse |
-| 19 | Skill | Root-cause analysis (logistics) | Logistics & Warehouse |
-| 20 | Skill | Parcel sortation machine operation | Logistics & Warehouse |
-| 21 | Skill | Package-profile measurement (DIM weight) | Logistics & Warehouse |
-| 22 | Skill | Parcel-manifest generation | Logistics & Warehouse |
-| 23 | Skill | Returns quality grading (A/B/C) | Logistics & Warehouse |
-| 24 | Skill | Customs document prep (export NL->EU) | Logistics & Warehouse |
-| 25 | Skill | Basic Dutch logistics terminology (A2) | Logistics & Warehouse |
-| 26 | Certificate | Fork-lift truck licence (heftruck) | Logistics & Warehouse |
-| 27 | Certificate | Reach-truck licence | Logistics & Warehouse |
-| 28 | Certificate | Electric pallet truck (EPT) card | Logistics & Warehouse |
-| 29 | Certificate | Combi-truck (narrow-aisle) licence | Logistics & Warehouse |
-| 30 | Certificate | Order-picker truck licence (high-level) | Logistics & Warehouse |
-| 31 | Certificate | Overhead crane operator (bovenloopkraan) | Logistics & Warehouse |
-| 32 | Certificate | Telescopic handler (telehandler) | Logistics & Warehouse |
-| 33 | Certificate | ADR awareness certificate (warehouse) | Logistics & Warehouse |
-| 34 | Certificate | Safe loading of containers (CTU Code) | Logistics & Warehouse |
-| 35 | Certificate | Dangerous-goods adviser assistant | Logistics & Warehouse |
-| 36 | Certificate | SOG Fork-lift (petro/chem) | Logistics & Warehouse |
-| 37 | Certificate | SOG Telehandler | Logistics & Warehouse |
-| 38 | Certificate | Cherry-picker / MEWP (hoogwerker) IPAF 3A | Logistics & Warehouse |
-| 39 | Certificate | Boom-lift / MEWP IPAF 3B | Logistics & Warehouse |
-| 40 | Certificate | Over-dimension load escort licence | Logistics & Warehouse |
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 1 | Skill | Manual order-picking (hand scanner) | Logistics & Warehouse |
+    | 2 | Skill | Voice-picking (pick-by-voice) | Logistics & Warehouse |
+    | 3 | Skill | Palletising & depalletising | Logistics & Warehouse |
+    | 4 | Skill | Cross-docking operations | Logistics & Warehouse |
+    | 5 | Skill | Reverse-logistics processing (returns) | Logistics & Warehouse |
+    | 6 | Skill | Cycle-count & inventory reconciliation | Logistics & Warehouse |
+    | 7 | Skill | Loading & unloading containers | Logistics & Warehouse |
+    | 8 | Skill | Load-securing with straps & anti-slip mats | Logistics & Warehouse |
+    | 9 | Skill | Stretch-wrap machine operation | Logistics & Warehouse |
+    | 10 | Skill | Dangerous-goods labelling (ADR LQ) | Logistics & Warehouse |
+    | 11 | Skill | Cold-store handling (-25 °C) | Logistics & Warehouse |
+    | 12 | Skill | Clean-room material flow (ISO 7) | Logistics & Warehouse |
+    | 13 | Skill | Kitting & light assembly in warehouse | Logistics & Warehouse |
+    | 14 | Skill | WMS: SAP WM user | Logistics & Warehouse |
+    | 15 | Skill | WMS: Manhattan SCALE user | Logistics & Warehouse |
+    | 16 | Skill | Barcode/RF-scanner configuration | Logistics & Warehouse |
+    | 17 | Skill | Kanban replenishment | Logistics & Warehouse |
+    | 18 | Skill | LEAN 5S in warehouse | Logistics & Warehouse |
+    | 19 | Skill | Root-cause analysis (logistics) | Logistics & Warehouse |
+    | 20 | Skill | Parcel sortation machine operation | Logistics & Warehouse |
+    | 21 | Skill | Package-profile measurement (DIM weight) | Logistics & Warehouse |
+    | 22 | Skill | Parcel-manifest generation | Logistics & Warehouse |
+    | 23 | Skill | Returns quality grading (A/B/C) | Logistics & Warehouse |
+    | 24 | Skill | Customs document prep (export NL->EU) | Logistics & Warehouse |
+    | 25 | Skill | Basic Dutch logistics terminology (A2) | Logistics & Warehouse |
+    | 26 | Certificate | Fork-lift truck licence (heftruck) | Logistics & Warehouse |
+    | 27 | Certificate | Reach-truck licence | Logistics & Warehouse |
+    | 28 | Certificate | Electric pallet truck (EPT) card | Logistics & Warehouse |
+    | 29 | Certificate | Combi-truck (narrow-aisle) licence | Logistics & Warehouse |
+    | 30 | Certificate | Order-picker truck licence (high-level) | Logistics & Warehouse |
+    | 31 | Certificate | Overhead crane operator (bovenloopkraan) | Logistics & Warehouse |
+    | 32 | Certificate | Telescopic handler (telehandler) | Logistics & Warehouse |
+    | 33 | Certificate | ADR awareness certificate (warehouse) | Logistics & Warehouse |
+    | 34 | Certificate | Safe loading of containers (CTU Code) | Logistics & Warehouse |
+    | 35 | Certificate | Dangerous-goods adviser assistant | Logistics & Warehouse |
+    | 36 | Certificate | SOG Fork-lift (petro/chem) | Logistics & Warehouse |
+    | 37 | Certificate | SOG Telehandler | Logistics & Warehouse |
+    | 38 | Certificate | Cherry-picker / MEWP (hoogwerker) IPAF 3A | Logistics & Warehouse |
+    | 39 | Certificate | Boom-lift / MEWP IPAF 3B | Logistics & Warehouse |
+    | 40 | Certificate | Over-dimension load escort licence | Logistics & Warehouse |
 
-</details>
+??? note "HEAVY EQUIPMENT & DRIVING (Skills 41-55 | Certificates 56-70)"
 
-<details>
-<summary><strong>HEAVY EQUIPMENT & DRIVING (Skills 41-55 | Certificates 56-70)</strong></summary>
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 41 | Skill | Basic vehicle checks (pre-trip inspection) | Heavy Equipment & Driving |
+    | 42 | Skill | Hook-lift container operation | Heavy Equipment & Driving |
+    | 43 | Skill | Tail-lift operation (liftgate) | Heavy Equipment & Driving |
+    | 44 | Skill | Curtain-sider handling | Heavy Equipment & Driving |
+    | 45 | Skill | Refrigerated truck temperature logs | Heavy Equipment & Driving |
+    | 46 | Skill | Digital tachograph download & analysis | Heavy Equipment & Driving |
+    | 47 | Skill | Defensive driving (urban) | Heavy Equipment & Driving |
+    | 48 | Skill | Load-planning & axle-weight calculation | Heavy Equipment & Driving |
+    | 49 | Skill | Basic vehicle troubleshooting (fuses, lamps) | Heavy Equipment & Driving |
+    | 50 | Skill | Forklift battery swapping & watering | Heavy Equipment & Driving |
+    | 51 | Skill | Yard-shunter operations | Heavy Equipment & Driving |
+    | 52 | Skill | Tugger-train operation (factory) | Heavy Equipment & Driving |
+    | 53 | Skill | Push-back tractor (airport) operation | Heavy Equipment & Driving |
+    | 54 | Skill | GSE knowledge (belt-loader, GPU) | Heavy Equipment & Driving |
+    | 55 | Skill | Maritime Ro-Ro loading | Heavy Equipment & Driving |
+    | 56 | Certificate | Driving licence B (passenger) | Heavy Equipment & Driving |
+    | 57 | Certificate | Driving licence BE (trailer ≤3.5 t) | Heavy Equipment & Driving |
+    | 58 | Certificate | Driving licence C (rigid truck) | Heavy Equipment & Driving |
+    | 59 | Certificate | Driving licence CE (articulated) | Heavy Equipment & Driving |
+    | 60 | Certificate | Code 95 CPC (Driver CPC NL) | Heavy Equipment & Driving |
+    | 61 | Certificate | ADR class 1-9 tank & bulk | Heavy Equipment & Driving |
+    | 62 | Certificate | Truck-mounted crane (autolaadkraan) | Heavy Equipment & Driving |
+    | 63 | Certificate | Slinger/Hoist (VVL-H) | Heavy Equipment & Driving |
+    | 64 | Certificate | Port tug driver card (straddle carrier) | Heavy Equipment & Driving |
+    | 65 | Certificate | Air-side security pass (Schiphol) | Heavy Equipment & Driving |
+    | 66 | Certificate | TAPA TSR awareness | Heavy Equipment & Driving |
+    | 67 | Certificate | STCW Basic Safety (deckhand) | Heavy Equipment & Driving |
+    | 68 | Certificate | Inland shipping boatman licence | Heavy Equipment & Driving |
+    | 69 | Certificate | Chauffeur Pass (taxi) | Heavy Equipment & Driving |
+    | 70 | Certificate | Snow-plough operator licence | Heavy Equipment & Driving |
 
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 41 | Skill | Basic vehicle checks (pre-trip inspection) | Heavy Equipment & Driving |
-| 42 | Skill | Hook-lift container operation | Heavy Equipment & Driving |
-| 43 | Skill | Tail-lift operation (liftgate) | Heavy Equipment & Driving |
-| 44 | Skill | Curtain-sider handling | Heavy Equipment & Driving |
-| 45 | Skill | Refrigerated truck temperature logs | Heavy Equipment & Driving |
-| 46 | Skill | Digital tachograph download & analysis | Heavy Equipment & Driving |
-| 47 | Skill | Defensive driving (urban) | Heavy Equipment & Driving |
-| 48 | Skill | Load-planning & axle-weight calculation | Heavy Equipment & Driving |
-| 49 | Skill | Basic vehicle troubleshooting (fuses, lamps) | Heavy Equipment & Driving |
-| 50 | Skill | Forklift battery swapping & watering | Heavy Equipment & Driving |
-| 51 | Skill | Yard-shunter operations | Heavy Equipment & Driving |
-| 52 | Skill | Tugger-train operation (factory) | Heavy Equipment & Driving |
-| 53 | Skill | Push-back tractor (airport) operation | Heavy Equipment & Driving |
-| 54 | Skill | GSE knowledge (belt-loader, GPU) | Heavy Equipment & Driving |
-| 55 | Skill | Maritime Ro-Ro loading | Heavy Equipment & Driving |
-| 56 | Certificate | Driving licence B (passenger) | Heavy Equipment & Driving |
-| 57 | Certificate | Driving licence BE (trailer ≤3.5 t) | Heavy Equipment & Driving |
-| 58 | Certificate | Driving licence C (rigid truck) | Heavy Equipment & Driving |
-| 59 | Certificate | Driving licence CE (articulated) | Heavy Equipment & Driving |
-| 60 | Certificate | Code 95 CPC (Driver CPC NL) | Heavy Equipment & Driving |
-| 61 | Certificate | ADR class 1-9 tank & bulk | Heavy Equipment & Driving |
-| 62 | Certificate | Truck-mounted crane (autolaadkraan) | Heavy Equipment & Driving |
-| 63 | Certificate | Slinger/Hoist (VVL-H) | Heavy Equipment & Driving |
-| 64 | Certificate | Port tug driver card (straddle carrier) | Heavy Equipment & Driving |
-| 65 | Certificate | Air-side security pass (Schiphol) | Heavy Equipment & Driving |
-| 66 | Certificate | TAPA TSR awareness | Heavy Equipment & Driving |
-| 67 | Certificate | STCW Basic Safety (deckhand) | Heavy Equipment & Driving |
-| 68 | Certificate | Inland shipping boatman licence | Heavy Equipment & Driving |
-| 69 | Certificate | Chauffeur Pass (taxi) | Heavy Equipment & Driving |
-| 70 | Certificate | Snow-plough operator licence | Heavy Equipment & Driving |
+??? note "SAFETY & COMPLIANCE (Skills 71-85 | Certificates 86-105)"
 
-</details>
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 71 | Skill | Risk inventory & evaluation (RI&E) support | Safety & Compliance |
+    | 72 | Skill | Toolbox-meeting facilitation | Safety & Compliance |
+    | 73 | Skill | Accident reporting & root-cause logging | Safety & Compliance |
+    | 74 | Skill | PPE fit-test administration | Safety & Compliance |
+    | 75 | Skill | Lockout-tagout (LOTO) execution | Safety & Compliance |
+    | 76 | Skill | Spill-kit deployment | Safety & Compliance |
+    | 77 | Skill | Hot-work permit process | Safety & Compliance |
+    | 78 | Skill | Confined-space entry watch | Safety & Compliance |
+    | 79 | Skill | Work-at-height rescue plan drafting | Safety & Compliance |
+    | 80 | Skill | First-aid documentation (EHBO log) | Safety & Compliance |
+    | 81 | Skill | Fire-watch duties (hot zones) | Safety & Compliance |
+    | 82 | Skill | Safety-data-sheet (SDS) lookup | Safety & Compliance |
+    | 83 | Skill | Chemical compatibility segregation | Safety & Compliance |
+    | 84 | Skill | Incident trend analysis (TRIR, LTIR) | Safety & Compliance |
+    | 85 | Skill | ISO 45001 internal auditing | Safety & Compliance |
+    | 86 | Certificate | VCA Basis (B-VCA) | Safety & Compliance |
+    | 87 | Certificate | VCA VOL (supervisors) | Safety & Compliance |
+    | 88 | Certificate | VIL-VCU (staffing) | Safety & Compliance |
+    | 89 | Certificate | BHV (Bedrijfshulpverlening) | Safety & Compliance |
+    | 90 | Certificate | EHBO First-Aid (Orange Cross) | Safety & Compliance |
+    | 91 | Certificate | NEN 3140 VOP (low-voltage) | Safety & Compliance |
+    | 92 | Certificate | NEN 3140 VP | Safety & Compliance |
+    | 93 | Certificate | Hot-work permit authoriser | Safety & Compliance |
+    | 94 | Certificate | Confined-space SOG | Safety & Compliance |
+    | 95 | Certificate | Gas-measuring SOG (gasmeten) | Safety & Compliance |
+    | 96 | Certificate | Work-at-Height SOG | Safety & Compliance |
+    | 97 | Certificate | Independent breathing apparatus SOG | Safety & Compliance |
+    | 98 | Certificate | Fire-marshal diploma | Safety & Compliance |
+    | 99 | Certificate | ISO 45001 Lead Auditor | Safety & Compliance |
+    | 100 | Certificate | HACCP Food-safety level 2 | Safety & Compliance |
+    | 101 | Certificate | BRCGS Warehouse & Distribution awareness | Safety & Compliance |
+    | 102 | Certificate | ATEX basic safety (EX 001) | Safety & Compliance |
+    | 103 | Certificate | Asbestos awareness (Type 0) | Safety & Compliance |
+    | 104 | Certificate | DGSA (Dangerous Goods Safety Adviser) | Safety & Compliance |
+    | 105 | Certificate | Security awareness (ISPS) | Safety & Compliance |
 
-<details>
-<summary><strong>SAFETY & COMPLIANCE (Skills 71-85 | Certificates 86-105)</strong></summary>
+??? note "MANUFACTURING & PRODUCTION (Skills 106-125 | Certificates 126-135)"
 
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 71 | Skill | Risk inventory & evaluation (RI&E) support | Safety & Compliance |
-| 72 | Skill | Toolbox-meeting facilitation | Safety & Compliance |
-| 73 | Skill | Accident reporting & root-cause logging | Safety & Compliance |
-| 74 | Skill | PPE fit-test administration | Safety & Compliance |
-| 75 | Skill | Lockout-tagout (LOTO) execution | Safety & Compliance |
-| 76 | Skill | Spill-kit deployment | Safety & Compliance |
-| 77 | Skill | Hot-work permit process | Safety & Compliance |
-| 78 | Skill | Confined-space entry watch | Safety & Compliance |
-| 79 | Skill | Work-at-height rescue plan drafting | Safety & Compliance |
-| 80 | Skill | First-aid documentation (EHBO log) | Safety & Compliance |
-| 81 | Skill | Fire-watch duties (hot zones) | Safety & Compliance |
-| 82 | Skill | Safety-data-sheet (SDS) lookup | Safety & Compliance |
-| 83 | Skill | Chemical compatibility segregation | Safety & Compliance |
-| 84 | Skill | Incident trend analysis (TRIR, LTIR) | Safety & Compliance |
-| 85 | Skill | ISO 45001 internal auditing | Safety & Compliance |
-| 86 | Certificate | VCA Basis (B-VCA) | Safety & Compliance |
-| 87 | Certificate | VCA VOL (supervisors) | Safety & Compliance |
-| 88 | Certificate | VIL-VCU (staffing) | Safety & Compliance |
-| 89 | Certificate | BHV (Bedrijfshulpverlening) | Safety & Compliance |
-| 90 | Certificate | EHBO First-Aid (Orange Cross) | Safety & Compliance |
-| 91 | Certificate | NEN 3140 VOP (low-voltage) | Safety & Compliance |
-| 92 | Certificate | NEN 3140 VP | Safety & Compliance |
-| 93 | Certificate | Hot-work permit authoriser | Safety & Compliance |
-| 94 | Certificate | Confined-space SOG | Safety & Compliance |
-| 95 | Certificate | Gas-measuring SOG (gasmeten) | Safety & Compliance |
-| 96 | Certificate | Work-at-Height SOG | Safety & Compliance |
-| 97 | Certificate | Independent breathing apparatus SOG | Safety & Compliance |
-| 98 | Certificate | Fire-marshal diploma | Safety & Compliance |
-| 99 | Certificate | ISO 45001 Lead Auditor | Safety & Compliance |
-| 100 | Certificate | HACCP Food-safety level 2 | Safety & Compliance |
-| 101 | Certificate | BRCGS Warehouse & Distribution awareness | Safety & Compliance |
-| 102 | Certificate | ATEX basic safety (EX 001) | Safety & Compliance |
-| 103 | Certificate | Asbestos awareness (Type 0) | Safety & Compliance |
-| 104 | Certificate | DGSA (Dangerous Goods Safety Adviser) | Safety & Compliance |
-| 105 | Certificate | Security awareness (ISPS) | Safety & Compliance |
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 106 | Skill | Assembly line setup & change-over (SMED) | Manufacturing & Production |
+    | 107 | Skill | Pick-&-place robot teaching (Fanuc) | Manufacturing & Production |
+    | 108 | Skill | KUKA HMI operation | Manufacturing & Production |
+    | 109 | Skill | CNC lathe basic program (G-code) | Manufacturing & Production |
+    | 110 | Skill | CNC milling setup (Heidenhain) | Manufacturing & Production |
+    | 111 | Skill | TIG welding stainless (141) | Manufacturing & Production |
+    | 112 | Skill | MIG/MAG welding (135/136) | Manufacturing & Production |
+    | 113 | Skill | Spot-welding operation | Manufacturing & Production |
+    | 114 | Skill | Metal grinding & deburring | Manufacturing & Production |
+    | 115 | Skill | Powder-coating line operation | Manufacturing & Production |
+    | 116 | Skill | Plastic injection moulding (Demag) | Manufacturing & Production |
+    | 117 | Skill | Blow-moulding machine operation | Manufacturing & Production |
+    | 118 | Skill | 3D printer operation (FDM) | Manufacturing & Production |
+    | 119 | Skill | SMT pick-and-place feeder load | Manufacturing & Production |
+    | 120 | Skill | PCB re-work & soldering (IPC A-610) | Manufacturing & Production |
+    | 121 | Skill | Basic hydraulics troubleshooting | Manufacturing & Production |
+    | 122 | Skill | Pneumatics circuit reading | Manufacturing & Production |
+    | 123 | Skill | Programmable-logic controller (Siemens S7) basics | Manufacturing & Production |
+    | 124 | Skill | OEE monitoring & downtime logging | Manufacturing & Production |
+    | 125 | Skill | Kaizen continuous-improvement participation | Manufacturing & Production |
+    | 126 | Certificate | Welding diploma NIL level 1 | Manufacturing & Production |
+    | 127 | Certificate | Welding diploma NIL level 2 | Manufacturing & Production |
+    | 128 | Certificate | TIG 141 stainless up to 4 mm | Manufacturing & Production |
+    | 129 | Certificate | IPC A-610 Certified IPC Specialist | Manufacturing & Production |
+    | 130 | Certificate | CNC operator diploma (B-metaal) | Manufacturing & Production |
+    | 131 | Certificate | Lean Six-Sigma Yellow Belt | Manufacturing & Production |
+    | 132 | Certificate | Forklift + Overhead crane 2-in-1 (metaal) | Manufacturing & Production |
+    | 133 | Certificate | NDO visual inspector level 2 | Manufacturing & Production |
+    | 134 | Certificate | ATEX maintenance mechanic level 1 | Manufacturing & Production |
+    | 135 | Certificate | SOG Flange connections (Flensmonteur) | Manufacturing & Production |
 
-</details>
+??? note "CONSTRUCTION & TECHNICAL TRADES (Skills 136-155 | Certificates 156-165)"
 
-<details>
-<summary><strong>MANUFACTURING & PRODUCTION (Skills 106-125 | Certificates 126-135)</strong></summary>
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 136 | Skill | Brick-laying (half-brick bond) | Construction & Technical Trades |
+    | 137 | Skill | Timber framing & joist setting | Construction & Technical Trades |
+    | 138 | Skill | Dry-wall installation (metal stud) | Construction & Technical Trades |
+    | 139 | Skill | Suspended-ceiling grid install | Construction & Technical Trades |
+    | 140 | Skill | Tiling (floor & wall) | Construction & Technical Trades |
+    | 141 | Skill | Roof membrane welding (EPDM) | Construction & Technical Trades |
+    | 142 | Skill | Basic plumbing (PVC & copper) | Construction & Technical Trades |
+    | 143 | Skill | HVAC duct assembly | Construction & Technical Trades |
+    | 144 | Skill | Electrical conduit bending | Construction & Technical Trades |
+    | 145 | Skill | Low-voltage wiring termination | Construction & Technical Trades |
+    | 146 | Skill | Solar-panel mounting (roof) | Construction & Technical Trades |
+    | 147 | Skill | Scaffolding erection level 1 | Construction & Technical Trades |
+    | 148 | Skill | Laser-level measurement & layout | Construction & Technical Trades |
+    | 149 | Skill | Concrete finishing & power-trowel | Construction & Technical Trades |
+    | 150 | Skill | Rebar tying & placement | Construction & Technical Trades |
+    | 151 | Skill | Mini-excavator operation | Construction & Technical Trades |
+    | 152 | Skill | Telehandler material lift (construction) | Construction & Technical Trades |
+    | 153 | Skill | Site toolbox translation (EN-PL-NL) | Construction & Technical Trades |
+    | 154 | Skill | Reading Blauwe Krokodil (NL safety cards) | Construction & Technical Trades |
+    | 155 | Skill | Basic AutoCAD drawing edits | Construction & Technical Trades |
+    | 156 | Certificate | Scaffolding Basic assembler DNV | Construction & Technical Trades |
+    | 157 | Certificate | Scaffolding Advanced / Foreman | Construction & Technical Trades |
+    | 158 | Certificate | SCC 018 (high-risk worker) | Construction & Technical Trades |
+    | 159 | Certificate | SOG Working at height with fall arrest | Construction & Technical Trades |
+    | 160 | Certificate | Mini-excavator operator card (W4-04) | Construction & Technical Trades |
+    | 161 | Certificate | Concrete pump operator licence | Construction & Technical Trades |
+    | 162 | Certificate | NEN 1010 Electrical installer helper | Construction & Technical Trades |
+    | 163 | Certificate | Solar PV installer training (SEI) | Construction & Technical Trades |
+    | 164 | Certificate | Asbestos removal DAV 1 | Construction & Technical Trades |
+    | 165 | Certificate | Gas-heating installer (CO-certificaat) | Construction & Technical Trades |
 
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 106 | Skill | Assembly line setup & change-over (SMED) | Manufacturing & Production |
-| 107 | Skill | Pick-&-place robot teaching (Fanuc) | Manufacturing & Production |
-| 108 | Skill | KUKA HMI operation | Manufacturing & Production |
-| 109 | Skill | CNC lathe basic program (G-code) | Manufacturing & Production |
-| 110 | Skill | CNC milling setup (Heidenhain) | Manufacturing & Production |
-| 111 | Skill | TIG welding stainless (141) | Manufacturing & Production |
-| 112 | Skill | MIG/MAG welding (135/136) | Manufacturing & Production |
-| 113 | Skill | Spot-welding operation | Manufacturing & Production |
-| 114 | Skill | Metal grinding & deburring | Manufacturing & Production |
-| 115 | Skill | Powder-coating line operation | Manufacturing & Production |
-| 116 | Skill | Plastic injection moulding (Demag) | Manufacturing & Production |
-| 117 | Skill | Blow-moulding machine operation | Manufacturing & Production |
-| 118 | Skill | 3D printer operation (FDM) | Manufacturing & Production |
-| 119 | Skill | SMT pick-and-place feeder load | Manufacturing & Production |
-| 120 | Skill | PCB re-work & soldering (IPC A-610) | Manufacturing & Production |
-| 121 | Skill | Basic hydraulics troubleshooting | Manufacturing & Production |
-| 122 | Skill | Pneumatics circuit reading | Manufacturing & Production |
-| 123 | Skill | Programmable-logic controller (Siemens S7) basics | Manufacturing & Production |
-| 124 | Skill | OEE monitoring & downtime logging | Manufacturing & Production |
-| 125 | Skill | Kaizen continuous-improvement participation | Manufacturing & Production |
-| 126 | Certificate | Welding diploma NIL level 1 | Manufacturing & Production |
-| 127 | Certificate | Welding diploma NIL level 2 | Manufacturing & Production |
-| 128 | Certificate | TIG 141 stainless up to 4 mm | Manufacturing & Production |
-| 129 | Certificate | IPC A-610 Certified IPC Specialist | Manufacturing & Production |
-| 130 | Certificate | CNC operator diploma (B-metaal) | Manufacturing & Production |
-| 131 | Certificate | Lean Six-Sigma Yellow Belt | Manufacturing & Production |
-| 132 | Certificate | Forklift + Overhead crane 2-in-1 (metaal) | Manufacturing & Production |
-| 133 | Certificate | NDO visual inspector level 2 | Manufacturing & Production |
-| 134 | Certificate | ATEX maintenance mechanic level 1 | Manufacturing & Production |
-| 135 | Certificate | SOG Flange connections (Flensmonteur) | Manufacturing & Production |
+??? note "FOOD, HOSPITALITY & CLEANING (Skills 166-180 | Certificates 181-185)"
 
-</details>
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 166 | Skill | HACCP food-prep line work | Food, Hospitality & Cleaning |
+    | 167 | Skill | Butchery: deboning poultry | Food, Hospitality & Cleaning |
+    | 168 | Skill | Bakery oven operation | Food, Hospitality & Cleaning |
+    | 169 | Skill | Barista (espresso calibration) | Food, Hospitality & Cleaning |
+    | 170 | Skill | Cocktail mixing (IBA spec) | Food, Hospitality & Cleaning |
+    | 171 | Skill | Front-of-house POS operation (Lightspeed) | Food, Hospitality & Cleaning |
+    | 172 | Skill | Housekeeping room-turn-around (18 min) | Food, Hospitality & Cleaning |
+    | 173 | Skill | Industrial dish-washer operation | Food, Hospitality & Cleaning |
+    | 174 | Skill | Deep-cleaning with scrubber-dryer | Food, Hospitality & Cleaning |
+    | 175 | Skill | Linen inventory & rolling | Food, Hospitality & Cleaning |
+    | 176 | Skill | Event banqueting setup | Food, Hospitality & Cleaning |
+    | 177 | Skill | Cold-chain food packing (MAP) | Food, Hospitality & Cleaning |
+    | 178 | Skill | Allergen control & labelling | Food, Hospitality & Cleaning |
+    | 179 | Skill | Basic Dutch hospitality phrases (A2) | Food, Hospitality & Cleaning |
+    | 180 | Skill | Waste segregation (organic, DGR) | Food, Hospitality & Cleaning |
+    | 181 | Certificate | HACCP Level 3 Supervisor | Food, Hospitality & Cleaning |
+    | 182 | Certificate | SVH Social Hygiene (Drank- en Horecawet) | Food, Hospitality & Cleaning |
+    | 183 | Certificate | Fork-lift + HACCP combo (food warehouses) | Food, Hospitality & Cleaning |
+    | 184 | Certificate | Cleaning operator SVS diploma | Food, Hospitality & Cleaning |
+    | 185 | Certificate | Barista Foundation SCA | Food, Hospitality & Cleaning |
 
-<details>
-<summary><strong>CONSTRUCTION & TECHNICAL TRADES (Skills 136-155 | Certificates 156-165)</strong></summary>
+??? note "OFFICE, IT & SUPPORT (Skills 186-195 | Certificates 196-200)"
 
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 136 | Skill | Brick-laying (half-brick bond) | Construction & Technical Trades |
-| 137 | Skill | Timber framing & joist setting | Construction & Technical Trades |
-| 138 | Skill | Dry-wall installation (metal stud) | Construction & Technical Trades |
-| 139 | Skill | Suspended-ceiling grid install | Construction & Technical Trades |
-| 140 | Skill | Tiling (floor & wall) | Construction & Technical Trades |
-| 141 | Skill | Roof membrane welding (EPDM) | Construction & Technical Trades |
-| 142 | Skill | Basic plumbing (PVC & copper) | Construction & Technical Trades |
-| 143 | Skill | HVAC duct assembly | Construction & Technical Trades |
-| 144 | Skill | Electrical conduit bending | Construction & Technical Trades |
-| 145 | Skill | Low-voltage wiring termination | Construction & Technical Trades |
-| 146 | Skill | Solar-panel mounting (roof) | Construction & Technical Trades |
-| 147 | Skill | Scaffolding erection level 1 | Construction & Technical Trades |
-| 148 | Skill | Laser-level measurement & layout | Construction & Technical Trades |
-| 149 | Skill | Concrete finishing & power-trowel | Construction & Technical Trades |
-| 150 | Skill | Rebar tying & placement | Construction & Technical Trades |
-| 151 | Skill | Mini-excavator operation | Construction & Technical Trades |
-| 152 | Skill | Telehandler material lift (construction) | Construction & Technical Trades |
-| 153 | Skill | Site toolbox translation (EN-PL-NL) | Construction & Technical Trades |
-| 154 | Skill | Reading Blauwe Krokodil (NL safety cards) | Construction & Technical Trades |
-| 155 | Skill | Basic AutoCAD drawing edits | Construction & Technical Trades |
-| 156 | Certificate | Scaffolding Basic assembler DNV | Construction & Technical Trades |
-| 157 | Certificate | Scaffolding Advanced / Foreman | Construction & Technical Trades |
-| 158 | Certificate | SCC 018 (high-risk worker) | Construction & Technical Trades |
-| 159 | Certificate | SOG Working at height with fall arrest | Construction & Technical Trades |
-| 160 | Certificate | Mini-excavator operator card (W4-04) | Construction & Technical Trades |
-| 161 | Certificate | Concrete pump operator licence | Construction & Technical Trades |
-| 162 | Certificate | NEN 1010 Electrical installer helper | Construction & Technical Trades |
-| 163 | Certificate | Solar PV installer training (SEI) | Construction & Technical Trades |
-| 164 | Certificate | Asbestos removal DAV 1 | Construction & Technical Trades |
-| 165 | Certificate | Gas-heating installer (CO-certificaat) | Construction & Technical Trades |
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 186 | Skill | MS Excel: Pivot & V-LOOKUP | Office, IT & Support |
+    | 187 | Skill | MS Power BI basic dashboard | Office, IT & Support |
+    | 188 | Skill | ERP: Exact Online order entry | Office, IT & Support |
+    | 189 | Skill | Basic HTML email template edits | Office, IT & Support |
+    | 190 | Skill | Zendesk ticket triage | Office, IT & Support |
+    | 191 | Skill | Jira Agile board updating | Office, IT & Support |
+    | 192 | Skill | Customer-service Dutch B1 phone support | Office, IT & Support |
+    | 193 | Skill | Sage HR onboarding workflow | Office, IT & Support |
+    | 194 | Skill | Freight cost reconciliation (xls) | Office, IT & Support |
+    | 195 | Skill | Basic data-privacy (AVG/GDPR) handling | Office, IT & Support |
+    | 196 | Certificate | ECDL/ICDL Base Certificate | Office, IT & Support |
+    | 197 | Certificate | MOS Excel Associate | Office, IT & Support |
+    | 198 | Certificate | Basic GDPR awareness (IAPP) | Office, IT & Support |
+    | 199 | Certificate | Lean Office Yellow Belt | Office, IT & Support |
+    | 200 | Certificate | First-time-manager diploma (NCOI) | Office, IT & Support |
 
-</details>
+??? note "AGRICULTURE & HORTICULTURE (Skills 201-220 | Certificates 221-230)"
 
-<details>
-<summary><strong>FOOD, HOSPITALITY & CLEANING (Skills 166-180 | Certificates 181-185)</strong></summary>
-
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 166 | Skill | HACCP food-prep line work | Food, Hospitality & Cleaning |
-| 167 | Skill | Butchery: deboning poultry | Food, Hospitality & Cleaning |
-| 168 | Skill | Bakery oven operation | Food, Hospitality & Cleaning |
-| 169 | Skill | Barista (espresso calibration) | Food, Hospitality & Cleaning |
-| 170 | Skill | Cocktail mixing (IBA spec) | Food, Hospitality & Cleaning |
-| 171 | Skill | Front-of-house POS operation (Lightspeed) | Food, Hospitality & Cleaning |
-| 172 | Skill | Housekeeping room-turn-around (18 min) | Food, Hospitality & Cleaning |
-| 173 | Skill | Industrial dish-washer operation | Food, Hospitality & Cleaning |
-| 174 | Skill | Deep-cleaning with scrubber-dryer | Food, Hospitality & Cleaning |
-| 175 | Skill | Linen inventory & rolling | Food, Hospitality & Cleaning |
-| 176 | Skill | Event banqueting setup | Food, Hospitality & Cleaning |
-| 177 | Skill | Cold-chain food packing (MAP) | Food, Hospitality & Cleaning |
-| 178 | Skill | Allergen control & labelling | Food, Hospitality & Cleaning |
-| 179 | Skill | Basic Dutch hospitality phrases (A2) | Food, Hospitality & Cleaning |
-| 180 | Skill | Waste segregation (organic, DGR) | Food, Hospitality & Cleaning |
-| 181 | Certificate | HACCP Level 3 Supervisor | Food, Hospitality & Cleaning |
-| 182 | Certificate | SVH Social Hygiene (Drank- en Horecawet) | Food, Hospitality & Cleaning |
-| 183 | Certificate | Fork-lift + HACCP combo (food warehouses) | Food, Hospitality & Cleaning |
-| 184 | Certificate | Cleaning operator SVS diploma | Food, Hospitality & Cleaning |
-| 185 | Certificate | Barista Foundation SCA | Food, Hospitality & Cleaning |
-
-</details>
-
-<details>
-<summary><strong>OFFICE, IT & SUPPORT (Skills 186-195 | Certificates 196-200)</strong></summary>
-
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 186 | Skill | MS Excel: Pivot & V-LOOKUP | Office, IT & Support |
-| 187 | Skill | MS Power BI basic dashboard | Office, IT & Support |
-| 188 | Skill | ERP: Exact Online order entry | Office, IT & Support |
-| 189 | Skill | Basic HTML email template edits | Office, IT & Support |
-| 190 | Skill | Zendesk ticket triage | Office, IT & Support |
-| 191 | Skill | Jira Agile board updating | Office, IT & Support |
-| 192 | Skill | Customer-service Dutch B1 phone support | Office, IT & Support |
-| 193 | Skill | Sage HR onboarding workflow | Office, IT & Support |
-| 194 | Skill | Freight cost reconciliation (xls) | Office, IT & Support |
-| 195 | Skill | Basic data-privacy (AVG/GDPR) handling | Office, IT & Support |
-| 196 | Certificate | ECDL/ICDL Base Certificate | Office, IT & Support |
-| 197 | Certificate | MOS Excel Associate | Office, IT & Support |
-| 198 | Certificate | Basic GDPR awareness (IAPP) | Office, IT & Support |
-| 199 | Certificate | Lean Office Yellow Belt | Office, IT & Support |
-| 200 | Certificate | First-time-manager diploma (NCOI) | Office, IT & Support |
-
-</details>
-
-<details>
-<summary><strong>AGRICULTURE & HORTICULTURE (Skills 201-220 | Certificates 221-230)</strong></summary>
-
-| ID | Type | Name | Category |
-|----|------|------|----------|
-| 201 | Skill | Tractor operation (field work) | Agriculture & Horticulture |
-| 202 | Skill | Greenhouse climate control monitoring | Agriculture & Horticulture |
-| 203 | Skill | Hydroponic system maintenance | Agriculture & Horticulture |
-| 204 | Skill | Pruning fruit trees & vines | Agriculture & Horticulture |
-| 205 | Skill | Harvesting & grading vegetables | Agriculture & Horticulture |
-| 206 | Skill | Seeding & transplanting automation | Agriculture & Horticulture |
-| 207 | Skill | Integrated pest management scouting | Agriculture & Horticulture |
-| 208 | Skill | Fertigation scheduling | Agriculture & Horticulture |
-| 209 | Skill | Milking parlour operation | Agriculture & Horticulture |
-| 210 | Skill | Calf rearing & husbandry | Agriculture & Horticulture |
-| 211 | Skill | Artificial insemination assistance (cattle) | Agriculture & Horticulture |
-| 212 | Skill | Hoof trimming basics | Agriculture & Horticulture |
-| 213 | Skill | Egg grading & packing | Agriculture & Horticulture |
-| 214 | Skill | Poultry shed climate monitoring | Agriculture & Horticulture |
-| 215 | Skill | Operate self-propelled sprayer | Agriculture & Horticulture |
-| 216 | Skill | Orchard forklift / bin trailer handling | Agriculture & Horticulture |
-| 217 | Skill | Silage making & bunker covering | Agriculture & Horticulture |
-| 218 | Skill | Chainsaw operation & tree felling | Agriculture & Horticulture |
-| 219 | Skill | Drone scouting of crop health | Agriculture & Horticulture |
-| 220 | Skill | Basic soil sampling & analysis | Agriculture & Horticulture |
-| 221 | Certificate | T Licence (Tractor driving licence) | Agriculture & Horticulture |
-| 222 | Certificate | Dutch "Spuitlicentie" (Spraying licence) | Agriculture & Horticulture |
-| 223 | Certificate | Bewijs van vakbekwaamheid gewasbescherming | Agriculture & Horticulture |
-| 224 | Certificate | VVA/Safe chainsaw operator EU Level 1 | Agriculture & Horticulture |
-| 225 | Certificate | Milking hygiene certificate (Q-Fever) | Agriculture & Horticulture |
-| 226 | Certificate | HACCP Fresh Produce Handling | Agriculture & Horticulture |
-| 227 | Certificate | Animal welfare transport certificate | Agriculture & Horticulture |
-| 228 | Certificate | Drone pilot A1/A3 for agriculture | Agriculture & Horticulture |
-| 229 | Certificate | Forklift certificate – orchard narrow-aisle | Agriculture & Horticulture |
-| 230 | Certificate | First responder livestock emergencies | Agriculture & Horticulture |
-| 231 | Skill | Greenhouse crop scouting (tomato, cucumber, pepper) | Agriculture & Horticulture |
-| 232 | Skill | Tomato pruning & clipping (indeterminate) | Agriculture & Horticulture |
-| 233 | Skill | Cucumber leaf picking & truss pruning | Agriculture & Horticulture |
-| 234 | Skill | Harvesting & grading tomatoes | Agriculture & Horticulture |
-| 235 | Skill | Harvesting & bunching cut flowers | Agriculture & Horticulture |
-| 236 | Skill | Packing & sleeving cut flowers | Agriculture & Horticulture |
-| 237 | Skill | Grafting vegetable seedlings | Agriculture & Horticulture |
-| 238 | Skill | Climate screen operation (energy/shade) | Agriculture & Horticulture |
-| 239 | Skill | CO₂ dosing system monitoring | Agriculture & Horticulture |
-| 240 | Skill | Automated irrigation / ebb-flow tables | Agriculture & Horticulture |
-| 241 | Skill | Beneficial insect release (biocontrol) | Agriculture & Horticulture |
-| 242 | Skill | pH & EC testing of nutrient solutions | Agriculture & Horticulture |
-| 243 | Skill | UV disinfection unit maintenance | Agriculture & Horticulture |
-| 244 | Skill | Priva / Hoogendoorn climate software use | Agriculture & Horticulture |
-| 245 | Skill | AGV trolley operation in greenhouse rows | Agriculture & Horticulture |
-| 246 | Certificate | Phytosanitary inspection basics | Agriculture & Horticulture |
-| 247 | Certificate | MPS-ABC sustainability handling | Agriculture & Horticulture |
-| 248 | Certificate | Greenhouse electric forklift licence | Agriculture & Horticulture |
-| 249 | Certificate | Greenhouse pesticide application licence | Agriculture & Horticulture |
-| 250 | Certificate | Working-at-height – greenhouse scissor lift | Agriculture & Horticulture |
-
-</details>
+    | ID | Type | Name | Category |
+    |----|------|------|----------|
+    | 201 | Skill | Tractor operation (field work) | Agriculture & Horticulture |
+    | 202 | Skill | Greenhouse climate control monitoring | Agriculture & Horticulture |
+    | 203 | Skill | Hydroponic system maintenance | Agriculture & Horticulture |
+    | 204 | Skill | Pruning fruit trees & vines | Agriculture & Horticulture |
+    | 205 | Skill | Harvesting & grading vegetables | Agriculture & Horticulture |
+    | 206 | Skill | Seeding & transplanting automation | Agriculture & Horticulture |
+    | 207 | Skill | Integrated pest management scouting | Agriculture & Horticulture |
+    | 208 | Skill | Fertigation scheduling | Agriculture & Horticulture |
+    | 209 | Skill | Milking parlour operation | Agriculture & Horticulture |
+    | 210 | Skill | Calf rearing & husbandry | Agriculture & Horticulture |
+    | 211 | Skill | Artificial insemination assistance (cattle) | Agriculture & Horticulture |
+    | 212 | Skill | Hoof trimming basics | Agriculture & Horticulture |
+    | 213 | Skill | Egg grading & packing | Agriculture & Horticulture |
+    | 214 | Skill | Poultry shed climate monitoring | Agriculture & Horticulture |
+    | 215 | Skill | Operate self-propelled sprayer | Agriculture & Horticulture |
+    | 216 | Skill | Orchard forklift / bin trailer handling | Agriculture & Horticulture |
+    | 217 | Skill | Silage making & bunker covering | Agriculture & Horticulture |
+    | 218 | Skill | Chainsaw operation & tree felling | Agriculture & Horticulture |
+    | 219 | Skill | Drone scouting of crop health | Agriculture & Horticulture |
+    | 220 | Skill | Basic soil sampling & analysis | Agriculture & Horticulture |
+    | 221 | Certificate | T Licence (Tractor driving licence) | Agriculture & Horticulture |
+    | 222 | Certificate | Dutch "Spuitlicentie" (Spraying licence) | Agriculture & Horticulture |
+    | 223 | Certificate | Bewijs van vakbekwaamheid gewasbescherming | Agriculture & Horticulture |
+    | 224 | Certificate | VVA/Safe chainsaw operator EU Level 1 | Agriculture & Horticulture |
+    | 225 | Certificate | Milking hygiene certificate (Q-Fever) | Agriculture & Horticulture |
+    | 226 | Certificate | HACCP Fresh Produce Handling | Agriculture & Horticulture |
+    | 227 | Certificate | Animal welfare transport certificate | Agriculture & Horticulture |
+    | 228 | Certificate | Drone pilot A1/A3 for agriculture | Agriculture & Horticulture |
+    | 229 | Certificate | Forklift certificate – orchard narrow-aisle | Agriculture & Horticulture |
+    | 230 | Certificate | First responder livestock emergencies | Agriculture & Horticulture |
+    | 231 | Skill | Greenhouse crop scouting (tomato, cucumber, pepper) | Agriculture & Horticulture |
+    | 232 | Skill | Tomato pruning & clipping (indeterminate) | Agriculture & Horticulture |
+    | 233 | Skill | Cucumber leaf picking & truss pruning | Agriculture & Horticulture |
+    | 234 | Skill | Harvesting & grading tomatoes | Agriculture & Horticulture |
+    | 235 | Skill | Harvesting & bunching cut flowers | Agriculture & Horticulture |
+    | 236 | Skill | Packing & sleeving cut flowers | Agriculture & Horticulture |
+    | 237 | Skill | Grafting vegetable seedlings | Agriculture & Horticulture |
+    | 238 | Skill | Climate screen operation (energy/shade) | Agriculture & Horticulture |
+    | 239 | Skill | CO₂ dosing system monitoring | Agriculture & Horticulture |
+    | 240 | Skill | Automated irrigation / ebb-flow tables | Agriculture & Horticulture |
+    | 241 | Skill | Beneficial insect release (biocontrol) | Agriculture & Horticulture |
+    | 242 | Skill | pH & EC testing of nutrient solutions | Agriculture & Horticulture |
+    | 243 | Skill | UV disinfection unit maintenance | Agriculture & Horticulture |
+    | 244 | Skill | Priva / Hoogendoorn climate software use | Agriculture & Horticulture |
+    | 245 | Skill | AGV trolley operation in greenhouse rows | Agriculture & Horticulture |
+    | 246 | Certificate | Phytosanitary inspection basics | Agriculture & Horticulture |
+    | 247 | Certificate | MPS-ABC sustainability handling | Agriculture & Horticulture |
+    | 248 | Certificate | Greenhouse electric forklift licence | Agriculture & Horticulture |
+    | 249 | Certificate | Greenhouse pesticide application licence | Agriculture & Horticulture |
+    | 250 | Certificate | Working-at-height – greenhouse scissor lift | Agriculture & Horticulture |
 
 ### 4.12 Worker Onboarding & Profile Completion **(Priority: High)**
 - Streamlined multi-step onboarding process for workers
@@ -2219,42 +2201,42 @@ PostgreSQL RDS ← Django Apps → Redis ElastiCache
 ### 9.3 Development Milestones (Revised)
 
 #### 9.3.1 MVP Timeline (8 Weeks)
-**Week 1-2: Foundation**
-- Django 5.2.4 project setup with PostGIS
+##### **Week 1-2: Foundation**
+-  Django 5.2.4 project setup with PostGIS
 - Magic link authentication system
 - Basic user models and admin
 - Docker containerization
 
-**Week 3-4: Core Features**
+##### **Week 3-4: Core Features**
 - Job posting and approval workflow
 - Document upload and preview system
 - Basic search with geolocation
 - Application management
 
-**Week 5-6: Real-time Features**
+##### **Week 5-6: Real-time Features**
 - Django Channels setup
 - WebSocket messaging system
 - Notification system
 - Admin workflow tools
 
-**Week 7-8: Deployment & Polish**
+##### **Week 7-8: Deployment & Polish**
 - AWS infrastructure setup
 - Frontend integration
 - Performance optimization
 - User acceptance testing
 
 #### 9.3.2 Post-MVP Phases
-**Phase 2 (Month 3-4): Advanced Features**
+##### **Phase 2 (Month 3-4): Advanced Features**
 - AI content review integration
 - Advanced matching algorithms
 - Enhanced security features
 
-**Phase 3 (Month 5-6): Business Features**
+##### **Phase 3 (Month 5-6): Business Features**
 - Subscription and payment system
 - Multi-language support
 - Advanced analytics
 
-**Phase 4 (Month 6+): Scale Features**
+##### **Phase 4 (Month 6+): Scale Features**
 - Couple applications
 - Advanced reporting
 - Third-party integrations
@@ -2270,17 +2252,17 @@ PostgreSQL RDS ← Django Apps → Redis ElastiCache
 | **Single Developer Bottleneck** | High | High | Claude assistance, modular development |
 
 #### 9.4.2 Success Criteria
-**Technical Metrics:**
+##### **Technical Metrics:**
 - API response time < 200ms (p95)
 - 99%+ uptime during business hours
 - Mobile-responsive interface on all devices
 
-**Functional Metrics:**
+##### **Functional Metrics:**
 - Complete user journeys work end-to-end
 - Admin can approve jobs and verify employers
 - Real-time messaging functions properly
 
-**Business Metrics:**
+##### **Business Metrics:**
 - 10+ verified employers using the platform
 - 50+ registered candidates with complete profiles
 - 20+ successful job applications processed
@@ -2293,34 +2275,34 @@ PostgreSQL RDS ← Django Apps → Redis ElastiCache
 - **ID**: US-001
 - **Description**: As an unregistered visitor, I want to browse job listings to explore opportunities before deciding to register.
 - **Acceptance criteria**:
-  - Job listings are visible to visitors without requiring login
-  - Basic search and filtering options are available
-  - Visitors can see employer verification status
-  - "Apply" buttons redirect to registration/login page
-  - Limited job details are shown, with complete information available after registration
-  - Clear call-to-action for registration is displayed throughout the browsing experience
+      - Job listings are visible to visitors without requiring login
+      - Basic search and filtering options are available
+      - Visitors can see employer verification status
+      - "Apply" buttons redirect to registration/login page
+      - Limited job details are shown, with complete information available after registration
+      - Clear call-to-action for registration is displayed throughout the browsing experience
 
 ### 10.2. Register as a worker
 - **ID**: US-002
 - **Description**: As a temporary worker, I want to register on the platform so I can find safe job opportunities.
 - **Acceptance criteria**:
-  - Registration form collects essential personal information
-  - Option to upload a CV that pre-fills form fields
-  - Skills, certificates, and language proficiencies can be selected from predefined lists
-  - Optional work history section is available
-  - Account creation confirmation is sent via email
-  - Privacy policy and terms are clearly presented for acceptance
+      - Registration form collects essential personal information
+      - Option to upload a CV that pre-fills form fields
+      - Skills, certificates, and language proficiencies can be selected from predefined lists
+      - Optional work history section is available
+      - Account creation confirmation is sent via email
+      - Privacy policy and terms are clearly presented for acceptance
 
 ### 10.3. Register as an employer
 - **ID**: US-003
 - **Description**: As an employment agency, I want to register on the platform by selecting my agency type and providing required verification documents.
 - **Acceptance criteria**:
-  - User can select from four employer types: Freelancer, Small Agency, Medium/Large Agency, Corporate HR
-  - Required document list is dynamically displayed based on selected type
-  - Secure document upload system accepts common file formats
-  - Verification status dashboard shows progress and pending items
-  - Email notifications are sent when verification status changes
-  - Account features are limited until verification is complete
+      - User can select from four employer types: Freelancer, Small Agency, Medium/Large Agency, Corporate HR
+      - Required document list is dynamically displayed based on selected type
+      - Secure document upload system accepts common file formats
+      - Verification status dashboard shows progress and pending items
+      - Email notifications are sent when verification status changes
+      - Account features are limited until verification is complete
 
 ### 10.4. Complete worker onboarding process
 - **ID**: US-004
@@ -2329,21 +2311,21 @@ PostgreSQL RDS ← Django Apps → Redis ElastiCache
 - **User Type**: New candidates
 - **Description**: As a new worker, I want to complete a guided onboarding process so that I can quickly set up my comprehensive profile and understand how to use the platform safely and effectively.
 - **Acceptance criteria**:
-  - Onboarding begins immediately after email verification with welcome tutorial
-  - Progress indicator displays completion status across 6 key steps: Welcome → CV Upload → Skills → Experience → Preferences → Completion
-  - CV upload functionality automatically extracts and pre-fills profile fields (name, experience, skills) to reduce manual entry
-  - Skills selection interface provides searchable taxonomy with suggestions based on uploaded CV content
-  - Work history section allows optional entry of previous employers with role descriptions
-  - Language proficiency self-assessment with standardized levels (A1-C2 for European languages)
-  - Location and transportation preferences capture commuting constraints and job radius
-  - Safety tutorial covers platform features for reporting issues and recognizing legitimate employers
-  - Onboarding completion unlocks full job search, application, and messaging features
-  - Skip options available for optional sections while encouraging full completion through progress incentives
+      - Onboarding begins immediately after email verification with welcome tutorial
+      - Progress indicator displays completion status across 6 key steps: Welcome → CV Upload → Skills → Experience → Preferences → Completion
+      - CV upload functionality automatically extracts and pre-fills profile fields (name, experience, skills) to reduce manual entry
+      - Skills selection interface provides searchable taxonomy with suggestions based on uploaded CV content
+      - Work history section allows optional entry of previous employers with role descriptions
+      - Language proficiency self-assessment with standardized levels (A1-C2 for European languages)
+      - Location and transportation preferences capture commuting constraints and job radius
+      - Safety tutorial covers platform features for reporting issues and recognizing legitimate employers
+      - Onboarding completion unlocks full job search, application, and messaging features
+      - Skip options available for optional sections while encouraging full completion through progress incentives
 - **Definition of Done**:
-  - Onboarding completion rate exceeds 75% for new worker registrations
-  - Average completion time under 12 minutes for full onboarding process
-  - CV parsing accurately extracts data from PDF and DOC formats with 85% accuracy
-  - Analytics tracking implemented for step-by-step conversion optimization
+      - Onboarding completion rate exceeds 75% for new worker registrations
+      - Average completion time under 12 minutes for full onboarding process
+      - CV parsing accurately extracts data from PDF and DOC formats with 85% accuracy
+      - Analytics tracking implemented for step-by-step conversion optimization
 
 ### 10.5. Complete employer verification onboarding
 - **ID**: US-005
@@ -2352,1008 +2334,1008 @@ PostgreSQL RDS ← Django Apps → Redis ElastiCache
 - **User Type**: New employers
 - **Description**: As a new employer, I want to complete a comprehensive verification onboarding process so that I can establish business legitimacy, demonstrate compliance, and begin posting jobs with platform trust indicators.
 - **Acceptance criteria**:
-  - Onboarding process clearly explains verification benefits including candidate trust, platform priority, and compliance demonstration
-  - Document upload guidance provides specific examples and format requirements for each business type
-  - KvK (Chamber of Commerce) number entry includes real-time validation through official Dutch API integration
-  - Business information form captures legal entity details, registration address, and primary contact verification
-  - Compliance questionnaire covers Dutch labor law requirements including ABU/SBBU certification status
-  - Photo identification upload required for business owner or authorized representative
-  - Additional documentation requirements vary by employer type (freelancer license, agency permits, corporate registration)
-  - Real-time status tracking shows verification progress with estimated review timeframes
-  - Admin review process includes structured feedback for incomplete or rejected submissions
-  - Successful verification unlocks job posting capabilities and displays verification badge on all job listings
-  - Verification renewal reminders sent 30 days before document expiration dates
+      - Onboarding process clearly explains verification benefits including candidate trust, platform priority, and compliance demonstration
+      - Document upload guidance provides specific examples and format requirements for each business type
+      - KvK (Chamber of Commerce) number entry includes real-time validation through official Dutch API integration
+      - Business information form captures legal entity details, registration address, and primary contact verification
+      - Compliance questionnaire covers Dutch labor law requirements including ABU/SBBU certification status
+      - Photo identification upload required for business owner or authorized representative
+      - Additional documentation requirements vary by employer type (freelancer license, agency permits, corporate registration)
+      - Real-time status tracking shows verification progress with estimated review timeframes
+      - Admin review process includes structured feedback for incomplete or rejected submissions
+      - Successful verification unlocks job posting capabilities and displays verification badge on all job listings
+      - Verification renewal reminders sent 30 days before document expiration dates
 - **Definition of Done**:
-  - Verification completion rate exceeds 60% for eligible business registrations
-  - Average admin review time under 48 hours for complete applications
-  - KvK API integration maintains 99%+ uptime with proper error handling and fallbacks
-  - Admin verification interface streamlined for efficient processing with bulk action capabilities
+      - Verification completion rate exceeds 60% for eligible business registrations
+      - Average admin review time under 48 hours for complete applications
+      - KvK API integration maintains 99%+ uptime with proper error handling and fallbacks
+      - Admin verification interface streamlined for efficient processing with bulk action capabilities
 
 ### 10.6. Verify employer documentation
 - **ID**: US-004
 - **Description**: As a platform administrator, I want to review uploaded verification documents to ensure employer legitimacy.
 - **Acceptance criteria**:
-  - Admin dashboard displays pending verification requests in order of submission
-  - Documents can be viewed securely within the platform
-  - Validation checklist is provided for each document type
-  - Admin can approve, reject, or request additional information
-  - Notes and feedback can be recorded for each verification decision
-  - Automatic notifications are sent to employers about verification status changes
+      - Admin dashboard displays pending verification requests in order of submission
+      - Documents can be viewed securely within the platform
+      - Validation checklist is provided for each document type
+      - Admin can approve, reject, or request additional information
+      - Notes and feedback can be recorded for each verification decision
+      - Automatic notifications are sent to employers about verification status changes
 
 ### 10.5. Post a job listing
 - **ID**: US-005
 - **Description**: As a verified employer, I want to create a detailed job listing to attract qualified candidates.
 - **Acceptance criteria**:
-  - Structured form captures all necessary job details
-  - Static preview shows exactly how the listing will appear to candidates
-  - Commenting feature allows for platform admin feedback on potential issues
-  - Job listings are only published after manual admin review and approval
-  - Listings include clear expiration dates with renewal options
-  - Status indicators show if a job is pending review, approved, or rejected
+      - Structured form captures all necessary job details
+      - Static preview shows exactly how the listing will appear to candidates
+      - Commenting feature allows for platform admin feedback on potential issues
+      - Job listings are only published after manual admin review and approval
+      - Listings include clear expiration dates with renewal options
+      - Status indicators show if a job is pending review, approved, or rejected
 
 ### 10.6. Review job listings
 - **ID**: US-006
 - **Description**: As a platform administrator, I want to review job listings before they are published to ensure compliance and safety.
 - **Acceptance criteria**:
-  - Admin dashboard shows queue of pending job listings requiring review
-  - Review interface displays all job details and employer information
-  - Admin can approve, reject, or request changes with comments
-  - Employers receive notifications about the status of their job listings
-  - Approved listings are automatically published to the platform
-  - Review history is maintained for auditing purposes
+      - Admin dashboard shows queue of pending job listings requiring review
+      - Review interface displays all job details and employer information
+      - Admin can approve, reject, or request changes with comments
+      - Employers receive notifications about the status of their job listings
+      - Approved listings are automatically published to the platform
+      - Review history is maintained for auditing purposes
 
 ### 10.7. Search and apply for jobs
 - **ID**: US-007
 - **Description**: As a registered worker, I want to search for jobs that match my skills and apply with minimal effort.
 - **Acceptance criteria**:
-  - Search functionality includes filters for location, job type, and required skills
-  - Job listings display verification status of the employer
-  - Application process uses profile information without requiring re-entry
-  - Confirmation is provided after successful application
-  - Application history is accessible from user dashboard
-  - Job listings clearly indicate application deadlines and status
+      - Search functionality includes filters for location, job type, and required skills
+      - Job listings display verification status of the employer
+      - Application process uses profile information without requiring re-entry
+      - Confirmation is provided after successful application
+      - Application history is accessible from user dashboard
+      - Job listings clearly indicate application deadlines and status
 
 ### 10.8. Communicate with candidates
 - **ID**: US-008
 - **Description**: As an employer, I want to message candidates who have applied to my job listings to discuss details and arrange interviews.
 - **Acceptance criteria**:
-  - Messaging is only enabled after a candidate has applied to a job
-  - Conversation thread maintains history of all communications
-  - Notifications alert users to new messages
-  - Attachments can be shared securely within the messaging system
-  - Both parties can see when messages have been read
-  - Reporting functionality is available if inappropriate content is shared
+      - Messaging is only enabled after a candidate has applied to a job
+      - Conversation thread maintains history of all communications
+      - Notifications alert users to new messages
+      - Attachments can be shared securely within the messaging system
+      - Both parties can see when messages have been read
+      - Reporting functionality is available if inappropriate content is shared
 
 ### 10.9. Create agency subaccounts
 - **ID**: US-009
 - **Description**: As a medium/large agency admin, I want to create subaccounts for my recruiters while maintaining centralized billing.
 - **Acceptance criteria**:
-  - Primary account can create, modify, and deactivate subaccounts
-  - Permission levels can be set for each subaccount
-  - Billing remains centralized with the primary account
-  - Activity from all subaccounts is viewable by the admin
-  - Subaccount users receive their own login credentials
-  - Usage counts toward the primary account's subscription limits
+      - Primary account can create, modify, and deactivate subaccounts
+      - Permission levels can be set for each subaccount
+      - Billing remains centralized with the primary account
+      - Activity from all subaccounts is viewable by the admin
+      - Subaccount users receive their own login credentials
+      - Usage counts toward the primary account's subscription limits
 
 ### 10.10. Report suspicious activity
 - **ID**: US-010
 - **Description**: As a registered worker, I want to report potential exploitation or suspicious behavior to platform administrators.
 - **Acceptance criteria**:
-  - Reporting function is easily accessible from job listings and messages
-  - Options to categorize the type of suspicious activity
-  - Anonymous reporting is possible
-  - Receipt confirmation is provided after submission
-  - Follow-up mechanism allows admins to request more information
-  - Status updates are provided on report investigation
+      - Reporting function is easily accessible from job listings and messages
+      - Options to categorize the type of suspicious activity
+      - Anonymous reporting is possible
+      - Receipt confirmation is provided after submission
+      - Follow-up mechanism allows admins to request more information
+      - Status updates are provided on report investigation
 
 ### 10.11. Manage subscription tier
 - **ID**: US-011
 - **Description**: As an employer, I want to select and modify my subscription tier based on my hiring needs.
 - **Acceptance criteria**:
-  - Clear presentation of available subscription options
-  - Secure payment processing for subscription fees
-  - Option to upgrade, downgrade, or cancel subscription
-  - Usage statistics show current consumption relative to limits
-  - Additional job packs can be purchased when nearing limits
-  - Billing history is available for accounting purposes
+      - Clear presentation of available subscription options
+      - Secure payment processing for subscription fees
+      - Option to upgrade, downgrade, or cancel subscription
+      - Usage statistics show current consumption relative to limits
+      - Additional job packs can be purchased when nearing limits
+      - Billing history is available for accounting purposes
 
 ### 10.12. Authenticate securely
 - **ID**: US-012
 - **Description**: As a platform user, I want to securely access my account without managing passwords and optionally enable additional security measures.
 - **Acceptance criteria**:
-  - Magic link authentication via email for all users
-  - OAuth options (Google, Facebook, Apple) for worker accounts
-  - Optional two-factor authentication (2FA) available for all user types
-  - 2FA setup through authenticator apps or SMS verification
-  - Secure token generation with appropriate expiration
-  - Session timeout occurs after period of inactivity
-  - Magic links expire after one use or 15 minutes
-  - Account activity log shows recent logins and actions
-  - Easy re-authentication process when sessions expire
+      - Magic link authentication via email for all users
+      - OAuth options (Google, Facebook, Apple) for worker accounts
+      - Optional two-factor authentication (2FA) available for all user types
+      - 2FA setup through authenticator apps or SMS verification
+      - Secure token generation with appropriate expiration
+      - Session timeout occurs after period of inactivity
+      - Magic links expire after one use or 15 minutes
+      - Account activity log shows recent logins and actions
+      - Easy re-authentication process when sessions expire
 
 ### 10.13. Provide platform feedback
 - **ID**: US-013
 - **Description**: As a user, I want to provide feedback on the platform to help improve its functionality and address issues.
 - **Acceptance criteria**:
-  - Feedback form is accessible from all main pages
-  - Users can categorize their feedback (bug, suggestion, complaint)
-  - Screenshots can be attached to illustrate issues
-  - Confirmation is provided when feedback is submitted
-  - Option to be contacted about the feedback is available
-  - Critical issues are flagged for immediate review
+      - Feedback form is accessible from all main pages
+      - Users can categorize their feedback (bug, suggestion, complaint)
+      - Screenshots can be attached to illustrate issues
+      - Confirmation is provided when feedback is submitted
+      - Option to be contacted about the feedback is available
+      - Critical issues are flagged for immediate review
 
 ### 10.14. Generate compliance reports
 - **ID**: US-014
 - **Description**: As an agency, I want to generate reports demonstrating my compliance with platform standards to share with clients.
 - **Acceptance criteria**:
-  - Report template includes verification status and history
-  - PDF format is available for download
-  - Agency logo can be included in the report
-  - Verification timestamps are clearly displayed
-  - Report is digitally signed by the platform for authenticity
-  - Sharing options include direct link or download
+      - Report template includes verification status and history
+      - PDF format is available for download
+      - Agency logo can be included in the report
+      - Verification timestamps are clearly displayed
+      - Report is digitally signed by the platform for authenticity
+      - Sharing options include direct link or download
 
 ### 10.15. Update worker profile
 - **ID**: US-015
 - **Description**: As a worker, I want to update my profile information to ensure it remains current and accurately reflects my skills and availability.
 - **Acceptance criteria**:
-  - Profile editing interface is intuitive and accessible
-  - Changes are saved automatically or with a clear save option
-  - History of profile changes is maintained
-  - Email notifications confirm significant profile updates
-  - Profile completeness indicator encourages providing all relevant information
-  - Option to temporarily mark profile as "not available for work"
+      - Profile editing interface is intuitive and accessible
+      - Changes are saved automatically or with a clear save option
+      - History of profile changes is maintained
+      - Email notifications confirm significant profile updates
+      - Profile completeness indicator encourages providing all relevant information
+      - Option to temporarily mark profile as "not available for work"
 
 ### 10.16. View and manage applications
 - **ID**: US-016
 - **Description**: As a worker, I want to view and manage my job applications to track their status and organize my job search.
 - **Acceptance criteria**:
-  - Dashboard shows all submitted applications with status indicators
-  - Applications can be sorted by date, status, or employer
-  - Option to withdraw applications that are still under consideration
-  - Archive feature for past applications
-  - Notification settings for application status updates
-  - Quick access to communication history for each application
+      - Dashboard shows all submitted applications with status indicators
+      - Applications can be sorted by date, status, or employer
+      - Option to withdraw applications that are still under consideration
+      - Archive feature for past applications
+      - Notification settings for application status updates
+      - Quick access to communication history for each application
 
 ### 10.17. Set notification preferences
 - **ID**: US-017
 - **Description**: As a platform user, I want to customize my notification preferences to control how and when I receive alerts.
 - **Acceptance criteria**:
-  - Separate settings for email, SMS, and in-app notifications
-  - Granular control over notification types (applications, messages, etc.)
-  - Option to set quiet hours when no notifications are sent
-  - Test notification feature to confirm settings
-  - Easy one-click unsubscribe from email notifications
-  - Summary notification option for batching multiple alerts
+      - Separate settings for email, SMS, and in-app notifications
+      - Granular control over notification types (applications, messages, etc.)
+      - Option to set quiet hours when no notifications are sent
+      - Test notification feature to confirm settings
+      - Easy one-click unsubscribe from email notifications
+      - Summary notification option for batching multiple alerts
 
 ### 10.18. View platform analytics
 - **ID**: US-018
 - **Description**: As an agency with a paid subscription, I want to access analytics about my job postings and candidate interactions to optimize my recruitment efforts.
 - **Acceptance criteria**:
-  - Dashboard displays key metrics like views, applications, and response rates
-  - Data visualization shows trends over time
-  - Filtering options to analyze performance by job type, location, etc.
-  - Export functionality for reports in common formats
-  - Comparison metrics against platform averages
-  - Actionable insights highlighted based on data patterns
+      - Dashboard displays key metrics like views, applications, and response rates
+      - Data visualization shows trends over time
+      - Filtering options to analyze performance by job type, location, etc.
+      - Export functionality for reports in common formats
+      - Comparison metrics against platform averages
+      - Actionable insights highlighted based on data patterns
 
 ### 10.19. Create and save job templates
 - **ID**: US-019
 - **Description**: As an employer who regularly posts similar jobs, I want to create and save job templates to streamline the posting process.
 - **Acceptance criteria**:
-  - Interface for creating reusable job templates
-  - Option to save any job posting as a template
-  - Template management section for editing and deleting templates
-  - Quick-post feature using templates with minimal editing required
-  - Templates include all job details including required skills and qualifications
-  - Option to share templates with subaccounts
+      - Interface for creating reusable job templates
+      - Option to save any job posting as a template
+      - Template management section for editing and deleting templates
+      - Quick-post feature using templates with minimal editing required
+      - Templates include all job details including required skills and qualifications
+      - Option to share templates with subaccounts
 
 ### 10.20. Manage platform analytics
 - **ID**: US-020
 - **Description**: As a platform administrator, I want to access comprehensive analytics about platform usage to guide decision-making and improvements.
 - **Acceptance criteria**:
-  - Dashboard showing key metrics like registrations, job postings, and application rates
-  - Filtering capabilities by date range, user type, and geographic region
-  - Trend analysis for important metrics over time
-  - Ability to export reports in common formats (CSV, PDF)
-  - User engagement metrics including session duration and feature usage
-  - Conversion funnels for key user journeys
-  - Alert system for metrics falling outside expected ranges
-  - Regular automated reports sent to key stakeholders
-  - Data visualization for complex metrics and relationships
-  - Access controls to limit sensitive data to authorized administrators
+      - Dashboard showing key metrics like registrations, job postings, and application  rates
+      - Filtering capabilities by date range, user type, and geographic region
+      - Trend analysis for important metrics over time
+      - Ability to export reports in common formats (CSV, PDF)
+      - User engagement metrics including session duration and feature usage
+      - Conversion funnels for key user journeys
+      - Alert system for metrics falling outside expected ranges
+      - Regular automated reports sent to key stakeholders
+      - Data visualization for complex metrics and relationships
+      - Access controls to limit sensitive data to authorized administrators
 
 ### 10.21. Apply as a couple
 - **ID**: US-021
 - **Description**: As a worker in a relationship, I want to link my profile with my partner's and apply to jobs together, so we can find work opportunities that accommodate us as a couple.
 - **Acceptance criteria**:
-  - Workers can send couple-linking invitations to other registered workers
-  - Both parties must confirm the relationship to establish a couple link
-  - Linked couples appear as a unit when applying to suitable jobs
-  - Couples can view and apply to jobs specifically marked as "suitable for couples"
-  - Each partner maintains individual profile information and skills
-  - Employers can see both individual profiles and a combined view
-  - Either partner can disconnect the couple relationship at any time
-  - Couple status is clearly indicated on profiles and applications
-  - Partners receive notifications about each other's application status changes
-  - Process exists to unlink profiles if the relationship ends
-  - System handles scenarios where only one partner is accepted for a position
+      - Workers can send couple-linking invitations to other registered workers
+      - Both parties must confirm the relationship to establish a couple link
+      - Linked couples appear as a unit when applying to suitable jobs
+      - Couples can view and apply to jobs specifically marked as "suitable for couples"
+      - Each partner maintains individual profile information and skills
+      - Employers can see both individual profiles and a combined view
+      - Either partner can disconnect the couple relationship at any time
+      - Couple status is clearly indicated on profiles and applications
+      - Partners receive notifications about each other's application status changes
+      - Process exists to unlink profiles if the relationship ends
+      - System handles scenarios where only one partner is accepted for a position
 
 ### 10.22. Post jobs suitable for couples
 - **ID**: US-022
 - **Description**: As an employer, I want to indicate when jobs are suitable for couples and view couple applications, so I can hire partners who wish to work together.
 - **Acceptance criteria**:
-  - Option to mark jobs as "suitable for couples" during job creation
-  - Ability to specify if couple-appropriate housing is provided
-  - Search filter to specifically find couples when needed
-  - View combined skills and qualifications of couple applicants
-  - Schedule joint interviews with both partners
-  - Make hiring decisions for couples as a unit or individually
-  - Communicate with both partners simultaneously through the messaging system
-  - Reporting on couple vs. individual application statistics
+      - Option to mark jobs as "suitable for couples" during job creation
+      - Ability to specify if couple-appropriate housing is provided
+      - Search filter to specifically find couples when needed
+      - View combined skills and qualifications of couple applicants
+      - Schedule joint interviews with both partners
+      - Make hiring decisions for couples as a unit or individually
+      - Communicate with both partners simultaneously through the messaging system
+      - Reporting on couple vs. individual application statistics
 
 ### 10.23. Add skills to profile
 - **ID**: US-023
 - **Description**: As a worker, I want to add my skills to my profile so that I can be matched with appropriate job opportunities.
 - **Acceptance criteria**:
-  - Workers can select skills from a predefined, categorized list during profile creation and updates
-  - Skills can be rated by proficiency level (Basic, Intermediate, Expert)
-  - Workers can easily search for skills using keywords
-  - Related skills are suggested based on existing selections
-  - User interface shows skills grouped by category for easy browsing
-  - Workers can remove skills that are no longer relevant
-  - Profile completion indicator reflects skills information
-  - Skills are self-declared without requiring document verification
-  - Minimum of 5 skills recommended for optimal matching
+      - Workers can select skills from a predefined, categorized list during profile creation and updates
+      - Skills can be rated by proficiency level (Basic, Intermediate, Expert)
+      - Workers can easily search for skills using keywords
+      - Related skills are suggested based on existing selections
+      - User interface shows skills grouped by category for easy browsing
+      - Workers can remove skills that are no longer relevant
+      - Profile completion indicator reflects skills information
+      - Skills are self-declared without requiring document verification
+      - Minimum of 5 skills recommended for optimal matching
 
 ### 10.24. Specify required skills for job postings
 - **ID**: US-024
 - **Description**: As an employer, I want to specify required and preferred skills for job postings so I can attract candidates with suitable qualifications.
 - **Acceptance criteria**:
-  - Employers can select skills/certifications from the same predefined list used by workers
-  - Each skill can be marked as "required" or "preferred"
-  - Minimum proficiency levels can be specified for skills
-  - Skills section is mandatory when creating a job posting
-  - Common skill clusters can be quickly selected based on job type
-  - Job preview shows how skills requirements will appear to candidates
-  - Employers can modify skill requirements when editing job postings
-  - Skills requirements factor into the job matching algorithm
-  - User interface shows skills grouped by category for easy browsing
-  - Required and preferred skills are clearly differentiated in the job listing
+      - Employers can select skills/certifications from the same predefined list used by workers
+      - Each skill can be marked as "required" or "preferred"
+      - Minimum proficiency levels can be specified for skills
+      - Skills section is mandatory when creating a job posting
+      - Common skill clusters can be quickly selected based on job type
+      - Job preview shows how skills requirements will appear to candidates
+      - Employers can modify skill requirements when editing job postings
+      - Skills requirements factor into the job matching algorithm
+      - User interface shows skills grouped by category for easy browsing
+      - Required and preferred skills are clearly differentiated in the job listing
 
 ### 10.25. Suggest new skills or certifications
 - **ID**: US-025
 - **Description**: As a platform user (worker or employer), I want to suggest new skills or certifications that aren't currently available in the system, so the platform can stay current with industry needs.
 - **Acceptance criteria**:
-  - Users can submit suggestions when they cannot find a needed skill
-  - Suggestion form captures name, type (skill/certification), category, and justification
-  - Users receive confirmation when their suggestion is submitted
-  - Users are notified when their suggestion is approved or rejected
-  - Approved skills become immediately available for selection
-  - If a suggestion is rejected, users receive a brief explanation
-  - Similar existing skills are shown to prevent duplicate suggestions
-  - Suggestions are tracked by user type (worker vs. employer) for analytics
+      - Users can submit suggestions when they cannot find a needed skill
+      - Suggestion form captures name, type (skill/certification), category, and justification
+      - Users receive confirmation when their suggestion is submitted
+      - Users are notified when their suggestion is approved or rejected
+      - Approved skills become immediately available for selection
+      - If a suggestion is rejected, users receive a brief explanation
+      - Similar existing skills are shown to prevent duplicate suggestions
+      - Suggestions are tracked by user type (worker vs. employer) for analytics
 
 ### 10.26. Manage skills and certifications taxonomy
 - **ID**: US-026
 - **Description**: As a platform administrator, I want to manage the skills and certifications taxonomy, so the platform maintains an accurate and current database of qualifications.
 - **Acceptance criteria**:
-  - Admins can view all user-submitted skill/certification suggestions
-  - Interface for reviewing, approving, editing, or rejecting suggestions
-  - Ability to add new skills/certifications directly to the system
-  - Tools to edit, merge, or deprecate existing skills/certifications
-  - Bulk import/export functionality for updating multiple records
-  - Translation management for all supported languages
-  - Analytics showing most frequently selected and searched skills
-  - Dashboard showing skills with highest demand-supply gaps
-  - Audit trail of all changes to the taxonomy
-  - Version control system to track taxonomy changes over time
+      - Admins can view all user-submitted skill/certification suggestions
+      - Interface for reviewing, approving, editing, or rejecting suggestions
+      - Ability to add new skills/certifications directly to the system
+      - Tools to edit, merge, or deprecate existing skills/certifications
+      - Bulk import/export functionality for updating multiple records
+      - Translation management for all supported languages
+      - Analytics showing most frequently selected and searched skills
+      - Dashboard showing skills with highest demand-supply gaps
+      - Audit trail of all changes to the taxonomy
+      - Version control system to track taxonomy changes over time
 
 ### 10.27. Create and manage job listings
 - **ID**: US-027
 - **Description**: As an employer, I want to create, edit, and manage job listings through a structured workflow to efficiently find qualified candidates.
 - **Acceptance criteria**:
-  - Multi-step form guides employers through all required information
-  - Ability to save drafts at any point during creation
-  - Clear validation feedback for missing or incorrect information
-  - Option to duplicate existing job listings to create similar ones
-  - Dashboard showing all my listings with status indicators
-  - Filtering and sorting options for my job listings
-  - Job preview showing exactly how the listing will appear to workers
-  - Automatic expiration date calculation with manual override
-  - Job listing performance metrics (views, applications, matches)
-  - Batch operations for managing multiple job listings
+    - Multi-step form guides employers through all required information
+    - Ability to save drafts at any point during creation
+    - Clear validation feedback for missing or incorrect information
+    - Option to duplicate existing job listings to create similar ones
+    - Dashboard showing all my listings with status indicators
+    - Filtering and sorting options for my job listings
+    - Job preview showing exactly how the listing will appear to workers
+    - Automatic expiration date calculation with manual override
+    - Job listing performance metrics (views, applications, matches)
+    - Batch operations for managing multiple job listings
 
 ### 10.28. Submit job listings for review
 - **ID**: US-028
 - **Description**: As an employer, I want to submit completed job listings for review and receive timely feedback so I can publish compliant job opportunities.
 - **Acceptance criteria**:
-  - Clear submission button once all required fields are complete
-  - Confirmation of submission with estimated review timeframe
-  - Job credit usage is clearly explained before submission
-  - Notifications when job status changes (approved/rejected)
-  - Ability to view admin comments on rejected listings
-  - Clear instructions on what needs to be fixed for rejected listings
-  - Option to withdraw a listing from review before approval
-  - Email notifications for review status changes
-  - Job credits are returned if a listing is rejected
+    - Clear submission button once all required fields are complete
+    - Confirmation of submission with estimated review timeframe
+    - Job credit usage is clearly explained before submission
+    - Notifications when job status changes (approved/rejected)
+    - Ability to view admin comments on rejected listings
+    - Clear instructions on what needs to be fixed for rejected listings
+    - Option to withdraw a listing from review before approval
+    - Email notifications for review status changes
+    - Job credits are returned if a listing is rejected
 
 ### 10.29. Review job listings as administrator
 - **ID**: US-029
 - **Description**: As a platform administrator, I want to review submitted job listings to ensure they meet platform standards and protect worker safety.
 - **Acceptance criteria**:
-  - Prioritized queue of pending job reviews
-  - Clear display of employer verification status alongside job details
-  - Structured review checklist for consistent evaluation
-  - Ability to add section-specific comments for employers
-  - Option to approve, reject, or request changes
-  - Comparison view for edited jobs showing what has changed
-  - Tools to filter and sort the review queue by various criteria
-  - Performance metrics on review turnaround time
-  - Ability to flag suspicious patterns for further investigation
-  - Historical view of previously reviewed jobs by employer
+    - Prioritized queue of pending job reviews
+    - Clear display of employer verification status alongside job details
+    - Structured review checklist for consistent evaluation
+    - Ability to add section-specific comments for employers
+    - Option to approve, reject, or request changes
+    - Comparison view for edited jobs showing what has changed
+    - Tools to filter and sort the review queue by various criteria
+    - Performance metrics on review turnaround time
+    - Ability to flag suspicious patterns for further investigation
+    - Historical view of previously reviewed jobs by employer
 
 ### 10.30. Track job posting version history
 - **ID**: US-030
 - **Description**: As an employer or administrator, I want to track version history of job listings to maintain accountability and restore previous versions if needed.
 - **Acceptance criteria**:
-  - Each edit to a job listing creates a new version with timestamp
-  - Clear indication of who made each change (employer or admin)
-  - Side-by-side comparison of different versions
-  - Ability to restore a previous version if needed
-  - Major edits of published jobs require re-approval
-  - Minor edits to published jobs (e.g., typo fixes) don't require re-approval
-  - Complete audit trail of all changes preserved
-  - Version history accessible to both employers and admins
-  - Notification when significant changes require re-review
-  - System automatically determines if changes require re-review
+    - Each edit to a job listing creates a new version with timestamp
+    - Clear indication of who made each change (employer or admin)
+    - Side-by-side comparison of different versions
+    - Ability to restore a previous version if needed
+    - Major edits of published jobs require re-approval
+    - Minor edits to published jobs (e.g., typo fixes) don't require re-approval
+    - Complete audit trail of all changes preserved
+    - Version history accessible to both employers and admins
+    - Notification when significant changes require re-review
+    - System automatically determines if changes require re-review
 
 ### 10.31. Manage job posting credits
 - **ID**: US-031
 - **Description**: As an employer, I want to manage my job posting credits effectively to optimize my recruitment budget.
 - **Acceptance criteria**:
-  - Clear display of available job credits on dashboard
-  - Detailed ledger showing credit usage history
-  - Automatic credit allocation based on subscription tier
-  - Credits only consumed when jobs are approved
-  - Credits returned for rejected listings
-  - Ability to purchase additional credits as needed
-  - Notifications when credits are running low
-  - Option to prioritize usage of expiring credits
-  - Credits have clear expiration dates if applicable
-  - Analytics on credit usage efficiency (applications per credit)
+    - Clear display of available job credits on dashboard
+    - Detailed ledger showing credit usage history
+    - Automatic credit allocation based on subscription tier
+    - Credits only consumed when jobs are approved
+    - Credits returned for rejected listings
+    - Ability to purchase additional credits as needed
+    - Notifications when credits are running low
+    - Option to prioritize usage of expiring credits
+    - Credits have clear expiration dates if applicable
+    - Analytics on credit usage efficiency (applications per credit)
 
 ### 10.32. Create multi-language job postings
 - **ID**: US-032
 - **Description**: As an employer, I want to create job listings in multiple languages to reach a diverse candidate pool.
 - **Acceptance criteria**:
-  - Interface to add the same job listing in multiple supported languages
-  - Primary language version is required; additional languages are optional
-  - Language tabs clearly indicate which translations are available
-  - Consistent formatting across all language versions
-  - Workers see the job in their preferred language when available
-  - Clear indication when a job is available in a worker's preferred language
-  - Language preference influences matching algorithm
-  - Option to use machine translation with human review
-  - Ability to edit individual language versions separately
-  - Preview feature shows how the job appears in each language
+    - Interface to add the same job listing in multiple supported languages
+    - Primary language version is required; additional languages are optional
+    - Language tabs clearly indicate which translations are available
+    - Consistent formatting across all language versions
+    - Workers see the job in their preferred language when available
+    - Clear indication when a job is available in a worker's preferred language
+    - Language preference influences matching algorithm
+    - Option to use machine translation with human review
+    - Ability to edit individual language versions separately
+    - Preview feature shows how the job appears in each language
 
 ### 10.33. Complete worker onboarding process
 - **ID**: US-033
 - **Description**: As a worker, I want a guided step-by-step onboarding process that helps me create a complete profile to maximize my job opportunities.
 - **Acceptance criteria**:
-  - Multi-step wizard guides workers through logical progression of information gathering
-  - Progress indicator shows current step and overall completion status
-  - Ability to save progress and continue later without losing information
-  - Clear indication of which fields are required vs. optional
-  - Help text and tooltips explain why certain information improves matching
-  - Mobile-friendly interface works on all device sizes
-  - Form validation provides immediate feedback on errors
-  - Automatic saving on field completion to prevent data loss
-  - Option to skip optional steps and return later
-  - Languages automatically detected from browser settings
+    - Multi-step wizard guides workers through logical progression of information gathering
+    - Progress indicator shows current step and overall completion status
+    - Ability to save progress and continue later without losing information
+    - Clear indication of which fields are required vs. optional
+    - Help text and tooltips explain why certain information improves matching
+    - Mobile-friendly interface works on all device sizes
+    - Form validation provides immediate feedback on errors
+    - Automatic saving on field completion to prevent data loss
+    - Option to skip optional steps and return later
+    - Languages automatically detected from browser settings
 
 ### 10.34. Track and improve profile completion
 - **ID**: US-034
 - **Description**: As a worker, I want to understand how complete my profile is and what I can do to improve it, so I can maximize my chances of finding suitable work.
 - **Acceptance criteria**:
-  - Visual profile completion indicator showing percentage complete
-  - Breakdown of completion score by category
-  - Personalized recommendations for profile improvements
-  - "Quick win" suggestions that can be completed in under 2 minutes
-  - Gamification elements that celebrate completion milestones
-  - Clear explanation of how profile completion affects job matching
-  - Dashboard tile showing profile strength compared to other candidates
-  - Email notifications for prolonged incomplete profiles
-  - Ability to dismiss specific completion suggestions
-  - Weekly progress summary for active profile improvement
+    - Visual profile completion indicator showing percentage complete
+    - Breakdown of completion score by category
+    - Personalized recommendations for profile improvements
+    - "Quick win" suggestions that can be completed in under 2 minutes
+    - Gamification elements that celebrate completion milestones
+    - Clear explanation of how profile completion affects job matching
+    - Dashboard tile showing profile strength compared to other candidates
+    - Email notifications for prolonged incomplete profiles
+    - Ability to dismiss specific completion suggestions
+    - Weekly progress summary for active profile improvement
 
 ### 10.35. Upload and manage CV
 - **ID**: US-035
 - **Description**: As a worker, I want to upload and manage my CV to provide employers with additional information about my experience.
 - **Acceptance criteria**:
-  - Simple upload interface for CV and profile photo
-  - Mobile camera integration for document capture
-  - Preview functionality for uploaded CV
-  - Ability to replace or delete CV
-  - Clear indication of recommended file formats and sizes
-  - Automatic extraction of relevant data from uploaded CV
-  - Secure storage with privacy controls
-  - Processing status indicator
-  - Option to hide CV from specific employers
+    - Simple upload interface for CV and profile photo
+    - Mobile camera integration for document capture
+    - Preview functionality for uploaded CV
+    - Ability to replace or delete CV
+    - Clear indication of recommended file formats and sizes
+    - Automatic extraction of relevant data from uploaded CV
+    - Secure storage with privacy controls
+    - Processing status indicator
+    - Option to hide CV from specific employers
 
 ### 10.36. Establish couple relationship
 - **ID**: US-036
 - **Description**: As a worker in a relationship, I want to link my profile with my partner's early in the onboarding process so we can search for jobs as a couple.
 - **Acceptance criteria**:
-  - Option during onboarding to indicate couple status
-  - Partner invitation by email address
-  - Notification to partner about couple linking request
-  - Confirmation required from both parties
-  - Clear indication of couple status on profiles
-  - Either partner can initiate an unlink
-  - Dashboard shows partner's profile completion status
-  - Automatic filtering of job matches suitable for couples
-  - Combined skill set view for couple profiles
-  - Privacy controls for what information is shared between profiles
+    - Option during onboarding to indicate couple status
+    - Partner invitation by email address
+    - Notification to partner about couple linking request
+    - Confirmation required from both parties
+    - Clear indication of couple status on profiles
+    - Either partner can initiate an unlink
+    - Dashboard shows partner's profile completion status
+    - Automatic filtering of job matches suitable for couples
+    - Combined skill set view for couple profiles
+    - Privacy controls for what information is shared between profiles
 
 ### 10.37. Set up optional two-factor authentication
 - **ID**: US-037
 - **Description**: As a worker, I want the option to enable two-factor authentication during onboarding to secure my account.
 - **Acceptance criteria**:
-  - Clear explanation of 2FA benefits during onboarding
-  - Option to enable 2FA as part of profile setup
-  - Multiple 2FA method choices (authenticator app, SMS)
-  - Step-by-step guidance for setting up chosen 2FA method
-  - Verification process to confirm 2FA is working
-  - Recovery codes provided and explained
-  - Option to skip 2FA setup and enable later
-  - Profile completion score boost for enabling 2FA
-  - Ability to change or disable 2FA later
-  - Mobile-friendly QR code scanning for authenticator apps
+    - Clear explanation of 2FA benefits during onboarding
+    - Option to enable 2FA as part of profile setup
+    - Multiple 2FA method choices (authenticator app, SMS)
+    - Step-by-step guidance for setting up chosen 2FA method
+    - Verification process to confirm 2FA is working
+    - Recovery codes provided and explained
+    - Option to skip 2FA setup and enable later
+    - Profile completion score boost for enabling 2FA
+    - Ability to change or disable 2FA later
+    - Mobile-friendly QR code scanning for authenticator apps
 
 ### 10.38. Create multilingual worker profiles
 - **ID**: US-038
 - **Description**: As a worker who speaks multiple languages, I want to indicate my language proficiencies and preferences to improve matching with appropriate jobs.
 - **Acceptance criteria**:
-  - Language selection with standardized proficiency levels (A1-C2)
-  - Ability to add multiple languages with different proficiency levels
-  - Indication of native/primary language
-  - Platform interface automatically displayed in preferred language when available
-  - Language proficiency verification through basic assessment (optional)
-  - Language preferences factor into job matching algorithm
-  - Clear explanation of how language skills affect job opportunities
-  - Common industry-specific language skills suggestions
-  - Option to indicate willingness to work in language still being learned
-  - Integration with skills taxonomy for language-specific skills
+    - Language selection with standardized proficiency levels (A1-C2)
+    - Ability to add multiple languages with different proficiency levels
+    - Indication of native/primary language
+    - Platform interface automatically displayed in preferred language when available
+    - Language proficiency verification through basic assessment (optional)
+    - Language preferences factor into job matching algorithm
+    - Clear explanation of how language skills affect job opportunities
+    - Common industry-specific language skills suggestions
+    - Option to indicate willingness to work in language still being learned
+    - Integration with skills taxonomy for language-specific skills
 
 ### 10.39. Register as an employer
 - **ID**: US-039
 - **Description**: As an employment agency or freelancer, I want to register on the platform by selecting my agency type and providing basic information.
 - **Acceptance criteria**:
-  - Magic link email authentication for secure account creation
-  - Clear explanation of the three employer types with selection
-  - Ability to save progress and return to complete registration
-  - Real-time validation of input fields (e.g., KvK number format)
-  - Mobile-responsive registration process
-  - Clear indication of required vs. optional fields
-  - Explanation of the verification process and timeline
-  - Terms of service and privacy policy acceptance
-  - Confirmation email with next steps after initial registration
-  - Option to contact support during registration process
+    - Magic link email authentication for secure account creation
+    - Clear explanation of the three employer types with selection
+    - Ability to save progress and return to complete registration
+    - Real-time validation of input fields (e.g., KvK number format)
+    - Mobile-responsive registration process
+    - Clear indication of required vs. optional fields
+    - Explanation of the verification process and timeline
+    - Terms of service and privacy policy acceptance
+    - Confirmation email with next steps after initial registration
+    - Option to contact support during registration process
 
 ### 10.40. Complete employer verification process
 - **ID**: US-040
 - **Description**: As an employer, I want to submit the required verification documents based on my company type to gain full access to the platform.
 - **Acceptance criteria**:
-  - Dynamic document checklist based on selected employer type
-  - Clear explanation of document requirements with examples
-  - Multiple upload methods including mobile camera capture
-  - Document preview before submission
-  - Progress tracking for multi-document requirements
-  - Secure storage of sensitive business documents
-  - Status updates throughout the verification process
-  - Notification when documents are received and under review
-  - Direct communication channel for verification queries
-  - Estimated time to completion after document submission
+    - Dynamic document checklist based on selected employer type
+    - Clear explanation of document requirements with examples
+    - Multiple upload methods including mobile camera capture
+    - Document preview before submission
+    - Progress tracking for multi-document requirements
+    - Secure storage of sensitive business documents
+    - Status updates throughout the verification process
+    - Notification when documents are received and under review
+    - Direct communication channel for verification queries
+    - Estimated time to completion after document submission
 
 ### 10.41. Review employer verification as administrator
 - **ID**: US-041
 - **Description**: As a platform administrator, I want to review employer verification documents efficiently to ensure only legitimate agencies gain platform access.
 - **Acceptance criteria**:
-  - Prioritized queue of pending verifications
-  - Document viewer with zoom and download capabilities
-  - Type-specific verification checklist
-  - Quick approve/reject actions with reason selection
-  - Ability to request specific additional documents
-  - Direct messaging with employer for clarification
-  - Audit trail of all verification actions
-  - Batch approve/reject for related documents
-  - Automatic email notifications when actions are taken
-  - Performance metrics for verification turnaround time
+    - Prioritized queue of pending verifications
+    - Document viewer with zoom and download capabilities
+    - Type-specific verification checklist
+    - Quick approve/reject actions with reason selection
+    - Ability to request specific additional documents
+    - Direct messaging with employer for clarification
+    - Audit trail of all verification actions
+    - Batch approve/reject for related documents
+    - Automatic email notifications when actions are taken
+    - Performance metrics for verification turnaround time
 
 ### 10.42. Select and manage subscription tier
 - **ID**: US-042
 - **Description**: As a verified employer, I want to select a subscription tier that matches my hiring needs and manage my subscription over time.
 - **Acceptance criteria**:
-  - Clear presentation of available subscription options with pricing
-  - Comparison chart of features across different tiers
-  - Secure payment processing integration
-  - Immediate credit allocation upon successful payment
-  - Automatic recurring billing with pre-renewal notifications
-  - Ability to upgrade/downgrade subscription
-  - Invoice generation and access to billing history
-  - Credit usage statistics and forecasting
-  - Notification when credits are running low
-  - Option to purchase additional job credits
+    - Clear presentation of available subscription options with pricing
+    - Comparison chart of features across different tiers
+    - Secure payment processing integration
+    - Immediate credit allocation upon successful payment
+    - Automatic recurring billing with pre-renewal notifications
+    - Ability to upgrade/downgrade subscription
+    - Invoice generation and access to billing history
+    - Credit usage statistics and forecasting
+    - Notification when credits are running low
+    - Option to purchase additional job credits
 
 ### 10.43. Create and manage recruiter sub-accounts
 - **ID**: US-043
 - **Description**: As a medium/large agency administrator, I want to create and manage sub-accounts for my recruiters while maintaining centralized billing and oversight.
 - **Acceptance criteria**:
-  - Ability to invite recruiters via email to create sub-accounts
-  - Role and permission assignment for each sub-account
-  - Centralized job credit allocation and tracking
-  - Master view of all sub-account activities
-  - Individual login credentials for each recruiter
-  - Ability to activate/deactivate sub-accounts
-  - Notification when sub-accounts take significant actions
-  - Usage reporting by sub-account
-  - Transfer of ownership for job listings between sub-accounts
-  - Bulk invite option for adding multiple recruiters
+    - Ability to invite recruiters via email to create sub-accounts
+    - Role and permission assignment for each sub-account
+    - Centralized job credit allocation and tracking
+    - Master view of all sub-account activities
+    - Individual login credentials for each recruiter
+    - Ability to activate/deactivate sub-accounts
+    - Notification when sub-accounts take significant actions
+    - Usage reporting by sub-account
+    - Transfer of ownership for job listings between sub-accounts
+    - Bulk invite option for adding multiple recruiters
 
 ### 10.44. Complete annual re-verification process
 - **ID**: US-044
 - **Description**: As an employer, I want to complete my annual re-verification efficiently to maintain uninterrupted platform access.
 - **Acceptance criteria**:
-  - Advance notification before document expiration
-  - Clear indication of which documents need renewal
-  - Simplified re-upload process for expired documents
-  - Pre-filled forms with existing information
-  - Status dashboard showing verification progress
-  - Grace period with limited functionality during re-verification
-  - Immediate restoration of full access upon approval
-  - Email confirmation of successful re-verification
-  - Calendar integration for expiry reminders
-  - Explanation of compliance requirements driving re-verification
+    - Advance notification before document expiration
+    - Clear indication of which documents need renewal
+    - Simplified re-upload process for expired documents
+    - Pre-filled forms with existing information
+    - Status dashboard showing verification progress
+    - Grace period with limited functionality during re-verification
+    - Immediate restoration of full access upon approval
+    - Email confirmation of successful re-verification
+    - Calendar integration for expiry reminders
+    - Explanation of compliance requirements driving re-verification
 
 ### 10.45. Manage conversation threads
 - **ID**: US-045
 - **Description**: As a platform user, I want to view and manage all my conversations in one place to efficiently communicate with employers/workers.
 - **Acceptance criteria**:
-  - Unified inbox showing all conversations sorted by most recent activity
-  - Visual indicators for unread messages
-  - Ability to archive conversations to declutter the inbox
-  - Search functionality to find specific conversations or messages
-  - Conversation grouping by related job or application
-  - Preview of the most recent message in each conversation
-  - Batch actions for managing multiple conversations
-  - Filters to view only active, archived, or flagged conversations
-  - Mobile-optimized interface for on-the-go communication
-  - Offline support with message queuing when connectivity is lost
+    - Unified inbox showing all conversations sorted by most recent activity
+    - Visual indicators for unread messages
+    - Ability to archive conversations to declutter the inbox
+    - Search functionality to find specific conversations or messages
+    - Conversation grouping by related job or application
+    - Preview of the most recent message in each conversation
+    - Batch actions for managing multiple conversations
+    - Filters to view only active, archived, or flagged conversations
+    - Mobile-optimized interface for on-the-go communication
+    - Offline support with message queuing when connectivity is lost
 
 ### 10.46. Send and receive attachments
 - **ID**: US-046
 - **Description**: As a platform user, I want to send and receive file attachments in messages to share important documents related to job applications.
 - **Acceptance criteria**:
-  - Support for common file formats (PDF, DOC, JPG, PNG)
-  - File size limits clearly communicated (max 10MB per file)
-  - Preview functionality for supported file types
-  - Virus/malware scanning of all uploaded files
-  - Progress indicator during upload
-  - Ability to download attachments
-  - Thumbnail generation for images and PDFs
-  - Multiple file selection for batch uploads
-  - Drag-and-drop support on desktop browsers
-  - Mobile camera integration for direct photo sharing
-  - File type restrictions to prevent executable files
+    - Support for common file formats (PDF, DOC, JPG, PNG)
+    - File size limits clearly communicated (max 10MB per file)
+    - Preview functionality for supported file types
+    - Virus/malware scanning of all uploaded files
+    - Progress indicator during upload
+    - Ability to download attachments
+    - Thumbnail generation for images and PDFs
+    - Multiple file selection for batch uploads
+    - Drag-and-drop support on desktop browsers
+    - Mobile camera integration for direct photo sharing
+    - File type restrictions to prevent executable files
 
 ### 10.47. Configure notification preferences
 - **ID**: US-047
 - **Description**: As a platform user, I want to configure how and when I receive notifications about messages and application updates.
 - **Acceptance criteria**:
-  - Separate settings for in-app, email, and SMS notifications
-  - Ability to set quiet hours when no notifications are sent
-  - Options for immediate, batched, or digest notification delivery
-  - Channel-specific settings (e.g., critical updates by email, all messages in-app)
-  - Easy one-click unsubscribe from email notifications
-  - Preview of what each notification type looks like
-  - Test notification feature to confirm settings
-  - Default settings that balance user experience and engagement
-  - Settings accessible from both profile page and notification center
-  - Changes take effect immediately without requiring page refresh
+    - Separate settings for in-app, email, and SMS notifications
+    - Ability to set quiet hours when no notifications are sent
+    - Options for immediate, batched, or digest notification delivery
+    - Channel-specific settings (e.g., critical updates by email, all messages in-app)
+    - Easy one-click unsubscribe from email notifications
+    - Preview of what each notification type looks like
+    - Test notification feature to confirm settings
+    - Default settings that balance user experience and engagement
+    - Settings accessible from both profile page and notification center
+    - Changes take effect immediately without requiring page refresh
 
 ### 10.48. Moderate flagged messages
 - **ID**: US-048
 - **Description**: As a platform administrator, I want to review and moderate flagged messages to maintain a safe communication environment.
 - **Acceptance criteria**:
-  - Queue of flagged messages sorted by severity and timestamp
-  - Complete conversation context available when reviewing flags
-  - Quick actions to dismiss flag or take action against violators
-  - Standardized violation categories with recommended actions
-  - Communication templates for notifying users of moderation decisions
-  - Ability to temporarily or permanently restrict messaging privileges
-  - Audit trail of all moderation actions taken
-  - Analytics on common violation types and resolution times
-  - Escalation path for serious violations requiring legal attention
-  - Batch processing for similar violation types
-  - Automated detection of potential violations before user reports
+    - Queue of flagged messages sorted by severity and timestamp
+    - Complete conversation context available when reviewing flags
+    - Quick actions to dismiss flag or take action against violators
+    - Standardized violation categories with recommended actions
+    - Communication templates for notifying users of moderation decisions
+    - Ability to temporarily or permanently restrict messaging privileges
+    - Audit trail of all moderation actions taken
+    - Analytics on common violation types and resolution times
+    - Escalation path for serious violations requiring legal attention
+    - Batch processing for similar violation types
+    - Automated detection of potential violations before user reports
 
 ### 10.49. Use real-time messaging features
 - **ID**: US-049
 - **Description**: As a platform user, I want to use real-time messaging features to have efficient conversations about job opportunities.
 - **Acceptance criteria**:
-  - Messages appear instantly when both users are online
-  - Typing indicators show when the other party is composing a message
-  - Read receipts confirm when messages have been seen
-  - Online/offline status indicators for conversation participants
-  - Unread message count displayed on the inbox and application icon
-  - New message notifications appear without requiring page refresh
-  - Smooth scrolling and loading of message history
-  - Emoji support for expressing tone in messages
-  - Quote/reply functionality to reference specific messages
-  - Graceful handling of poor connectivity with automatic retry
-  - Optimized performance on both desktop and mobile devices
+    - Messages appear instantly when both users are online
+    - Typing indicators show when the other party is composing a message
+    - Read receipts confirm when messages have been seen
+    - Online/offline status indicators for conversation participants
+    - Unread message count displayed on the inbox and application icon
+    - New message notifications appear without requiring page refresh
+    - Smooth scrolling and loading of message history
+    - Emoji support for expressing tone in messages
+    - Quote/reply functionality to reference specific messages
+    - Graceful handling of poor connectivity with automatic retry
+    - Optimized performance on both desktop and mobile devices
 
 ### 10.50. Invite team member subaccount
 - **ID**: US-050
 - **Description**: As a main account holder, I want to invite team members to create subaccounts so they can post jobs and manage applications under our agency.
 - **Acceptance criteria**:
-  - Simple form to enter email address and select role (main or recruiter)
-  - Option to add personalized message to invitation
-  - Email sent to invitee with secure magic link
-  - Clear explanation of roles and permissions in the invitation
-  - Ability to track pending invitations
-  - Option to resend or cancel invitations
-  - Notification when invitation is accepted
-  - Automatic expiration of unused invitations after 48 hours
-  - Bulk invitation option for adding multiple team members at once
-  - Invitation history in audit log
+    - Simple form to enter email address and select role (main or recruiter)
+    - Option to add personalized message to invitation
+    - Email sent to invitee with secure magic link
+    - Clear explanation of roles and permissions in the invitation
+    - Ability to track pending invitations
+    - Option to resend or cancel invitations
+    - Notification when invitation is accepted
+    - Automatic expiration of unused invitations after 48 hours
+    - Bulk invitation option for adding multiple team members at once
+    - Invitation history in audit log
 
 ### 10.51. Accept team member invitation
 - **ID**: US-051
 - **Description**: As an invited team member, I want to easily accept my invitation and set up my account to start working under the agency.
 - **Acceptance criteria**:
-  - Single-click access from invitation email
-  - Pre-filled email field on registration form
-  - Clear explanation of the role and permissions being granted
-  - Simple form to set display name and authentication preferences
-  - Option to decline invitation
-  - Immediate access to appropriate features upon completion
-  - Welcome tutorial explaining key functions based on assigned role
-  - Notification to inviting user upon acceptance
-  - Graceful handling of expired invitations with clear messaging
-  - Mobile-optimized registration process
+    - Single-click access from invitation email
+    - Pre-filled email field on registration form
+    - Clear explanation of the role and permissions being granted
+    - Simple form to set display name and authentication preferences
+    - Option to decline invitation
+    - Immediate access to appropriate features upon completion
+    - Welcome tutorial explaining key functions based on assigned role
+    - Notification to inviting user upon acceptance
+    - Graceful handling of expired invitations with clear messaging
+    - Mobile-optimized registration process
 
 ### 10.52. Manage team member permissions
 - **ID**: US-052
 - **Description**: As a main account holder, I want to manage roles and permissions for my team members to maintain appropriate access controls.
 - **Acceptance criteria**:
-  - List view of all subaccounts with current roles and status
-  - Ability to promote recruiters to main account holders and vice versa
-  - Option to temporarily suspend accounts without deletion
-  - Reactivation of suspended accounts with original permissions
-  - Permanent deletion option with confirmation safeguard
-  - Prevention of deleting the last main account
-  - Clear explanation of permission changes when modifying roles
-  - Audit trail of all permission changes
-  - Batch operations for managing multiple accounts
-  - Notification to affected users when their permissions change
+    - List view of all subaccounts with current roles and status
+    - Ability to promote recruiters to main account holders and vice versa
+    - Option to temporarily suspend accounts without deletion
+    - Reactivation of suspended accounts with original permissions
+    - Permanent deletion option with confirmation safeguard
+    - Prevention of deleting the last main account
+    - Clear explanation of permission changes when modifying roles
+    - Audit trail of all permission changes
+    - Batch operations for managing multiple accounts
+    - Notification to affected users when their permissions change
 
 ### 10.53. View team performance analytics
 - **ID**: US-053
 - **Description**: As a main account holder, I want to view performance metrics for my team members to evaluate their effectiveness and optimize our hiring processes.
 - **Acceptance criteria**:
-  - Dashboard showing key metrics per team member
-  - Statistics on jobs posted, applications received, and response times
-  - Comparison view across team members
-  - Filterable by date ranges and job categories
-  - Exportable reports in CSV format
-  - Visual indicators for high and low performance
-  - Trend analysis showing improvement or decline over time
-  - Privacy controls ensuring recruiters only see their own performance
-  - Integration with job credit usage tracking
-  - Weekly automated summary reports via email
+    - Dashboard showing key metrics per team member
+    - Statistics on jobs posted, applications received, and response times
+    - Comparison view across team members
+    - Filterable by date ranges and job categories
+    - Exportable reports in CSV format
+    - Visual indicators for high and low performance
+    - Trend analysis showing improvement or decline over time
+    - Privacy controls ensuring recruiters only see their own performance
+    - Integration with job credit usage tracking
+    - Weekly automated summary reports via email
 
 ### 10.54. Submit exploitation report
 - **ID**: US-054
 - **Description**: As a worker, I want to report potential exploitation or misconduct so that unsafe practices can be addressed and I can be protected.
 - **Acceptance criteria**:
-  - Reporting option accessible from job listings and message threads
-  - Clear categories of reportable issues
-  - Option to remain anonymous
-  - Ability to upload evidence (photos, documents)
-  - Simple, non-intimidating form with clear language
-  - Confirmation screen with reference number
-  - Explanation of what happens next
-  - Option to provide contact information for follow-up
-  - Mobile-friendly reporting process
-  - Support for multiple languages
+    - Reporting option accessible from job listings and message threads
+    - Clear categories of reportable issues
+    - Option to remain anonymous
+    - Ability to upload evidence (photos, documents)
+    - Simple, non-intimidating form with clear language
+    - Confirmation screen with reference number
+    - Explanation of what happens next
+    - Option to provide contact information for follow-up
+    - Mobile-friendly reporting process
+    - Support for multiple languages
 
 ### 10.55. Review and manage worker reports
 - **ID**: US-055
 - **Description**: As a platform administrator, I want to review, prioritize, and resolve worker reports efficiently to maintain platform safety and compliance.
 - **Acceptance criteria**:
-  - Queue of reports sortable by severity, age, and status
-  - Detailed view of each report with full context
-  - Ability to add internal comments and notes
-  - Status update workflow with audit trail
-  - Option to request more information from reporter (if not anonymous)
-  - Tools to send structured feedback to employers
-  - Escalation path for serious violations
-  - Batch actions for similar reports
-  - Export functionality for external follow-up
-  - Analytics dashboard showing report trends
+    - Queue of reports sortable by severity, age, and status
+    - Detailed view of each report with full context
+    - Ability to add internal comments and notes
+    - Status update workflow with audit trail
+    - Option to request more information from reporter (if not anonymous)
+    - Tools to send structured feedback to employers
+    - Escalation path for serious violations
+    - Batch actions for similar reports
+    - Export functionality for external follow-up
+    - Analytics dashboard showing report trends
 
 ### 10.56. Receive compliance feedback
 - **ID**: US-056
 - **Description**: As an employer, I want to receive constructive feedback about reported issues so I can address them and improve my practices.
 - **Acceptance criteria**:
-  - Notification when feedback is available
-  - Dashboard showing all feedback items
-  - Clear explanation of the issue without revealing reporter identity
-  - Recommended actions for resolution
-  - Ability to respond to feedback
-  - Mark issues as addressed or in progress
-  - Resources for compliance improvement
-  - History of past feedback and resolutions
-  - Export functionality for internal record-keeping
-  - Integration with verification status (repeated issues may affect status)
+    - Notification when feedback is available
+    - Dashboard showing all feedback items
+    - Clear explanation of the issue without revealing reporter identity
+    - Recommended actions for resolution
+    - Ability to respond to feedback
+    - Mark issues as addressed or in progress
+    - Resources for compliance improvement
+    - History of past feedback and resolutions
+    - Export functionality for internal record-keeping
+    - Integration with verification status (repeated issues may affect status)
 
 ### 10.57. View reporting analytics
 - **ID**: US-057
 - **Description**: As a platform administrator, I want to analyze reporting patterns to identify systemic issues and improve platform safety.
 - **Acceptance criteria**:
-  - Dashboard showing report volume over time
-  - Breakdown by report type, severity, and resolution
-  - Employer risk scoring based on report history
-  - Geographic heat map of report origins
-  - Average time to resolution metrics
-  - Identification of repeat offenders
-  - Correlation analysis with other platform metrics
-  - Export functionality for external analysis
-  - Scheduled report generation
-  - Trend alerts for unusual patterns
+    - Dashboard showing report volume over time
+    - Breakdown by report type, severity, and resolution
+    - Employer risk scoring based on report history
+    - Geographic heat map of report origins
+    - Average time to resolution metrics
+    - Identification of repeat offenders
+    - Correlation analysis with other platform metrics
+    - Export functionality for external analysis
+    - Scheduled report generation
+    - Trend alerts for unusual patterns
 
 ### 10.58. Upgrade to a paid subscription tier
 - **ID**: US-058
 - **Description**: As a main account holder, I want to upgrade my subscription to access more features and job credits.
 - **Acceptance criteria**:
-  - Clear comparison of available tiers and features
-  - Transparent pricing information
-  - Secure payment processing integration
-  - Immediate access to new tier benefits upon payment
-  - Prorated billing for mid-cycle upgrades
-  - Email confirmation of subscription change
-  - Updated invoice reflecting the change
-  - Automatic credit allocation based on new tier
-  - Option to schedule downgrade for future billing cycle
-  - Ability to cancel automatic renewal
+    - Clear comparison of available tiers and features
+    - Transparent pricing information
+    - Secure payment processing integration
+    - Immediate access to new tier benefits upon payment
+    - Prorated billing for mid-cycle upgrades
+    - Email confirmation of subscription change
+    - Updated invoice reflecting the change
+    - Automatic credit allocation based on new tier
+    - Option to schedule downgrade for future billing cycle
+    - Ability to cancel automatic renewal
 
 ### 10.59. Purchase additional job credits
 - **ID**: US-059
 - **Description**: As a main account holder, I want to purchase additional job credits when my allocation is running low.
 - **Acceptance criteria**:
-  - Multiple credit pack options with clear pricing
-  - One-click purchase for existing payment methods
-  - Secure checkout for new payment methods
-  - Immediate credit allocation upon successful payment
-  - Email receipt and confirmation
-  - Transaction history in billing dashboard
-  - Bulk discount for larger credit packs
-  - Credits added to existing balance
-  - Clear expiration policy for purchased credits
-  - Option to set up automatic purchases when balance is low
+    - Multiple credit pack options with clear pricing
+    - One-click purchase for existing payment methods
+    - Secure checkout for new payment methods
+    - Immediate credit allocation upon successful payment
+    - Email receipt and confirmation
+    - Transaction history in billing dashboard
+    - Bulk discount for larger credit packs
+    - Credits added to existing balance
+    - Clear expiration policy for purchased credits
+    - Option to set up automatic purchases when balance is low
 
 ### 10.60. Manage subscription billing and invoices
 - **ID**: US-060
 - **Description**: As a main account holder, I want to manage my billing information and access invoices for accounting purposes.
 - **Acceptance criteria**:
-  - View current subscription details and renewal date
-  - Update payment method securely
-  - Access complete invoice history
-  - Download invoices in PDF format
-  - Filter invoices by date range
-  - View detailed breakdown of charges
-  - Receive invoice notifications via email
-  - Add/update billing information (address, VAT number)
-  - Export billing history in CSV format
-  - Access payment failure notifications and resolution options
+    - View current subscription details and renewal date
+    - Update payment method securely
+    - Access complete invoice history
+    - Download invoices in PDF format
+    - Filter invoices by date range
+    - View detailed breakdown of charges
+    - Receive invoice notifications via email
+    - Add/update billing information (address, VAT number)
+    - Export billing history in CSV format
+    - Access payment failure notifications and resolution options
 
 ### 10.61. Request job credits as recruiter
 - **ID**: US-061
 - **Description**: As a recruiter, I want to request additional job credits when I need to post a job but the account has insufficient credits.
 - **Acceptance criteria**:
-  - Clear notification when attempting to submit a job with insufficient credits
-  - Simple form to submit credit request to main account
-  - Ability to provide justification for the request
-  - Job saved in "Awaiting Credits" status
-  - Notification when request is approved or denied
-  - Job automatically moves to "Pending Review" when credits are allocated
-  - Ability to withdraw request if job is no longer needed
-  - Status indicator showing pending credit requests
-  - Notification of estimated wait time based on past request handling
-  - Option to edit job while awaiting credits
+    - Clear notification when attempting to submit a job with insufficient credits
+    - Simple form to submit credit request to main account
+    - Ability to provide justification for the request
+    - Job saved in "Awaiting Credits" status
+    - Notification when request is approved or denied
+    - Job automatically moves to "Pending Review" when credits are allocated
+    - Ability to withdraw request if job is no longer needed
+    - Status indicator showing pending credit requests
+    - Notification of estimated wait time based on past request handling
+    - Option to edit job while awaiting credits
 
 ### 10.62. Manage credit requests
 - **ID**: US-062
 - **Description**: As a main account holder, I want to review and action credit requests from recruiters to control job posting costs.
 - **Acceptance criteria**:
-  - Dashboard showing all pending credit requests
-  - Details of job and recruiter for each request
-  - Option to approve request using existing credits
-  - Direct flow to purchase credits if balance is insufficient
-  - Ability to deny requests with explanation
-  - Batch approval for multiple requests
-  - Notification to recruiters when request is actioned
-  - History of past credit requests and actions
-  - Analytics on credit usage patterns by recruiter
-  - Option to set credit allocation limits per recruiter
+    - Dashboard showing all pending credit requests
+    - Details of job and recruiter for each request
+    - Option to approve request using existing credits
+    - Direct flow to purchase credits if balance is insufficient
+    - Ability to deny requests with explanation
+    - Batch approval for multiple requests
+    - Notification to recruiters when request is actioned
+    - History of past credit requests and actions
+    - Analytics on credit usage patterns by recruiter
+    - Option to set credit allocation limits per recruiter
 
 ### 10.63. Create multi-language job listings
 - **ID**: US-063
 - **Description**: As an employer, I want to create job listings in multiple languages to reach a diverse candidate pool.
 - **Acceptance criteria**:
-  - Interface to add job details in multiple languages (Dutch, Polish, English)
-  - Language tabs for switching between translations during creation
-  - Ability to mark a language version as primary
-  - Option to copy content from one language to another as starting point
-  - Visual indicator for incomplete translations
-  - Preview of how the listing appears in each language
-  - Validation of required fields across all languages
-  - Support for language-specific formatting (dates, numbers)
-  - Machine translation suggestion option with clear marking
-  - Job appears in search results for all completed languages
+    - Interface to add job details in multiple languages (Dutch, Polish, English)
+    - Language tabs for switching between translations during creation
+    - Ability to mark a language version as primary
+    - Option to copy content from one language to another as starting point
+    - Visual indicator for incomplete translations
+    - Preview of how the listing appears in each language
+    - Validation of required fields across all languages
+    - Support for language-specific formatting (dates, numbers)
+    - Machine translation suggestion option with clear marking
+    - Job appears in search results for all completed languages
 
 ### 10.64. Set language preferences
 - **ID**: US-064
 - **Description**: As a platform user, I want to set my preferred language to view the platform in my native language.
 - **Acceptance criteria**:
-  - Language selector accessible from all pages
-  - Persistent language preference saved to user profile
-  - Immediate application of language change without page reload
-  - Browser language detection on first visit
-  - Clear visual indication of current language
-  - All system messages and notifications in selected language
-  - Fallback to English for untranslated content with notification
-  - Option to help translate missing content
-  - Language preference applied across devices
-  - Language-specific formatting of dates, numbers, and currencies
+    - Language selector accessible from all pages
+    - Persistent language preference saved to user profile
+    - Immediate application of language change without page reload
+    - Browser language detection on first visit
+    - Clear visual indication of current language
+    - All system messages and notifications in selected language
+    - Fallback to English for untranslated content with notification
+    - Option to help translate missing content
+    - Language preference applied across devices
+    - Language-specific formatting of dates, numbers, and currencies
 
 ### 10.65. Manage platform translations
 - **ID**: US-065
 - **Description**: As a platform administrator, I want to manage and update translations to ensure all content is available in supported languages.
 - **Acceptance criteria**:
-  - Dashboard showing translation completion percentage by language
-  - Interface for adding/editing translations without coding
-  - Ability to import/export translation files in standard formats
-  - Version control for tracking translation changes
-  - Workflow for reviewing and approving contributed translations
-  - Alerts for missing translations in critical areas
-  - Batch translation tools for similar content
-  - Translation memory to ensure consistency
-  - Analytics on language usage across the platform
-  - Ability to add new supported languages
+    - Dashboard showing translation completion percentage by language
+    - Interface for adding/editing translations without coding
+    - Ability to import/export translation files in standard formats
+    - Version control for tracking translation changes
+    - Workflow for reviewing and approving contributed translations
+    - Alerts for missing translations in critical areas
+    - Batch translation tools for similar content
+    - Translation memory to ensure consistency
+    - Analytics on language usage across the platform
+    - Ability to add new supported languages
 
 ### 10.66. View job listings in preferred language
 - **ID**: US-066
 - **Description**: As a worker, I want to view job listings in my preferred language to better understand the opportunities.
 - **Acceptance criteria**:
-  - Job listings automatically displayed in user's preferred language when available
-  - Clear indication when a listing is not available in preferred language
-  - One-click toggle to view available alternative languages
-  - Search functionality works across all language versions
-  - Consistent terminology across translated job listings
-  - Machine-translated content clearly marked as such
-  - Option to report translation issues
-  - Skills and certifications displayed in user's language regardless of job listing language
-  - Location and company information standardized across languages
-  - Salary and benefits information formatted according to locale conventions
+    - Job listings automatically displayed in user's preferred language when available
+    - Clear indication when a listing is not available in preferred language
+    - One-click toggle to view available alternative languages
+    - Search functionality works across all language versions
+    - Consistent terminology across translated job listings
+    - Machine-translated content clearly marked as such
+    - Option to report translation issues
+    - Skills and certifications displayed in user's language regardless of job listing language
+    - Location and company information standardized across languages
+    - Salary and benefits information formatted according to locale conventions
 
 ### 10.67. Use platform on mobile devices
 - **ID**: US-067
 - **Description**: As a user, I want to access all platform features on my mobile device so I can use the service anywhere.
 - **Acceptance criteria**:
-  - All critical workflows function on smartphones and tablets
-  - Content properly sized and readable without zooming
-  - Forms usable with touch input and on-screen keyboards
-  - No horizontal scrolling on standard screen sizes
-  - Navigation adapted for one-handed mobile use
-  - Page load times under 3 seconds on 3G connections
-  - Smooth scrolling and transitions on mid-range devices
-  - Proper handling of orientation changes
-  - Touch targets large enough for accurate tapping
-  - Appropriate spacing between interactive elements
+    - All critical workflows function on smartphones and tablets
+    - Content properly sized and readable without zooming
+    - Forms usable with touch input and on-screen keyboards
+    - No horizontal scrolling on standard screen sizes
+    - Navigation adapted for one-handed mobile use
+    - Page load times under 3 seconds on 3G connections
+    - Smooth scrolling and transitions on mid-range devices
+    - Proper handling of orientation changes
+    - Touch targets large enough for accurate tapping
+    - Appropriate spacing between interactive elements
 
 ### 10.68. Upload documents using mobile camera
 - **ID**: US-068
 - **Description**: As a mobile user, I want to upload documents and photos directly using my device's camera.
 - **Acceptance criteria**:
-  - Direct camera access from document upload fields
-  - Option to choose between camera and file upload
-  - Preview of captured image before submission
-  - Ability to retake photo if quality is poor
-  - Automatic image optimization for faster uploads
-  - Progress indicator during upload
-  - Graceful handling of upload interruptions
-  - Support for both front and rear cameras
-  - Clear guidance on optimal photo conditions
-  - Confirmation when upload is successful
+    - Direct camera access from document upload fields
+    - Option to choose between camera and file upload
+    - Preview of captured image before submission
+    - Ability to retake photo if quality is poor
+    - Automatic image optimization for faster uploads
+    - Progress indicator during upload
+    - Graceful handling of upload interruptions
+    - Support for both front and rear cameras
+    - Clear guidance on optimal photo conditions
+    - Confirmation when upload is successful
 
 ### 10.69. Complete forms with intermittent connectivity
 - **ID**: US-069
 - **Description**: As a mobile user, I want to complete forms even with unstable internet connection without losing my progress.
 - **Acceptance criteria**:
-  - Automatic saving of form progress as fields are completed
-  - Local storage of form data until submission is possible
-  - Visual indicator of offline status
-  - Ability to continue form completion while offline
-  - Automatic submission when connectivity is restored
-  - Notification when submission succeeds after reconnection
-  - Protection against duplicate submissions
-  - Clear error messages for validation issues
-  - Option to manually save progress at any point
-  - Resumable file uploads for large documents
+    - Automatic saving of form progress as fields are completed
+    - Local storage of form data until submission is possible
+    - Visual indicator of offline status
+    - Ability to continue form completion while offline
+    - Automatic submission when connectivity is restored
+    - Notification when submission succeeds after reconnection
+    - Protection against duplicate submissions
+    - Clear error messages for validation issues
+    - Option to manually save progress at any point
+    - Resumable file uploads for large documents
 
 ### 10.70. Navigate platform efficiently on mobile
 - **ID**: US-070
 - **Description**: As a mobile user, I want an intuitive navigation system optimized for small screens.
 - **Acceptance criteria**:
-  - Bottom navigation bar for primary actions
-  - Hamburger menu for secondary functions
-  - Persistent access to messaging and notifications
-  - One-tap access to job application status
-  - Context-aware back button behavior
-  - Breadcrumbs for complex workflows
-  - Recently viewed items accessible from home screen
-  - Search accessible from all screens
-  - Quick filters for job listings without opening full filter panel
-  - Gesture support for common actions (swipe, pull-to-refresh)
+    - Bottom navigation bar for primary actions
+    - Hamburger menu for secondary functions
+    - Persistent access to messaging and notifications
+    - One-tap access to job application status
+    - Context-aware back button behavior
+    - Breadcrumbs for complex workflows
+    - Recently viewed items accessible from home screen
+    - Search accessible from all screens
+    - Quick filters for job listings without opening full filter panel
+    - Gesture support for common actions (swipe, pull-to-refresh)
 
 ### 10.71. Export worker profile data
 - **ID**: US-071
 - **Description**: As a worker, I want to export my profile data in a portable format to use on other platforms or for my personal records.
 - **Acceptance criteria**:
-  - Option to download all profile data in JSON and PDF formats
-  - Export includes skills, experience, certifications, and language proficiency
-  - Personal documents can be included or excluded from export
-  - Exported data is formatted for human readability
-  - Option to include application history and messaging history
-  - Clear explanation of what data will be included in export
-  - Confirmation email when large export packages are ready
-  - GDPR-compliant data portability implementation
-  - Rate limiting to prevent system abuse
-  - Export history log showing previous download dates
+    - Option to download all profile data in JSON and PDF formats
+    - Export includes skills, experience, certifications, and language proficiency
+    - Personal documents can be included or excluded from export
+    - Exported data is formatted for human readability
+    - Option to include application history and messaging history
+    - Clear explanation of what data will be included in export
+    - Confirmation email when large export packages are ready
+    - GDPR-compliant data portability implementation
+    - Rate limiting to prevent system abuse
+    - Export history log showing previous download dates
 
 ### 10.72. Schedule bulk interviews
 - **ID**: US-072
 - **Description**: As an employer, I want to schedule interview time slots for multiple candidates efficiently.
 - **Acceptance criteria**:
-  - Calendar interface for blocking interview time slots
-  - Ability to set interview duration, location and type (in-person/video/phone)
-  - Batch invite option for multiple candidates
-  - Automated notifications to selected candidates
-  - Candidate self-scheduling from available time slots
-  - Calendar integration with popular providers (Google, Outlook)
-  - Automatic reminder notifications before interviews
-  - Rescheduling workflow with minimum disruption
-  - Special handling for couple interviews ensuring both partners are invited
-  - Status tracking of accepted, pending, and declined interviews
+    - Calendar interface for blocking interview time slots
+    - Ability to set interview duration, location and type (in-person/video/phone)
+    - Batch invite option for multiple candidates
+    - Automated notifications to selected candidates
+    - Candidate self-scheduling from available time slots
+    - Calendar integration with popular providers (Google, Outlook)
+    - Automatic reminder notifications before interviews
+    - Rescheduling workflow with minimum disruption
+    - Special handling for couple interviews ensuring both partners are invited
+    - Status tracking of accepted, pending, and declined interviews
 
 ### 10.73. Provide and view employer testimonials
 - **ID**: US-073
 - **Description**: As a verified employer with a good track record, I want to showcase testimonials from workers who had positive experiences working with my agency.
 - **Acceptance criteria**:
-  - Workers can submit testimonials after completing assignments
-  - Employers can approve testimonials before they are published
-  - Testimonials display on employer profiles with worker first name only
-  - Moderation system prevents inappropriate content
-  - Workers can withdraw their testimonials at any time
-  - Star rating system for quantitative feedback
-  - Special badges for employers with multiple positive testimonials
-  - Testimonial analytics for employers to track feedback trends
-  - Option for employers to respond to testimonials
-  - System to detect and prevent fake testimonials
+    - Workers can submit testimonials after completing assignments
+    - Employers can approve testimonials before they are published
+    - Testimonials display on employer profiles with worker first name only
+    - Moderation system prevents inappropriate content
+    - Workers can withdraw their testimonials at any time
+    - Star rating system for quantitative feedback
+    - Special badges for employers with multiple positive testimonials
+    - Testimonial analytics for employers to track feedback trends
+    - Option for employers to respond to testimonials
+    - System to detect and prevent fake testimonials
 
 
 

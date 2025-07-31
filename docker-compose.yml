@@ -1,0 +1,138 @@
+services:
+  # PostgreSQL with PostGIS extension
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: safejob_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-safejob}
+      POSTGRES_USER: ${POSTGRES_USER:-safejob}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-safejob} -d ${POSTGRES_DB:-safejob}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7.4-alpine
+    container_name: safejob_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # Django backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: safejob_backend
+    env_file:
+      - .envs/.env.development.local
+    environment:
+      - DEBUG=${DEBUG:-1}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-safejob}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-safejob}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CACHE_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.development}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,backend}
+    volumes:
+      - ./backend/apps:/app/apps
+      - ./backend/config:/app/config
+      - ./backend/manage.py:/app/manage.py
+      - backend_static:/app/static
+      - backend_media:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/apps
+          target: /app/apps
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+            - ".pytest_cache/"
+        - action: sync
+          path: ./backend/config
+          target: /app/config
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+        - action: rebuild
+          path: ./backend/pyproject.toml
+
+  # MkDocs documentation server
+  docs:
+    build:
+      context: .
+      dockerfile: docs/Dockerfile
+    container_name: safejob_docs
+    volumes:
+      - ./docs:/app/docs:ro
+      - ./mkdocs.yml:/app/mkdocs.yml:ro
+    working_dir: /app
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./docs
+          target: /app/docs
+          ignore:
+            - "*.pyc"
+            - "__pycache__/"
+            - ".git/"
+        - action: sync+restart
+          path: ./mkdocs.yml
+          target: /app/mkdocs.yml
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_static:
+    driver: local
+  backend_media:
+    driver: local
+
+networks:
+  default:
+    name: safejob_network
+    driver: bridge

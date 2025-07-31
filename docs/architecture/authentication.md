@@ -9,12 +9,14 @@ The Safe Job platform implements a **passwordless authentication system** optimi
 ### 1.1 Core Authentication Methods
 
 **Primary Authentication: Magic Link System**
+
 - Passwordless authentication via secure email tokens
 - JWT-based API access with refresh token rotation
 - Integrated rate limiting and brute force protection
 - Comprehensive audit logging for compliance
 
 **Future Authentication Methods (Post-MVP):**
+
 - **TOTP Two-Factor Authentication**: Additional security for high-risk accounts
 - **OAuth Integration**: Social login via Google, Facebook, and Apple
 - **SMS Verification**: Phone number verification for enhanced security
@@ -40,7 +42,7 @@ sequenceDiagram
     participant API as Django API
     participant DB as Database
     participant EMAIL as Resend Service
-    
+
     U->>+FE: Enter email address
     FE->>+API: POST /api/v1/auth/magic-link/
     API->>API: Generate secure token
@@ -50,7 +52,7 @@ sequenceDiagram
     EMAIL-->>-API: Email sent confirmation
     API-->>-FE: "Magic link sent" response
     FE-->>-U: "Check your email" message
-    
+
     U->>U: Click magic link in email
     U->>+FE: Magic link redirect
     FE->>+API: POST /api/v1/auth/magic-link/verify/
@@ -79,17 +81,17 @@ class MagicLinkService:
         """Generate cryptographically secure magic link token"""
         # 32 bytes = 256 bits of entropy
         raw_token = secrets.token_urlsafe(32)
-        
+
         # Hash token for database storage (prevents rainbow table attacks)
         token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
-        
+
         return raw_token, token_hash
-    
+
     @staticmethod
-    def create_magic_link(user_email: str) -> MagicLinkToken:
+    def create_magic_link(user_email: str, request=None) -> MagicLinkToken:
         """Create magic link token with security controls"""
         raw_token, token_hash = MagicLinkService.generate_token()
-        
+
         # Single-use token with 15-minute expiration
         magic_link = MagicLinkToken.objects.create(
             email=user_email.lower(),
@@ -98,11 +100,12 @@ class MagicLinkService:
             ip_address=get_client_ip(request),  # Optional IP binding
             user_agent=request.META.get('HTTP_USER_AGENT', '')
         )
-        
+
         return magic_link, raw_token
 ```
 
 **Security Features:**
+
 - **Cryptographic Security**: 256-bit entropy with secure random generation
 - **Single-Use Tokens**: Automatically invalidated after verification
 - **Time-Limited**: 15-minute expiration window (configurable)
@@ -126,6 +129,7 @@ def magic_link_request_view(request):
 ```
 
 **Protection Mechanisms:**
+
 - **IP-based Limiting**: 10 requests per minute per IP address
 - **Email-based Limiting**: 3 magic links per hour per email address
 - **User-Agent Limiting**: 20 requests per minute per user agent
@@ -139,6 +143,7 @@ def magic_link_request_view(request):
 ### 3.1 Token Architecture
 
 **Token Strategy:**
+
 - **Access Tokens**: Short-lived (15 minutes), stateless API authentication
 - **Refresh Tokens**: Long-lived (7 days), secure storage with rotation
 - **Token Blacklisting**: Immediate revocation capability
@@ -180,14 +185,14 @@ class SafeJobTokenService:
     def generate_tokens(user):
         """Generate secure JWT token pair"""
         refresh = RefreshToken.for_user(user)
-        
+
         # Add custom claims
         refresh['user_type'] = user.user_type
         refresh['email'] = user.email
-        
+
         # Access token inherits claims from refresh
         access = refresh.access_token
-        
+
         # Log token generation for audit
         TokenGenerationEvent.objects.create(
             user=user,
@@ -195,12 +200,12 @@ class SafeJobTokenService:
             ip_address=get_client_ip(),
             expires_at=refresh['exp']
         )
-        
+
         return {
             'refresh': str(refresh),
             'access': str(access)
         }
-    
+
     @staticmethod
     def revoke_token(token_id: str):
         """Immediately revoke token by blacklisting"""
@@ -211,6 +216,7 @@ class SafeJobTokenService:
 ```
 
 **Token Security Features:**
+
 - **Asymmetric Signing**: RS256 algorithm with key rotation capability
 - **Automatic Rotation**: Refresh tokens rotated on each use
 - **Blacklist Support**: Immediate token revocation for security incidents
@@ -244,13 +250,13 @@ from rest_framework.permissions import BasePermission
 class IsCandidate(BasePermission):
     """Permission for candidate-only endpoints"""
     def has_permission(self, request, view):
-        return (request.user.is_authenticated and 
+        return (request.user.is_authenticated and
                 request.user.user_type == UserType.CANDIDATE)
 
 class IsVerifiedEmployer(BasePermission):
     """Permission for verified employers only"""
     def has_permission(self, request, view):
-        return (request.user.is_authenticated and 
+        return (request.user.is_authenticated and
                 request.user.user_type == UserType.EMPLOYER and
                 hasattr(request.user, 'employer_profile') and
                 request.user.employer_profile.verification_status == VerificationStatus.APPROVED)
@@ -283,12 +289,14 @@ class IsSubaccountOwner(BasePermission):
 ### 5.1 Encryption Strategy
 
 **Data at Rest Encryption:**
+
 - **Database**: AWS RDS encryption with customer-managed KMS keys
 - **File Storage**: S3 server-side encryption (SSE-KMS) with key rotation
 - **Application Level**: Sensitive fields encrypted using Django's `cryptography` library
 - **Backup Encryption**: Automated backups encrypted with separate keys
 
 **Data in Transit Encryption:**
+
 - **HTTPS**: TLS 1.3 for all HTTP communications with HSTS headers
 - **WebSocket Security**: WSS (WebSocket Secure) for real-time messaging
 - **API Communication**: Certificate pinning for mobile apps (future)
@@ -301,16 +309,16 @@ from django.conf import settings
 
 class EncryptedField(models.TextField):
     """Custom field for encrypting sensitive data"""
-    
+
     def __init__(self, *args, **kwargs):
         self.cipher = Fernet(settings.FIELD_ENCRYPTION_KEY)
         super().__init__(*args, **kwargs)
-    
+
     def from_db_value(self, value, expression, connection):
         if value is None:
             return value
         return self.cipher.decrypt(value.encode()).decode()
-    
+
     def to_db_value(self, value, connection):
         if value is None:
             return value
@@ -332,15 +340,15 @@ class MagicLinkRequestSerializer(serializers.Serializer):
         max_length=254,
         validators=[validate_email_deliverable]
     )
-    
+
     def validate_email(self, value):
         # Normalize email (lowercase, strip whitespace)
         email = value.lower().strip()
-        
+
         # Check against spam domains
         if is_disposable_email(email):
             raise ValidationError("Disposable email addresses not allowed")
-            
+
         return email
 
 # 3. Database constraints
@@ -357,23 +365,23 @@ class CustomUser(AbstractUser):
 class SecureFileUploadView(APIView):
     def post(self, request):
         uploaded_file = request.FILES.get('document')
-        
+
         # 1. File size validation (10MB limit)
         if uploaded_file.size > 10 * 1024 * 1024:
             raise ValidationError("File too large")
-        
+
         # 2. MIME type validation
         allowed_types = ['application/pdf', 'image/jpeg', 'image/png']
         if uploaded_file.content_type not in allowed_types:
             raise ValidationError("File type not allowed")
-        
+
         # 3. File signature validation (magic bytes)
         if not validate_file_signature(uploaded_file):
             raise ValidationError("File appears corrupted or malicious")
-        
+
         # 4. Virus scanning (future integration)
         # scan_result = virus_scanner.scan(uploaded_file)
-        
+
         # 5. Secure storage with random filename
         secure_filename = generate_secure_filename(uploaded_file.name)
         return upload_to_s3(uploaded_file, secure_filename)
@@ -389,7 +397,7 @@ class SecureFileUploadView(APIView):
 ```python
 class SecurityEvent(models.Model):
     """Security-related events for audit and compliance"""
-    
+
     EVENT_TYPES = [
         ('LOGIN_SUCCESS', 'Successful Login'),
         ('LOGIN_FAILED', 'Failed Login Attempt'),
@@ -400,7 +408,7 @@ class SecurityEvent(models.Model):
         ('DATA_EXPORT', 'Personal Data Export'),
         ('DATA_DELETION', 'Account Deletion'),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
     ip_address = models.GenericIPAddressField()
@@ -428,7 +436,7 @@ class SecurityMonitor:
             ip_address=ip_address,
             timestamp__gte=timezone.now() - timedelta(seconds=time_window)
         ).count()
-        
+
         if recent_failures >= 5:
             SecurityEvent.objects.create(
                 event_type='SUSPICIOUS_ACTIVITY',
@@ -438,7 +446,7 @@ class SecurityMonitor:
             )
             return True
         return False
-    
+
     @staticmethod
     def detect_credential_stuffing(email: str, time_window: int = 3600):
         """Detect credential stuffing attacks"""
@@ -447,14 +455,14 @@ class SecurityMonitor:
             metadata__email=email,
             timestamp__gte=timezone.now() - timedelta(seconds=time_window)
         ).count()
-        
+
         if user_failures >= 10:
             # Temporarily lock account
             user = User.objects.filter(email=email).first()
             if user:
                 user.is_active = False
                 user.save()
-                
+
                 SecurityEvent.objects.create(
                     user=user,
                     event_type='ACCOUNT_LOCKED',
@@ -466,12 +474,14 @@ class SecurityMonitor:
 ### 6.2 Incident Response Framework
 
 **Automated Response Actions:**
+
 1. **Rate Limiting Escalation**: Automatic IP blocking for repeated violations
 2. **Account Protection**: Temporary account suspension for suspicious activity
 3. **Alert Generation**: Real-time notifications for security events
 4. **Evidence Collection**: Automatic log aggregation for incident investigation
 
 **Manual Response Procedures:**
+
 1. **Security Incident Classification**: Severity assessment and stakeholder notification
 2. **Forensic Investigation**: Log analysis and attack vector identification
 3. **Containment Actions**: System isolation and threat neutralization
@@ -488,7 +498,7 @@ class SecurityMonitor:
 ```python
 class DataExportView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
         """Generate complete data export for user"""
         user_data = {
@@ -498,18 +508,18 @@ class DataExportView(APIView):
             'message_history': self.get_message_data(request.user),
             'audit_logs': self.get_security_events(request.user),
         }
-        
+
         # Generate secure download link
         export_file = generate_data_export(user_data)
         download_link = create_signed_url(export_file, expires_in=86400)  # 24 hours
-        
+
         # Log data access request
         SecurityEvent.objects.create(
             user=request.user,
             event_type='DATA_EXPORT',
             metadata={'export_size': len(user_data), 'format': 'JSON'}
         )
-        
+
         return Response({'download_url': download_link})
 ```
 
@@ -517,44 +527,44 @@ class DataExportView(APIView):
 ```python
 class AccountDeletionView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def delete(self, request):
         """Process account deletion with GDPR compliance"""
         user = request.user
-        
+
         # 1. Data retention check
         if self.has_legal_retention_requirement(user):
             return Response({
                 'error': 'Account cannot be deleted due to legal retention requirements',
                 'retention_period': '7 years for employment records'
             }, status=400)
-        
+
         # 2. Pseudonymization vs. deletion
         if self.requires_pseudonymization(user):
             self.pseudonymize_user_data(user)
         else:
             self.hard_delete_user_data(user)
-        
+
         # 3. Audit logging
         SecurityEvent.objects.create(
             user=user,
             event_type='DATA_DELETION',
             metadata={'deletion_type': 'user_requested', 'method': 'pseudonymization'}
         )
-        
+
         return Response({'message': 'Account deletion processed'})
-    
+
     def pseudonymize_user_data(self, user):
         """Replace personal data with pseudonymized identifiers"""
         pseudonym_id = f"deleted_user_{uuid.uuid4().hex[:8]}"
-        
+
         # Replace personal identifiers
         user.email = f"{pseudonym_id}@deleted.safejob.local"
         user.first_name = "Deleted"
         user.last_name = "User"
         user.is_active = False
         user.save()
-        
+
         # Pseudonymize related data
         if hasattr(user, 'candidate_profile'):
             profile = user.candidate_profile
@@ -566,12 +576,14 @@ class AccountDeletionView(APIView):
 ### 7.2 Privacy by Design Implementation
 
 **Data Minimization:**
+
 - Only essential personal data collected during registration
 - Optional fields clearly marked and not required for core functionality
 - Automatic data cleanup after retention periods expire
 - Regular data audit and purging of unnecessary information
 
 **Purpose Limitation:**
+
 - Clear consent mechanisms for each data processing purpose
 - Separate consent for marketing communications
 - Data usage strictly limited to stated purposes
@@ -587,15 +599,15 @@ class DataRetentionManager:
         'marketing_consent': timedelta(days=730),        # 2 years
         'inactive_accounts': timedelta(days=365),        # 1 year
     }
-    
+
     @classmethod
     def cleanup_expired_data(cls):
         """Automated cleanup of expired personal data"""
         now = timezone.now()
-        
+
         for data_type, retention_period in cls.RETENTION_PERIODS.items():
             cutoff_date = now - retention_period
-            
+
             if data_type == 'inactive_accounts':
                 # Delete accounts inactive for 1 year
                 inactive_users = User.objects.filter(
@@ -604,7 +616,7 @@ class DataRetentionManager:
                 )
                 for user in inactive_users:
                     cls.pseudonymize_inactive_user(user)
-            
+
             elif data_type == 'security_logs':
                 # Clean old security events
                 SecurityEvent.objects.filter(
@@ -619,18 +631,21 @@ class DataRetentionManager:
 ### 8.1 Post-MVP Security Features
 
 **Enhanced Authentication (Months 3-4):**
+
 - **TOTP Two-Factor Authentication**: Time-based OTP for high-risk accounts
 - **Hardware Security Keys**: FIDO2/WebAuthn support for admin accounts
 - **Biometric Authentication**: Mobile app fingerprint/face recognition
 - **Risk-Based Authentication**: Machine learning-based fraud detection
 
 **Advanced Encryption (Months 5-6):**
+
 - **End-to-End Encryption**: Encrypted messaging between candidates and employers
 - **Zero-Knowledge Architecture**: Client-side encryption for sensitive documents
 - **Key Management Service**: Automated key rotation and secure key storage
 - **Field-Level Encryption**: Database column encryption for PII data
 
 **Security Monitoring (Months 6+):**
+
 - **SIEM Integration**: Security Information and Event Management
 - **Behavioral Analytics**: User behavior anomaly detection
 - **Threat Intelligence**: Integration with security threat feeds
@@ -639,12 +654,14 @@ class DataRetentionManager:
 ### 8.2 Compliance Roadmap
 
 **ISO 27001 Certification (Year 2):**
+
 - Information Security Management System implementation
 - Risk assessment and treatment procedures
 - Security awareness training program
 - Regular security audits and assessments
 
 **SOC 2 Type II Compliance (Year 2):**
+
 - Security, availability, and confidentiality controls
 - Independent auditor assessment
 - Continuous monitoring and reporting
@@ -657,6 +674,7 @@ class DataRetentionManager:
 ### 9.1 MVP Authentication Implementation
 
 **Week 1-2: Core Authentication**
+
 - [ ] Custom User model with email-based authentication
 - [ ] Magic link token generation and verification
 - [ ] JWT token integration with Django REST Framework
@@ -664,6 +682,7 @@ class DataRetentionManager:
 - [ ] Security event logging framework
 
 **Week 3-4: Security Hardening**
+
 - [ ] Input validation and sanitization
 - [ ] File upload security controls
 - [ ] HTTPS configuration with security headers
@@ -671,6 +690,7 @@ class DataRetentionManager:
 - [ ] Audit logging implementation
 
 **Week 5-6: Monitoring and Compliance**
+
 - [ ] Security monitoring dashboard
 - [ ] GDPR data export functionality
 - [ ] Account deletion with pseudonymization
@@ -680,6 +700,7 @@ class DataRetentionManager:
 ### 9.2 Security Testing Requirements
 
 **Automated Security Testing:**
+
 - [ ] SQL injection vulnerability scanning
 - [ ] Cross-site scripting (XSS) prevention testing
 - [ ] Authentication bypass attempt detection
@@ -687,6 +708,7 @@ class DataRetentionManager:
 - [ ] Token security and expiration testing
 
 **Manual Security Assessment:**
+
 - [ ] Penetration testing of authentication flows
 - [ ] Social engineering vulnerability assessment
 - [ ] Physical security review of development environment
@@ -700,6 +722,7 @@ class DataRetentionManager:
 The Safe Job platform authentication and security architecture provides comprehensive protection appropriate for handling sensitive employment data in the Dutch market. The passwordless magic link system optimizes for user experience while maintaining high security standards, and the comprehensive audit logging ensures GDPR compliance.
 
 **Key Security Strengths:**
+
 1. **Passwordless Design**: Eliminates password-related vulnerabilities
 2. **Comprehensive Monitoring**: Real-time security event detection and response
 3. **GDPR Compliance**: Built-in privacy controls and data protection measures
@@ -712,8 +735,8 @@ This authentication architecture has been designed with security-first principle
 
 ---
 
-*Document Version: 2.0*  
-*Last Updated: July 2025*  
+*Document Version: 2.0*
+*Last Updated: July 2025*
 *Security Review Status: Validated - Ready for Implementation*
 
 ## Request Examples

@@ -1,9 +1,12 @@
 # Phase 9: AWS Deployment & Production Setup - Detailed Implementation Plan
 
-**Duration**: Week 9 (7 days)  
-**Dependencies**: All previous phases (1-8)  
-**Risk Level**: High  
-**Team**: 1 full-stack developer + Claude Code  
+**Duration**: Week 9 (7 days)
+
+**Dependencies**: All previous phases (1-8)
+
+**Risk Level**: High
+
+**Team**: 1 full-stack developer + Claude Code
 
 ## Overview
 
@@ -23,10 +26,13 @@ Phase 9 establishes a robust, scalable production infrastructure on AWS using mo
 ### 9.1 Infrastructure as Code Setup
 
 #### 9.1.1 Terraform Infrastructure Definition
-**Duration**: 10 hours  
+
+**Duration**: 10 hours
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Design production network architecture with VPC, subnets, and security groups
 - [ ] Set up ECS Fargate cluster with auto-scaling configuration
 - [ ] Configure Application Load Balancer with SSL termination
@@ -35,6 +41,7 @@ Phase 9 establishes a robust, scalable production infrastructure on AWS using mo
 - [ ] Configure S3 buckets for static assets and file storage
 
 **Acceptance Criteria:**
+
 - Infrastructure deployed consistently across environments
 - Network security follows least-privilege principles
 - Database configured with automated backups and encryption
@@ -53,7 +60,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-  
+
   backend "s3" {
     bucket         = "safe-job-terraform-state"
     key            = "production/terraform.tfstate"
@@ -65,7 +72,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-  
+
   default_tags {
     tags = {
       Project     = "safe-job"
@@ -126,9 +133,9 @@ resource "aws_subnet" "private" {
 # NAT Gateways for private subnet internet access
 resource "aws_eip" "nat" {
   count = length(var.availability_zones)
-  
+
   domain = "vpc"
-  
+
   tags = {
     Name = "${var.project_name}-nat-eip-${count.index + 1}-${var.environment}"
   }
@@ -240,7 +247,7 @@ resource "aws_ecs_task_definition" "backend" {
     {
       name  = "backend"
       image = "${aws_ecr_repository.backend.repository_url}:latest"
-      
+
       portMappings = [
         {
           containerPort = 8000
@@ -257,10 +264,7 @@ resource "aws_ecs_task_definition" "backend" {
           name  = "DEBUG"
           value = "False"
         },
-        {
-          name  = "DATABASE_URL"
-          value = "postgresql://${aws_db_instance.main.username}:${var.db_password}@${aws_db_instance.main.endpoint}/${aws_db_instance.main.db_name}"
-        },
+        # DATABASE_URL moved to secrets section for security
         {
           name  = "REDIS_URL"
           value = "redis://${aws_elasticache_replication_group.main.primary_endpoint}:6379"
@@ -283,6 +287,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name      = "DATABASE_PASSWORD"
           valueFrom = aws_ssm_parameter.db_password.arn
+        },
+        {
+          name      = "DATABASE_URL"
+          valueFrom = aws_ssm_parameter.database_url.arn
         }
       ]
 
@@ -340,7 +348,7 @@ resource "aws_ecs_service" "backend" {
   deployment_configuration {
     maximum_percent         = 200
     minimum_healthy_percent = 100
-    
+
     deployment_circuit_breaker {
       enable   = true
       rollback = true
@@ -495,10 +503,13 @@ resource "aws_db_instance" "read_replica" {
 ```
 
 #### 9.1.2 Security and Access Control
-**Duration**: 6 hours  
+
+**Duration**: 6 hours
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Configure IAM roles and policies with least privilege
 - [ ] Set up AWS Systems Manager Parameter Store for secrets
 - [ ] Implement VPC security groups with minimal access
@@ -506,6 +517,7 @@ resource "aws_db_instance" "read_replica" {
 - [ ] Set up AWS WAF for application firewall protection
 
 **Acceptance Criteria:**
+
 - All services follow least-privilege access principles
 - Secrets stored securely and rotated automatically
 - Network traffic restricted to necessary ports and sources
@@ -518,8 +530,8 @@ resource "aws_db_instance" "read_replica" {
 # KMS Key for encryption
 resource "aws_kms_key" "main" {
   description             = "${var.project_name} ${var.environment} encryption key"
-  deletion_window_in_days = 7
-  
+  deletion_window_in_days = var.environment == "production" ? 30 : 7
+
   tags = {
     Name = "${var.project_name}-kms-key-${var.environment}"
   }
@@ -533,8 +545,8 @@ resource "aws_kms_alias" "main" {
 # Separate KMS key for RDS
 resource "aws_kms_key" "rds" {
   description             = "${var.project_name} ${var.environment} RDS encryption key"
-  deletion_window_in_days = 7
-  
+  deletion_window_in_days = var.environment == "production" ? 30 : 7
+
   tags = {
     Name = "${var.project_name}-rds-kms-key-${var.environment}"
   }
@@ -760,6 +772,17 @@ resource "aws_ssm_parameter" "db_password" {
   }
 }
 
+resource "aws_ssm_parameter" "database_url" {
+  name   = "/${var.project_name}/${var.environment}/DATABASE_URL"
+  type   = "SecureString"
+  value  = "postgresql://${aws_db_instance.main.username}:${var.db_password}@${aws_db_instance.main.endpoint}/${aws_db_instance.main.db_name}"
+  key_id = aws_kms_key.main.key_id
+
+  tags = {
+    Name = "${var.project_name}-database-url-${var.environment}"
+  }
+}
+
 # WAF
 resource "aws_wafv2_web_acl" "main" {
   name  = "${var.project_name}-waf-${var.environment}"
@@ -834,10 +857,13 @@ resource "aws_wafv2_web_acl_association" "main" {
 ### 9.2 CI/CD Pipeline Implementation
 
 #### 9.2.1 GitHub Actions Deployment Pipeline
-**Duration**: 8 hours  
+
+**Duration**: 8 hours
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Set up automated testing pipeline with parallel jobs
 - [ ] Configure Docker image building and ECR push
 - [ ] Implement blue-green deployment strategy
@@ -845,6 +871,7 @@ resource "aws_wafv2_web_acl_association" "main" {
 - [ ] Set up environment promotion workflow
 
 **Acceptance Criteria:**
+
 - Tests run automatically on every pull request
 - Failed tests block deployment to production
 - Docker images built and pushed to ECR automatically
@@ -872,7 +899,7 @@ jobs:
   # Test jobs
   test-backend:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgis/postgis:15-3.3
@@ -886,7 +913,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-          
+
       redis:
         image: redis:7-alpine
         options: >-
@@ -974,7 +1001,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     needs: [test-backend, test-frontend]
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -997,7 +1024,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test-backend, test-frontend, security-scan]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-    
+
     outputs:
       backend-image: ${{ steps.backend-image.outputs.image }}
       frontend-image: ${{ steps.frontend-image.outputs.image }}
@@ -1153,10 +1180,13 @@ jobs:
 ### 9.3 Monitoring and Observability
 
 #### 9.3.1 CloudWatch and Application Monitoring
-**Duration**: 6 hours  
+
+**Duration**: 6 hours
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Set up comprehensive CloudWatch dashboards
 - [ ] Configure application performance monitoring (APM)
 - [ ] Implement centralized logging with structured logs
@@ -1164,6 +1194,7 @@ jobs:
 - [ ] Set up distributed tracing for performance debugging
 
 **Acceptance Criteria:**
+
 - All application metrics visible in real-time dashboards
 - Automated alerts trigger for performance/error thresholds
 - Logs searchable and correlated across services
@@ -1404,10 +1435,12 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 ```
 
 #### 9.3.2 Application Performance Monitoring Integration
-**Duration**: 4 hours  
+**Duration**: 4 hours
+
 **Priority**: Medium
 
 **Tasks:**
+
 - [ ] Integrate AWS X-Ray for distributed tracing
 - [ ] Set up custom metrics collection
 - [ ] Configure performance monitoring dashboards
@@ -1415,6 +1448,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 - [ ] Add uptime monitoring with external services
 
 **Acceptance Criteria:**
+
 - Request traces visible across all service boundaries
 - Custom business metrics tracked and visualized
 - Health checks provide detailed service status
@@ -1424,10 +1458,13 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 ### 9.4 Backup and Disaster Recovery
 
 #### 9.4.1 Automated Backup Strategy
-**Duration**: 4 hours  
+
+**Duration**: 4 hours
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Configure automated RDS backups with point-in-time recovery
 - [ ] Set up S3 cross-region replication for file storage
 - [ ] Implement database backup validation and testing
@@ -1435,6 +1472,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 - [ ] Set up infrastructure backup for quick recovery
 
 **Acceptance Criteria:**
+
 - Database backups created automatically with 30-day retention
 - File storage replicated to secondary region
 - Backup integrity verified through automated testing
@@ -1475,24 +1513,28 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 ## Testing Requirements
 
 ### Infrastructure Tests
+
 - [ ] Terraform plan validation and security scanning
 - [ ] Network connectivity and security group testing
 - [ ] Load balancer health check validation
 - [ ] Database connection and performance testing
 
 ### Deployment Tests
+
 - [ ] Blue-green deployment process validation
 - [ ] Database migration rollback testing
 - [ ] Service discovery and registration testing
 - [ ] SSL certificate and domain configuration testing
 
 ### Disaster Recovery Tests
+
 - [ ] Database restore from backup testing
 - [ ] Cross-region failover procedures
 - [ ] Infrastructure recreation from code
 - [ ] Application data recovery validation
 
 ### Performance Tests
+
 - [ ] Load testing under expected traffic patterns
 - [ ] Auto-scaling behavior validation
 - [ ] Database performance under load
@@ -1509,6 +1551,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 ## Deliverables Checklist
 
 ### Infrastructure Deliverables
+
 - [ ] Production VPC with multi-AZ setup
 - [ ] ECS Fargate cluster with auto-scaling
 - [ ] RDS PostgreSQL with Multi-AZ and read replicas
@@ -1517,6 +1560,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 - [ ] S3 buckets with proper policies and encryption
 
 ### Security Deliverables
+
 - [ ] IAM roles and policies with least privilege
 - [ ] VPC security groups with minimal access
 - [ ] KMS encryption for data at rest
@@ -1524,6 +1568,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 - [ ] SSL certificates and HTTPS enforcement
 
 ### Monitoring Deliverables
+
 - [ ] CloudWatch dashboards and alarms
 - [ ] Centralized logging configuration
 - [ ] SNS notification setup
@@ -1531,6 +1576,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 - [ ] Uptime monitoring configuration
 
 ### CI/CD Deliverables
+
 - [ ] GitHub Actions workflow for automated deployment
 - [ ] Docker image building and ECR integration
 - [ ] Blue-green deployment configuration

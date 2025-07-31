@@ -19,7 +19,7 @@ Safe Job is a platform designed to connect legitimate hiring agencies with tempo
 - Provide real-time communication between parties
 - Ensure mobile-first, accessible user experience
 
-### Technical Objectives  
+### Technical Objectives
 - Build with Django/React for rapid development
 - Deploy on AWS Free Tier for cost efficiency
 - Implement comprehensive security measures
@@ -88,7 +88,7 @@ Comprehensive testing, security measures, and documentation maintained throughou
 
 !!! info "Development Phase"
     **Phase 1: Project Foundation** ⏳ *In Planning*
-    
+
     - Setting up development environment
     - Configuring CI/CD pipeline
     - Establishing documentation workflow
@@ -103,7 +103,7 @@ We measure success across multiple dimensions:
 - 99%+ uptime after launch
 - Zero critical security vulnerabilities
 
-**Business Metrics**  
+**Business Metrics**
 - 10+ active employers within first month
 - 50+ registered candidates
 - 80% profile completion rate

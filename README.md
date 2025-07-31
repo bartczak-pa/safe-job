@@ -6,7 +6,7 @@ A secure platform connecting legitimate hiring agencies with temporary workers i
 
 Safe Job addresses critical issues in the Dutch temporary work sector by creating a trusted environment where:
 - **Workers** can find legitimate employment opportunities safely
-- **Hiring Agencies** can connect with verified candidates efficiently  
+- **Hiring Agencies** can connect with verified candidates efficiently
 - **Regulators** can ensure compliance with Dutch labor laws
 
 ### Key Features

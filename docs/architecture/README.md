@@ -52,7 +52,7 @@ This architecture has been thoroughly validated through systematic analysis incl
 ```
 safe_job/
 ├── users/           # Core user management & authentication
-├── candidates/      # Candidate profiles, skills, preferences  
+├── candidates/      # Candidate profiles, skills, preferences
 ├── employers/       # Employer profiles, verification, subaccounts
 ├── jobs/           # Job posting, admin approval, search
 ├── applications/   # Application workflow, matching
@@ -72,7 +72,7 @@ safe_job/
 
 ### 8-Week Development Timeline
 - **Phase 1 (Weeks 1-3)**: Foundation - Authentication, core models, admin
-- **Phase 2 (Weeks 4-6)**: Core Features - Jobs, applications, real-time messaging  
+- **Phase 2 (Weeks 4-6)**: Core Features - Jobs, applications, real-time messaging
 - **Phase 3 (Weeks 7-8)**: Integration - Frontend completion, AWS deployment
 
 ### Success Metrics

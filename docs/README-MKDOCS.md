@@ -12,14 +12,14 @@ This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](ht
 
 1. **Install Dependencies**
    ```bash
-   pip install -r requirements-docs.txt
+   pip install -r docs/requirements.txt
    ```
 
 2. **Start Development Server**
    ```bash
    mkdocs serve
    ```
-   
+
 3. **Access Documentation**
    - Local: http://localhost:8000
    - Auto-reloads on file changes

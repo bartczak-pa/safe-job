@@ -127,7 +127,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Check
         run: echo "Build check passed"
-  
+
   test:
     name: Test Check
     runs-on: ubuntu-latest
@@ -135,7 +135,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test Check
         run: echo "Test check passed"
-  
+
   docs:
     name: Documentation Check
     runs-on: ubuntu-latest

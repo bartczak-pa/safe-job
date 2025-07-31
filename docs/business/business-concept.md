@@ -69,21 +69,56 @@ Safe Job is a job board specifically designed for temporary workers and hiring a
 # Monetization Blueprint
 
 ## Pricing Architecture
-- **Free Tier for Agencies**: 1 job posting with basic features.
-- **Subscription Tiers**:
-  - Tier 1: 5 postings + basic matching features for €50/month
-  - Tier 2: 15 postings + advanced matching + reporting analytics for €100/month
-  - Tier 3: Unlimited postings + priority support & custom features for €200/month
-- **Job Packs**: Additional packages for extra postings as needed, starting at €20 for 5 extra postings.
+
+### Free Tier
+
+- **1 job posting** with basic features
+- Perfect for small agencies testing the platform
+
+### Subscription Tiers
+
+#### Tier 1 – Starter – €50/month
+
+- 5 job postings
+- Basic matching features
+- Standard support
+
+#### Tier 2 – Professional – €100/month
+
+- 15 job postings
+- Advanced matching algorithms
+- Reporting and analytics dashboard
+- Priority support
+
+#### Tier 3 – Enterprise – €200/month
+- Unlimited job postings
+- Custom features and integrations
+- Dedicated account manager
+- Priority support and custom SLA
+
+### Job Packs
+- **Additional postings** for agencies who exceed their monthly limit
+- Starting at €20 for 5 extra postings
+- Flexible scaling without subscription upgrade
 
 ## Revenue Projections
-- **Initial Traction**: Assume targeting 100+ agencies within the first 60 days, converting 20% into paid subscriptions.
-- Monthly Revenue Forecast (after 60 days):
-  - Tier 1: 10 agencies x €50 = €500
-  - Tier 2: 7 agencies x €100 = €700
-  - Tier 3: 3 agencies x €200 = €600
-  - Job packs: Estimated €300
-  - **Total MRR**: ~€2,100 in the initial phase, scaling as user base grows.
+
+### Initial Traction
+- Target: **100+ agencies** within the first 60 days
+- Expected conversion: **20%** into paid subscriptions
+
+### Monthly Revenue Forecast (after 60 days)
+
+| Tier | Agencies | Revenue |
+|------|----------|---------|
+| **Tier 1 - Starter** | 10 agencies | €500 |
+| **Tier 2 - Professional** | 7 agencies | €700 |
+| **Tier 3 - Enterprise** | 3 agencies | €600 |
+| **Job Packs** | Various | €300 |
+
+### **Total Monthly Recurring Revenue (MRR): €2,100**
+
+*Revenue scales proportionally as user base grows*
 
 # Go-To-Market Strategy
 

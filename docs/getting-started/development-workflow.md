@@ -22,35 +22,35 @@ gitGraph
     branch develop
     checkout develop
     commit id: "Setup development"
-    
+
     branch feature/auth
     checkout feature/auth
     commit id: "Add magic link auth"
     commit id: "Add JWT tokens"
-    
+
     checkout develop
     merge feature/auth
     commit id: "Integrate auth system"
-    
+
     branch feature/jobs
     checkout feature/jobs
     commit id: "Add job models"
     commit id: "Add job API"
-    
+
     checkout develop
     merge feature/jobs
-    
+
     checkout main
     merge develop
     commit id: "Release v1.0.0"
-    
+
     branch hotfix/security
     checkout hotfix/security
     commit id: "Fix security issue"
-    
+
     checkout main
     merge hotfix/security
-    
+
     checkout develop
     merge hotfix/security
 ```
@@ -81,7 +81,7 @@ git checkout -b docs/api-documentation
 git add .
 git commit -m "feat: implement magic link authentication
 
-- Add email verification system  
+- Add email verification system
 - Create JWT token management
 - Add rate limiting for auth endpoints
 
@@ -99,7 +99,7 @@ type(scope): brief description
 
 Examples:
 feat(auth): implement magic link authentication
-fix(jobs): resolve location search bug  
+fix(jobs): resolve location search bug
 docs(api): add authentication endpoints
 refactor(models): optimize database queries
 ```
@@ -111,7 +111,7 @@ Brief description of changes and motivation.
 
 ## 🔄 Type of Change
 - [ ] Bug fix
-- [ ] New feature  
+- [ ] New feature
 - [ ] Documentation update
 - [ ] Refactoring
 - [ ] Performance improvement
@@ -139,7 +139,7 @@ Brief description of changes and motivation.
 Every PR triggers these checks:
 - **Build validation** - Code compiles/builds successfully
 - **Test suite** - All tests pass
-- **Documentation** - Docs build without errors  
+- **Documentation** - Docs build without errors
 - **Security scan** - No obvious security issues
 - **Code quality** - Linting and formatting checks
 
@@ -168,7 +168,7 @@ Every PR triggers these checks:
 - ✅ Include administrators
 - ✅ Require conversation resolution
 
-### Develop Branch Protection  
+### Develop Branch Protection
 - ✅ Require status checks to pass
 - ❌ Require pull request reviews (flexibility for solo dev)
 - ✅ Require up-to-date branches
@@ -196,7 +196,7 @@ git checkout -b feature/phase-1-foundation
 git add .
 git commit -m "feat(foundation): complete Docker setup"
 
-git add .  
+git add .
 git commit -m "feat(foundation): add CI/CD pipeline"
 
 # Complete phase
@@ -230,7 +230,7 @@ git add .
 git commit -m "fix: resolve critical authentication vulnerability
 
 - Patch JWT token validation
-- Add input sanitization  
+- Add input sanitization
 - Update security headers
 
 Security advisory: SA-2024-001"
@@ -258,7 +258,7 @@ git push origin develop
 
 2. **Test Coverage**
    - Unit tests pass
-   - Integration tests pass  
+   - Integration tests pass
    - Minimum coverage thresholds met
 
 3. **Documentation Standards**
@@ -280,7 +280,7 @@ git push origin develop
 
 - **Functionality** - Feature works as intended
 - **User Experience** - Good UX/UI implementation
-- **Performance** - No obvious performance issues  
+- **Performance** - No obvious performance issues
 - **Security** - Security considerations addressed
 - **Documentation** - Clear and complete documentation
 
