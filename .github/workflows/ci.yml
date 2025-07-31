@@ -102,8 +102,11 @@ jobs:
       - name: Install Python dependencies
         working-directory: ./backend
         run: |
-          poetry install --only=main,dev
+          # Recommended for Poetry ≥1.4
+          poetry install --with dev
 
+          # Legacy equivalent:
+          # poetry install --only main --only dev
       - name: Run Django system checks
         working-directory: ./backend
         env:
