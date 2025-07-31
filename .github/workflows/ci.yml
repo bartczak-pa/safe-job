@@ -201,7 +201,7 @@ jobs:
 
       - name: Run Safety (Dependency Security)
         working-directory: ./backend
-        continue-on-error: true
+        continue-on-error: false
         run: |
           echo "Running Safety dependency security scan..."
           if ! poetry run safety scan && ! poetry run safety check; then
@@ -242,6 +242,8 @@ jobs:
           cp .envs/.env.test .envs/.env.development.local
           # Override Django settings for container testing
           echo "DJANGO_SETTINGS_MODULE=config.settings.test" >> .envs/.env.development.local
+          # Override database host for Docker network
+          echo "DB_HOST=db" >> .envs/.env.development.local
 
       - name: Build backend image
         run: |
