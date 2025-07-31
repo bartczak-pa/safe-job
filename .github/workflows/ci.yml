@@ -204,7 +204,10 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running Safety dependency security scan..."
-          poetry run safety scan || poetry run safety check || echo "Safety scan completed with warnings - continuing build"
+          if ! poetry run safety scan && ! poetry run safety check; then
+            echo "⚠️  Safety scan failed - check for security vulnerabilities"
+            exit 1
+          fi
 
       - name: Run Bandit (Code Security)
         working-directory: ./backend
