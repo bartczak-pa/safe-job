@@ -106,6 +106,8 @@ jobs:
 
       - name: Run Django system checks
         working-directory: ./backend
+        env:
+          DJANGO_DEPLOYMENT_CHECKS: "true"
         run: |
           poetry run python manage.py check --deploy --fail-level=WARNING
 

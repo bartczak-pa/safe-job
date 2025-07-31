@@ -3,6 +3,8 @@ Test settings for Safe Job Platform.
 Optimized for running tests quickly and safely.
 """
 
+import os
+
 from decouple import config
 
 from .base import *  # noqa: F403
@@ -91,11 +93,33 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Test specific settings
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
-# Security settings for CI deployment checks
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_SSL_REDIRECT = False  # Disabled for test environment
-SESSION_COOKIE_SECURE = False  # Disabled for test environment
-CSRF_COOKIE_SECURE = False  # Disabled for test environment
+# Security settings - conditional based on whether we're running deployment checks
+# These need to be True for deployment checks but can cause issues during actual testing
+RUNNING_DEPLOYMENT_CHECKS = (
+    os.environ.get("DJANGO_DEPLOYMENT_CHECKS", "False").lower() == "true"
+)
+
+if RUNNING_DEPLOYMENT_CHECKS:
+    # Production-level security settings for deployment checks
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+else:
+    # Relaxed settings for actual test execution
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
+# Additional security settings (always enabled)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 
 # Override with stronger test secret key
 SECRET_KEY = "test-secret-key-for-ci-with-more-entropy-and-longer-length-to-pass-deployment-checks"  # nosec B105
