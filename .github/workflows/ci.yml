@@ -254,14 +254,29 @@ jobs:
           # Start services
           docker compose up -d --wait
 
-          # Wait for services to be healthy
-          sleep 30
+          # Wait for services with timeout
+          timeout=60
+          while [ $timeout -gt 0 ]; do
+            if curl -f http://localhost:8000/health/ >/dev/null 2>&1; then
+              break
+            fi
+            sleep 5
+            timeout=$((timeout - 5))
+          done
 
-          # Test health endpoint
-          curl -f http://localhost:8000/health/ || exit 1
+          # Verify health endpoint returns expected response
+          if ! curl -f http://localhost:8000/health/ | grep -q "ok\|healthy\|success"; then
+            echo "❌ Health endpoint check failed"
+            docker compose logs
+            exit 1
+          fi
 
-          # Run tests in container
-          docker compose exec -T backend python manage.py test
+          # Run tests in container with proper error handling
+          if ! docker compose exec -T backend python manage.py test; then
+            echo "❌ Container tests failed"
+            docker compose logs
+            exit 1
+          fi
 
           # Clean up
           docker compose down
