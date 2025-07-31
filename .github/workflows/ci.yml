@@ -248,6 +248,8 @@ jobs:
           echo "DJANGO_SETTINGS_MODULE=config.settings.test" >> .envs/.env.development.local
           # Override database host for Docker network
           echo "DB_HOST=db" >> .envs/.env.development.local
+          # Override database password to match CI environment
+          echo "POSTGRES_PASSWORD=test_password_ci" >> .envs/.env.development.local
 
       - name: Build backend image
         run: |
