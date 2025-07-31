@@ -44,6 +44,7 @@ poetry run python manage.py runserver
 - **Poetry** - Dependency management
 
 ### Django Apps Structure
+
 ```
 apps/
 ├── core/           # Shared utilities, base models
@@ -122,7 +123,7 @@ Once running, API documentation is available at:
 
 - **Swagger UI**: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
 - **ReDoc**: [http://localhost:8000/api/redoc/](http://localhost:8000/api/redoc/)
-- **OpenAPI Schema**: [http://localhost:8000/api/schema/](https://localhost:8000/api/schema/)
+- **OpenAPI Schema**: [http://localhost:8000/api/schema/](http://localhost:8000/api/schema/)
 
 ## 🔧 Configuration
 
