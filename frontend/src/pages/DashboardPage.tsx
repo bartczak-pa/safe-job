@@ -18,7 +18,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-sm text-gray-600">
                 Welcome, {user?.firstName}
               </span>
-              <button onClick={logout} className="btn-secondary">
+              <button type="button" onClick={logout} className="btn-secondary">
                 Logout
               </button>
             </div>
@@ -51,19 +51,19 @@ export const DashboardPage: React.FC = () => {
               <div className="space-y-2">
                 {user?.role === "candidate" ? (
                   <>
-                    <button className="btn-primary w-full text-sm">
+                    <button type="button" className="btn-primary w-full text-sm">
                       Browse Jobs
                     </button>
-                    <button className="btn-secondary w-full text-sm">
+                    <button type="button" className="btn-secondary w-full text-sm">
                       Update Profile
                     </button>
                   </>
                 ) : (
                   <>
-                    <button className="btn-primary w-full text-sm">
+                    <button type="button" className="btn-primary w-full text-sm">
                       Post a Job
                     </button>
-                    <button className="btn-secondary w-full text-sm">
+                    <button type="button" className="btn-secondary w-full text-sm">
                       View Applications
                     </button>
                   </>
