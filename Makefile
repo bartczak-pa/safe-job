@@ -1,7 +1,7 @@
 # Safe Job Platform - Development Makefile
 # Simplifies common development tasks
 
-.PHONY: help setup test lint format clean docker-build docker-up docker-down docs frontend-test frontend-lint frontend-build frontend-shell update-deps-backend update-deps-frontend install-deps-backend install-deps-frontend
+.PHONY: help setup test lint format format-backend format-frontend clean docker-build docker-up docker-down docs frontend-test frontend-lint frontend-build frontend-shell update-deps-backend update-deps-frontend install-deps-backend install-deps-frontend
 
 # Default target
 help: ## Show this help message
@@ -49,9 +49,15 @@ lint: ## Run all linting and formatting checks (backend + frontend)
 
 format: ## Format all code (backend + frontend)
 	@echo "✨ Formatting all code..."
+	$(MAKE) format-backend
+	$(MAKE) format-frontend
+
+format-backend: ## Format backend code only
 	@echo "🐍 Formatting backend code..."
 	cd backend && poetry run black .
 	cd backend && poetry run isort .
+
+format-frontend: ## Format frontend code only
 	@echo "⚛️  Formatting frontend code..."
 	docker compose exec frontend npm run format
 

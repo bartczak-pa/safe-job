@@ -27,26 +27,32 @@ export const AboutPage: React.FC = () => {
           <div className="space-y-8">
             {/* Mission Section */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Our Mission
+              </h2>
               <p className="text-gray-600 leading-relaxed">
-                Safe Job Platform is dedicated to creating a secure and transparent marketplace
-                for temporary employment in the Netherlands. We bridge the gap between legitimate
-                hiring agencies and temporary workers while prioritizing worker safety, preventing
-                exploitation, and ensuring regulatory compliance.
+                Safe Job Platform is dedicated to creating a secure and
+                transparent marketplace for temporary employment in the
+                Netherlands. We bridge the gap between legitimate hiring
+                agencies and temporary workers while prioritizing worker safety,
+                preventing exploitation, and ensuring regulatory compliance.
               </p>
             </section>
 
             {/* What We Do */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">What We Do</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                What We Do
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">
                     Employer Verification
                   </h3>
                   <p className="text-gray-600">
-                    We thoroughly vet all employers and hiring agencies to ensure they meet
-                    Dutch labor standards and maintain legitimate business practices.
+                    We thoroughly vet all employers and hiring agencies to
+                    ensure they meet Dutch labor standards and maintain
+                    legitimate business practices.
                   </p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -54,8 +60,9 @@ export const AboutPage: React.FC = () => {
                     Worker Protection
                   </h3>
                   <p className="text-gray-600">
-                    Our platform includes built-in safeguards to prevent exploitation,
-                    ensure fair wages, and protect workers' rights throughout their employment.
+                    Our platform includes built-in safeguards to prevent
+                    exploitation, ensure fair wages, and protect workers' rights
+                    throughout their employment.
                   </p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -63,8 +70,9 @@ export const AboutPage: React.FC = () => {
                     Smart Matching
                   </h3>
                   <p className="text-gray-600">
-                    Our AI-powered system matches candidates with suitable opportunities
-                    based on skills, location, and career preferences.
+                    Our AI-powered system matches candidates with suitable
+                    opportunities based on skills, location, and career
+                    preferences.
                   </p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -73,7 +81,8 @@ export const AboutPage: React.FC = () => {
                   </h3>
                   <p className="text-gray-600">
                     We continuously monitor compliance with Dutch labor laws and
-                    EU regulations to maintain the highest standards of employment practices.
+                    EU regulations to maintain the highest standards of
+                    employment practices.
                   </p>
                 </div>
               </div>
@@ -81,7 +90,9 @@ export const AboutPage: React.FC = () => {
 
             {/* Why Choose Us */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Why Choose Safe Job?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Why Choose Safe Job?
+              </h2>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start">
                   <span className="text-primary-600 mr-2">✓</span>
@@ -89,7 +100,9 @@ export const AboutPage: React.FC = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-primary-600 mr-2">✓</span>
-                  <span>Transparent job postings with clear terms and conditions</span>
+                  <span>
+                    Transparent job postings with clear terms and conditions
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-primary-600 mr-2">✓</span>
@@ -108,10 +121,13 @@ export const AboutPage: React.FC = () => {
 
             {/* Contact */}
             <section className="bg-primary-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-primary-900 mb-4">Get Started Today</h2>
+              <h2 className="text-2xl font-bold text-primary-900 mb-4">
+                Get Started Today
+              </h2>
               <p className="text-primary-700 mb-6">
-                Join thousands of workers and employers who trust Safe Job Platform
-                for secure, transparent temporary employment opportunities.
+                Join thousands of workers and employers who trust Safe Job
+                Platform for secure, transparent temporary employment
+                opportunities.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
