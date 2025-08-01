@@ -43,13 +43,13 @@ graph TD
 
 ### Container Details
 
-| Service | Container | Purpose | Ports | Health Check |
-|---------|-----------|---------|-------|--------------|
-| **Frontend** | `safejob_frontend` | React development server | 3000:5173 | `curl -f http://localhost:5173/` |
-| **Backend** | `safejob_backend` | Django API server | 8000:8000 | `curl -f http://localhost:8000/health/` |
-| **Database** | `safejob_db` | PostgreSQL + PostGIS | 5432:5432 | `pg_isready -U safejob -d safejob` |
-| **Redis** | `safejob_redis` | Cache and sessions | 6379:6379 | `redis-cli ping` |
-| **Documentation** | `safejob_docs` | MkDocs server | 8001:8001 | `curl -f http://localhost:8001/` |
+| Service         | Container             | Purpose                     | Ports      | Health Check                         |
+|-----------------|-----------------------|-----------------------------|------------|--------------------------------------|
+| **Frontend**    | `safejob_frontend`    | React development server    | 3000:5173  | `curl -f http://localhost:3000/`     |
+| **Backend**     | `safejob_backend`     | Django API server           | 8000:8000  | `curl -f http://localhost:8000/health/` |
+| **Database**    | `safejob_db`          | PostgreSQL + PostGIS        | 5432:5432  | `pg_isready -U safejob -d safejob`   |
+| **Redis**       | `safejob_redis`       | Cache and sessions          | 6379:6379  | `redis-cli ping`                     |
+| **Documentation** | `safejob_docs`      | MkDocs server               | 8001:8001  | `curl -f http://localhost:8001/`     |
 
 ## 🚀 Quick Start
 
