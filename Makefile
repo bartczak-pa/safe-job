@@ -18,17 +18,17 @@ setup: ## Set up development environment
 test: ## Run all tests (backend + frontend)
 	@echo "🧪 Running all tests..."
 	@echo "🐍 Running backend tests..."
-	docker compose exec backend python manage.py test
+	docker compose run --rm backend python manage.py test
 	@echo "⚛️  Running frontend tests..."
-	docker compose exec frontend npm run test
+	docker compose run --rm frontend npm run test
 
 test-backend: ## Run Django tests only
 	@echo "🧪 Running backend tests..."
-	docker compose exec backend python manage.py test
+	docker compose run --rm backend python manage.py test
 
 test-frontend: ## Run frontend tests only
 	@echo "🧪 Running frontend tests..."
-	docker compose exec frontend npm run test
+	docker compose run --rm frontend npm run test
 
 test-local: ## Run tests with local Poetry environment
 	@echo "🧪 Running tests locally..."
@@ -43,7 +43,6 @@ test-coverage: ## Run tests with coverage report
 # Code quality
 lint: ## Run all linting and formatting checks (backend + frontend)
 	@echo "🔍 Running all linting checks..."
-	@echo "🐍 Running backend linting..."
 	$(MAKE) lint-backend
 	@echo "⚛️  Running frontend linting..."
 	$(MAKE) lint-frontend
