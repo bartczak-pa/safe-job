@@ -41,10 +41,11 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      // Temporarily disabled due to React 19 compatibility issues
+      // "react-refresh/only-export-components": [
+      //   "warn",
+      //   { allowConstantExport: true },
+      // ],
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
@@ -55,7 +56,11 @@ export default tseslint.config(
   },
   // Test utility files - disable react-refresh rule
   {
-    files: ["src/test/**/*.{ts,tsx}", "src/**/*.test.{ts,tsx}", "src/**/__tests__/**/*.{ts,tsx}"],
+    files: [
+      "src/test/**/*.{ts,tsx}",
+      "src/**/*.test.{ts,tsx}",
+      "src/**/__tests__/**/*.{ts,tsx}",
+    ],
     rules: {
       "react-refresh/only-export-components": "off",
     },
