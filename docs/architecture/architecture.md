@@ -572,7 +572,7 @@ def candidate_skills(self):
 graph TD
     subgraph "Development Environment"
         subgraph "Docker Compose Stack"
-            FE[Frontend Container<br/>React 19 + Vite]
+            FE[Frontend Container<br/>React 18 + Vite]
             BE[Backend Container<br/>Django 5.2.4 + DRF]
             DB[(PostgreSQL 16<br/>+ PostGIS)]
             REDIS[(Redis 7.4<br/>Cache & Sessions)]
