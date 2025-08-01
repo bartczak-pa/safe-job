@@ -72,15 +72,8 @@ repos:
         types_or: [javascript, jsx, ts, tsx, json, css, scss, markdown, yaml]
         exclude: ^frontend/(dist|node_modules|coverage)/
 
-  # Frontend linting - ESLint
-  - repo: local
-    hooks:
-      - id: eslint
-        name: ESLint
-        entry: bash -c 'cd frontend && npm run lint'
-        language: system
-        files: ^frontend/src/.*\.(js|jsx|ts|tsx)$
-        pass_filenames: false
+  # Frontend linting - ESLint (handled by GitHub Actions)
+  # Note: ESLint is handled in the CI/CD pipeline to avoid Node.js dependency issues in pre-commit
 
   # Environment file checks
   - repo: local
