@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export const HomePage: React.FC = () => {
   return (
@@ -31,8 +31,9 @@ export const HomePage: React.FC = () => {
             <span className="text-primary-600"> Safe Employment</span>
           </h1>
           <p className="mx-auto mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
-            Connect legitimate hiring agencies with temporary workers in the Netherlands. Focus on
-            worker safety, exploitation prevention, and regulatory compliance.
+            Connect legitimate hiring agencies with temporary workers in the
+            Netherlands. Focus on worker safety, exploitation prevention, and
+            regulatory compliance.
           </p>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
             <div className="rounded-md shadow">
@@ -75,25 +76,32 @@ export const HomePage: React.FC = () => {
                     Verified employers
                   </h3>
                   <p className="mt-2 text-base text-gray-500">
-                    All employers go through a rigorous verification process to ensure legitimacy.
+                    All employers go through a rigorous verification process to
+                    ensure legitimacy.
                   </p>
                 </div>
               </div>
 
               <div className="relative">
                 <div className="card text-center">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">Worker Protection</h3>
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">
+                    Worker Protection
+                  </h3>
                   <p className="mt-2 text-base text-gray-500">
-                    Built-in safeguards to prevent exploitation and ensure fair treatment.
+                    Built-in safeguards to prevent exploitation and ensure fair
+                    treatment.
                   </p>
                 </div>
               </div>
 
               <div className="relative">
                 <div className="card text-center">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">Smart Matching</h3>
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">
+                    Smart Matching
+                  </h3>
                   <p className="mt-2 text-base text-gray-500">
-                    AI-powered matching system connects candidates with suitable opportunities.
+                    AI-powered matching system connects candidates with suitable
+                    opportunities.
                   </p>
                 </div>
               </div>

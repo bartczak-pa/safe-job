@@ -1,13 +1,16 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'candidate' | 'employer' | 'admin';
+  requiredRole?: "candidate" | "employer" | "admin";
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
 

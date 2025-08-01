@@ -4,11 +4,7 @@
     "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "jsx": "react-jsx",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
@@ -27,7 +23,5 @@
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

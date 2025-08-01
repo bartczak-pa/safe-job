@@ -1,6 +1,6 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
 interface PublicRouteProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface PublicRouteProps {
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({
   children,
-  redirectTo = '/dashboard',
+  redirectTo = "/dashboard",
 }) => {
   const { isAuthenticated } = useAuthStore();
 
