@@ -83,9 +83,9 @@ repos:
     hooks:
       - id: check-env-files
         name: Check for committed .env files
-        entry: bash -c 'if find . -name ".env.*.local" | grep -q .; then echo "❌ .env.*.local files should not be committed"; exit 1; fi'
+        entry: sh -c 'echo "❌ .env.*.local files should not be committed"; exit 1'
         language: system
-        files: '\.env.*'
+        files: '\.env.*\.local$'
         pass_filenames: false
 
   # Docker checks
