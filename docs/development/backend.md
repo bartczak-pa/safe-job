@@ -28,7 +28,7 @@ The Safe Job Platform backend is built with Django 5.2.4, PostgreSQL with PostGI
 
 ## 📁 Project Structure
 
-```
+```text
 backend/
 ├── apps/                      # Django applications
 │   ├── core/                  # ✅ Shared utilities, base models
