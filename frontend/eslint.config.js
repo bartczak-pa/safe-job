@@ -53,4 +53,11 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
     },
   },
+  // Test utility files - disable react-refresh rule
+  {
+    files: ["src/test/**/*.{ts,tsx}", "src/**/*.test.{ts,tsx}", "src/**/__tests__/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 );
