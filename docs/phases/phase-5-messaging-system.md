@@ -243,7 +243,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message_id = data.get('message_id')
 
         if not message_id:
-            await self.send_error('Message ID required')
+            # If no specific message_id, mark all unread messages in conversation as read
+            await self.mark_conversation_read()
             return
 
         try:
@@ -291,14 +292,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
             # Create or update read receipt
-            MessageReadReceipt.objects.get_or_create(
+            receipt, created = MessageReadReceipt.objects.get_or_create(
                 message=message,
                 user=self.user,
                 defaults={'read_at': timezone.now()}
             )
+            if not created:
+                receipt.read_at = timezone.now()
+                receipt.save(update_fields=["read_at"])
 
         except Message.DoesNotExist:
             raise Exception('Message not found')
+
+    @database_sync_to_async
+    def mark_conversation_read(self):
+        """Mark all messages in conversation as read by current user"""
+        from .models import Message, MessageReadReceipt
+
+        # Get all unread messages in the conversation
+        unread_messages = Message.objects.filter(
+            conversation_id=self.conversation_id
+        ).exclude(
+            messagereadreceipt__user=self.user
+        )
+
+        # Create read receipts for all unread messages
+        receipts_to_create = []
+        for message in unread_messages:
+            receipts_to_create.append(
+                MessageReadReceipt(
+                    message=message,
+                    user=self.user,
+                    read_at=timezone.now()
+                )
+            )
+
+        if receipts_to_create:
+            MessageReadReceipt.objects.bulk_create(receipts_to_create)
 
     async def chat_message_broadcast(self, event):
         """Send message to WebSocket"""

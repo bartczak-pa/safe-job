@@ -222,6 +222,29 @@ class EmployerProfile(models.Model):
             for key, value in permissions.items():
                 setattr(self, key, value)
 
+            # Handle suspension workflow
+            if self.verification_tier == 'suspended':
+                self._handle_suspension()
+
+    def _handle_suspension(self):
+        """Handle account suspension workflow"""
+        # Deactivate account
+        self.is_active = False
+
+        # Pause all active jobs
+        from safe_job.jobs.models import Job
+        active_jobs = Job.objects.filter(
+            employer=self,
+            status='active'
+        )
+        active_jobs.update(
+            status='paused',
+            paused_reason='Account suspended'
+        )
+
+        # Reset active jobs count
+        self.active_jobs_count = 0
+
 class EmployerVerificationDocument(models.Model):
     DOCUMENT_TYPES = [
         ('kvk_extract', 'KvK Extract (Chamber of Commerce)'),

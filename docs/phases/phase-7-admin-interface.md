@@ -87,7 +87,6 @@ class SafeJobAdminSite(AdminSite):
         from safe_job.employers.models import Employer
         from safe_job.jobs.models import Job
         from safe_job.applications.models import Application
-        from safe_job.documents.models import Document
 
         # Time ranges for metrics
         today = datetime.now().date()
@@ -561,7 +560,7 @@ class ContentModerationService:
             result = response.results[0]
 
             if result.flagged:
-                categories = [cat for cat, flagged in result.categories.items() if flagged]
+                categories = [cat for cat, is_flagged in result.categories.items() if is_flagged]
                 return {
                     'rule': None,
                     'reason': f'AI flagged categories: {", ".join(categories)}',
@@ -1199,7 +1198,7 @@ class AnalyticsService:
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
-            ip = request.META.get('REMOTE_ADDR') or '0.0.0.0'
+            ip = request.META.get('REMOTE_ADDR') or '127.0.0.1'
         return ip
 ```
 

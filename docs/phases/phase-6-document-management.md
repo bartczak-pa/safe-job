@@ -570,15 +570,15 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import ValidationError
-from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
+from django.db import models
 from datetime import timedelta
 import logging
 
 from .serializers import DocumentSerializer, DocumentCategorySerializer
 from ..models import Document, DocumentCategory
-from ..services import FileValidationService, FileCompressionService, VirusScanService
+from ..services import FileValidationService, FileCompressionService, VirusScanService, DocumentProcessingService
 
 logger = logging.getLogger(__name__)
 
