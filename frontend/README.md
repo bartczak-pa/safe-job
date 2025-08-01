@@ -125,8 +125,8 @@ Reusable components follow consistent patterns:
 ```typescript
 // Example Button component
 interface ButtonProps {
-  variant?: "primary" | "secondary" | "outline";
-  size?: "sm" | "md" | "lg";
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
