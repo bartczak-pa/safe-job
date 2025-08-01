@@ -5,17 +5,20 @@ This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](ht
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
 - Git repository
 
 ### Local Development
 
 1. **Install Dependencies**
+
    ```bash
    pip install -r docs/requirements.txt
    ```
 
 2. **Start Development Server**
+
    ```bash
    mkdocs serve
    ```
@@ -47,6 +50,7 @@ docs/
 ## 🔧 Configuration
 
 ### mkdocs.yml Features
+
 - **Material Design** theme with dark/light mode toggle
 - **Navigation tabs** for better organization
 - **Search functionality** with highlighting
@@ -56,6 +60,7 @@ docs/
 - **Git revision dates** (when in git repository)
 
 ### Theme Customization
+
 - **Colors**: Blue primary with accent
 - **Features**: Navigation breadcrumbs, table of contents, search
 - **Extensions**: Admonitions, tabs, code highlighting
@@ -65,10 +70,12 @@ docs/
 ### GitHub Actions Workflow
 
 The documentation automatically deploys to GitHub Pages when:
+
 - Changes are pushed to `main` branch
 - Changes affect files in `docs/` or `mkdocs.yml`
 
 ### Workflow Features
+
 - **Build Validation**: Tests documentation builds on pull requests
 - **Automatic Deployment**: Deploys to GitHub Pages on main branch
 - **Caching**: Speeds up builds with pip caching
@@ -93,24 +100,28 @@ The documentation automatically deploys to GitHub Pages when:
 ### Markdown Features
 
 **Admonitions (Callout Boxes)**
+
 ```markdown
 !!! info "Information"
-    This is an info box
+This is an info box
 
 !!! warning "Warning"
-    This is a warning box
+This is a warning box
 
 !!! tip "Pro Tip"
-    This is a tip box
+This is a tip box
 ```
 
 **Code Blocks with Language**
-```markdown
+
+````markdown
 ```python
 def hello_world():
     print("Hello, World!")
 ```
-```
+````
+
+````
 
 **Tabbed Content**
 ```markdown
@@ -119,16 +130,19 @@ def hello_world():
 
 === "Tab 2"
     Content for tab 2
-```
+````
 
 **Mermaid Diagrams**
-```markdown
+
+````markdown
 ```mermaid
 graph TD
     A[Start] --> B[Decision]
     B --> C[End]
 ```
-```
+````
+
+````
 
 ### Navigation
 
@@ -139,11 +153,12 @@ nav:
   - Home: index.md
   - Section:
     - Page: section/page.md
-```
+````
 
 ## 🔍 Local Testing
 
 ### Test Build
+
 ```bash
 # Test build (fails fast on errors)
 mkdocs build --strict
@@ -153,6 +168,7 @@ mkdocs build --clean
 ```
 
 ### Test Links
+
 ```bash
 # Start server
 mkdocs serve
@@ -167,19 +183,23 @@ mkdocs serve
 ### Common Issues
 
 **Git Plugin Warnings**
+
 - Solution: Ensure you're in a git repository or set `fallback_to_build_date: true`
 
 **Build Failures**
+
 - Check markdown syntax
 - Verify all linked files exist
 - Test locally before pushing
 
 **Navigation Issues**
+
 - Update `mkdocs.yml` nav section
 - Check file paths are correct
 - Ensure no spaces in filenames
 
 **GitHub Pages Not Updating**
+
 - Check Actions tab for workflow failures
 - Verify GitHub Pages is enabled
 - Check repository permissions
@@ -200,6 +220,7 @@ mkdocs serve --verbose
 ## 📊 Analytics & Monitoring
 
 The documentation includes:
+
 - **Git revision dates** for content freshness
 - **Search analytics** (if configured)
 - **GitHub integration** with edit links

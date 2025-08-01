@@ -52,6 +52,7 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 **Implementation Details:**
 
 **Django Channels Configuration (`config/settings/base.py`):**
+
 ```python
 # Add to INSTALLED_APPS
 INSTALLED_APPS += [
@@ -81,6 +82,7 @@ WEBSOCKET_ALLOWED_ORIGINS = [
 ```
 
 **ASGI Routing Configuration (`config/routing.py`):**
+
 ```python
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
@@ -99,6 +101,7 @@ application = ProtocolTypeRouter({
 ```
 
 **WebSocket Consumer (`messaging/consumers.py`):**
+
 ```python
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -304,6 +307,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 ```
 
 **Message Models (`messaging/models.py`):**
+
 ```python
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
@@ -517,6 +521,7 @@ class UserPresence(models.Model):
 - Moderation prevents harmful content automatically
 
 **Message Services (`messaging/services.py`):**
+
 ```python
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -704,204 +709,209 @@ class ConversationService:
 - Chat interface is intuitive and responsive
 
 **WebSocket Client (`frontend/src/services/websocketService.ts`):**
+
 ```typescript
 interface WebSocketMessage {
-  type: 'message' | 'typing_indicator' | 'presence_update' | 'error'
-  data: any
+  type: "message" | "typing_indicator" | "presence_update" | "error";
+  data: any;
 }
 
 interface MessageData {
-  id: string
-  content: string
-  sender_id: string
-  sender_name: string
-  timestamp: string
-  message_type: 'text' | 'file' | 'system'
+  id: string;
+  content: string;
+  sender_id: string;
+  sender_name: string;
+  timestamp: string;
+  message_type: "text" | "file" | "system";
 }
 
 class WebSocketService {
-  private ws: WebSocket | null = null
-  private conversationId: string | null = null
-  private reconnectAttempts = 0
-  private maxReconnectAttempts = 5
-  private reconnectDelay = 1000
-  private messageQueue: any[] = []
-  private listeners: Map<string, Function[]> = new Map()
+  private ws: WebSocket | null = null;
+  private conversationId: string | null = null;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 1000;
+  private messageQueue: any[] = [];
+  private listeners: Map<string, Function[]> = new Map();
 
   constructor() {
-    this.setupEventListeners()
+    this.setupEventListeners();
   }
 
   connect(conversationId: string, token: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.conversationId = conversationId
-      const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/chat/${conversationId}/?token=${token}`
+      this.conversationId = conversationId;
+      const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/chat/${conversationId}/?token=${token}`;
 
-      this.ws = new WebSocket(wsUrl)
+      this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('WebSocket connected')
-        this.reconnectAttempts = 0
-        this.flushMessageQueue()
-        resolve()
-      }
+        console.log("WebSocket connected");
+        this.reconnectAttempts = 0;
+        this.flushMessageQueue();
+        resolve();
+      };
 
       this.ws.onmessage = (event) => {
         try {
-          const message: WebSocketMessage = JSON.parse(event.data)
-          this.handleMessage(message)
+          const message: WebSocketMessage = JSON.parse(event.data);
+          this.handleMessage(message);
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error)
+          console.error("Error parsing WebSocket message:", error);
         }
-      }
+      };
 
       this.ws.onclose = (event) => {
-        console.log('WebSocket disconnected:', event.code, event.reason)
-        this.handleDisconnection()
-      }
+        console.log("WebSocket disconnected:", event.code, event.reason);
+        this.handleDisconnection();
+      };
 
       this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error)
-        reject(error)
-      }
-    })
+        console.error("WebSocket error:", error);
+        reject(error);
+      };
+    });
   }
 
   disconnect(): void {
     if (this.ws) {
-      this.ws.close(1000, 'User initiated disconnect')
-      this.ws = null
+      this.ws.close(1000, "User initiated disconnect");
+      this.ws = null;
     }
   }
 
   sendMessage(content: string): void {
     const message = {
-      type: 'chat_message',
-      content: content.trim()
-    }
+      type: "chat_message",
+      content: content.trim(),
+    };
 
-    this.sendWebSocketMessage(message)
+    this.sendWebSocketMessage(message);
   }
 
   sendTypingIndicator(isTyping: boolean): void {
     const message = {
-      type: 'typing_indicator',
-      is_typing: isTyping
-    }
+      type: "typing_indicator",
+      is_typing: isTyping,
+    };
 
-    this.sendWebSocketMessage(message)
+    this.sendWebSocketMessage(message);
   }
 
   markAsRead(): void {
     const message = {
-      type: 'mark_read'
-    }
+      type: "mark_read",
+    };
 
-    this.sendWebSocketMessage(message)
+    this.sendWebSocketMessage(message);
   }
 
   private sendWebSocketMessage(message: any): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message))
+      this.ws.send(JSON.stringify(message));
     } else {
       // Queue message for when connection is restored
-      this.messageQueue.push(message)
+      this.messageQueue.push(message);
     }
   }
 
   private handleMessage(message: WebSocketMessage): void {
     switch (message.type) {
-      case 'message':
-        this.emit('newMessage', message.data)
-        this.showNotification(message.data)
-        break
-      case 'typing_indicator':
-        this.emit('typingIndicator', message.data)
-        break
-      case 'presence_update':
-        this.emit('presenceUpdate', message.data)
-        break
-      case 'error':
-        this.emit('error', message.data)
-        break
+      case "message":
+        this.emit("newMessage", message.data);
+        this.showNotification(message.data);
+        break;
+      case "typing_indicator":
+        this.emit("typingIndicator", message.data);
+        break;
+      case "presence_update":
+        this.emit("presenceUpdate", message.data);
+        break;
+      case "error":
+        this.emit("error", message.data);
+        break;
     }
   }
 
   private handleDisconnection(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      setTimeout(() => {
-        this.reconnectAttempts++
-        if (this.conversationId) {
-          const token = localStorage.getItem('auth_token')
-          if (token) {
-            this.connect(this.conversationId, token)
+      setTimeout(
+        () => {
+          this.reconnectAttempts++;
+          if (this.conversationId) {
+            const token = localStorage.getItem("auth_token");
+            if (token) {
+              this.connect(this.conversationId, token);
+            }
           }
-        }
-      }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts))
+        },
+        this.reconnectDelay * Math.pow(2, this.reconnectAttempts),
+      );
     } else {
-      this.emit('connectionLost', {})
+      this.emit("connectionLost", {});
     }
   }
 
   private flushMessageQueue(): void {
     while (this.messageQueue.length > 0) {
-      const message = this.messageQueue.shift()
-      this.sendWebSocketMessage(message)
+      const message = this.messageQueue.shift();
+      this.sendWebSocketMessage(message);
     }
   }
 
   private showNotification(messageData: MessageData): void {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      if (document.hidden) { // Only show if tab is not active
+    if ("Notification" in window && Notification.permission === "granted") {
+      if (document.hidden) {
+        // Only show if tab is not active
         new Notification(`New message from ${messageData.sender_name}`, {
           body: messageData.content.substring(0, 100),
-          icon: '/notification-icon.png',
-          tag: `message-${messageData.id}`
-        })
+          icon: "/notification-icon.png",
+          tag: `message-${messageData.id}`,
+        });
       }
     }
   }
 
   private setupEventListeners(): void {
     // Request notification permission
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission()
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
     }
 
     // Handle page visibility changes
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         // Page became visible, mark messages as read
-        this.markAsRead()
+        this.markAsRead();
       }
-    })
+    });
   }
 
   // Event system
   on(event: string, callback: Function): void {
     if (!this.listeners.has(event)) {
-      this.listeners.set(event, [])
+      this.listeners.set(event, []);
     }
-    this.listeners.get(event)!.push(callback)
+    this.listeners.get(event)!.push(callback);
   }
 
   off(event: string, callback: Function): void {
-    const callbacks = this.listeners.get(event)
+    const callbacks = this.listeners.get(event);
     if (callbacks) {
-      const index = callbacks.indexOf(callback)
+      const index = callbacks.indexOf(callback);
       if (index > -1) {
-        callbacks.splice(index, 1)
+        callbacks.splice(index, 1);
       }
     }
   }
 
   private emit(event: string, data: any): void {
-    const callbacks = this.listeners.get(event) || []
-    callbacks.forEach(callback => callback(data))
+    const callbacks = this.listeners.get(event) || [];
+    callbacks.forEach((callback) => callback(data));
   }
 }
 
-export const websocketService = new WebSocketService()
+export const websocketService = new WebSocketService();
 ```
 
 #### 5.2.2 Messaging UI Components
@@ -929,6 +939,7 @@ export const websocketService = new WebSocketService()
 **Chat Interface Components (`frontend/src/components/messaging/`):**
 
 **ChatRoom Component:**
+
 ```typescript
 import React, { useState, useEffect, useRef } from 'react'
 import { websocketService } from '../../services/websocketService'
@@ -1096,13 +1107,11 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
    - **Testing**: Extensive connection failure testing
 
 2. **Real-time Performance**
-
    - **Risk**: High message volume could overwhelm system
    - **Mitigation**: Message rate limiting, connection pooling, Redis optimization
    - **Monitoring**: Real-time performance metrics
 
 3. **Message Encryption Complexity**
-
    - **Risk**: Encryption could impact performance or cause errors
    - **Mitigation**: Efficient encryption algorithms, error handling, optional encryption
    - **Fallback**: Store messages without encryption in development

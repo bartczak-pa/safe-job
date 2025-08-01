@@ -27,6 +27,7 @@ make setup
 ```
 
 This command will:
+
 - Generate secure passwords for PostgreSQL and Redis
 - Create `.envs/.env.development.local` with proper configuration
 - Build and start all Docker services
@@ -40,6 +41,7 @@ make health
 ```
 
 You should see:
+
 - ✅ Backend API responding
 - ✅ Database ready and accepting connections
 - ✅ Redis responding with authentication
@@ -47,13 +49,13 @@ You should see:
 
 ### 4. Access the Application
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| **Backend API** | [http://localhost:8000](http://localhost:8000) | Django REST API |
-| **API Health Check** | [http://localhost:8000/health/](http://localhost:8000/health/) | Service status |
-| **Documentation** | [http://localhost:8001/safe-job/](http://localhost:8001/safe-job/) | Project documentation |
-| **PostgreSQL** | `localhost:5432` | Database with PostGIS |
-| **Redis** | `localhost:6379` | Caching and sessions |
+| Service              | URL                                                                | Purpose               |
+| -------------------- | ------------------------------------------------------------------ | --------------------- |
+| **Backend API**      | [http://localhost:8000](http://localhost:8000)                     | Django REST API       |
+| **API Health Check** | [http://localhost:8000/health/](http://localhost:8000/health/)     | Service status        |
+| **Documentation**    | [http://localhost:8001/safe-job/](http://localhost:8001/safe-job/) | Project documentation |
+| **PostgreSQL**       | `localhost:5432`                                                   | Database with PostGIS |
+| **Redis**            | `localhost:6379`                                                   | Caching and sessions  |
 
 ## 🛠️ Development Commands
 
@@ -123,6 +125,7 @@ make run-hooks
 ```
 
 The pre-commit hooks will automatically:
+
 - Format code with Black
 - Sort imports with isort
 - Lint with Ruff
@@ -187,6 +190,7 @@ safe-job/
 ### Adding New Dependencies
 
 **Backend (Python with Poetry):**
+
 ```bash
 # Add new dependency
 docker compose exec backend poetry add package-name
@@ -260,6 +264,7 @@ docker compose exec -T db psql -U safejob safejob < backup_file.sql
 ### Common Issues
 
 **Port Already in Use:**
+
 ```bash
 # Check what's using the ports
 lsof -i :8000  # Backend
@@ -273,6 +278,7 @@ make dev
 ```
 
 **Environment File Issues:**
+
 ```bash
 # Regenerate environment with secure passwords
 make clean-env
@@ -280,6 +286,7 @@ make setup
 ```
 
 **Docker Permission Issues (Linux):**
+
 ```bash
 # Add user to docker group
 sudo usermod -aG docker $USER
@@ -290,6 +297,7 @@ sudo chown -R $USER:$USER .
 ```
 
 **Database Connection Issues:**
+
 ```bash
 # Check service health
 make health
@@ -305,6 +313,7 @@ cat .envs/.env.development.local | grep POSTGRES
 ```
 
 **Pre-commit Hook Issues:**
+
 ```bash
 # Reinstall hooks
 make install-hooks
@@ -314,6 +323,7 @@ git commit --no-verify
 ```
 
 **Build Failures:**
+
 ```bash
 # Clean rebuild all services
 make clean
@@ -322,6 +332,7 @@ make setup
 ```
 
 **Documentation Not Loading:**
+
 ```bash
 # Restart documentation service
 make docs-stop

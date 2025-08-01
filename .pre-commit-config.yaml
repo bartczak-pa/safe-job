@@ -63,6 +63,21 @@ repos:
         args: ['-r', '--skip', 'B101,B601']
         exclude: ^backend/.*/(migrations|tests)/.*$
 
+  # Frontend code formatting - Prettier (using local config)
+  - repo: local
+    hooks:
+      - id: prettier-frontend
+        name: Format frontend code with prettier
+        entry: sh -c 'cd frontend && npx prettier --write $(echo "$@" | sed "s|frontend/||g")'
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md|yml|yaml)$
+        exclude: ^frontend/(dist|node_modules|coverage)/
+        pass_filenames: true
+        args: ['--']
+
+  # Frontend linting - ESLint (handled by GitHub Actions)
+  # Note: ESLint is handled in the CI/CD pipeline to avoid Node.js dependency issues in pre-commit
+
   # Environment file checks
   - repo: local
     hooks:

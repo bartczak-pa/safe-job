@@ -69,6 +69,7 @@ sequenceDiagram
 ### 2.2 Magic Link Security Implementation
 
 **Token Generation:**
+
 ```python
 import secrets
 import hashlib
@@ -117,6 +118,7 @@ class MagicLinkService:
 ### 2.3 Rate Limiting and Abuse Prevention
 
 **Multi-Layer Rate Limiting:**
+
 ```python
 from django_ratelimit.decorators import ratelimit
 
@@ -150,6 +152,7 @@ def magic_link_request_view(request):
 - **Sliding Expiration**: Automatic renewal for active users
 
 **JWT Claims Structure:**
+
 ```python
 # Access Token Claims
 {
@@ -176,6 +179,7 @@ def magic_link_request_view(request):
 ### 3.2 Token Security Implementation
 
 **Secure Token Handling:**
+
 ```python
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
@@ -230,6 +234,7 @@ class SafeJobTokenService:
 ### 4.1 Role-Based Access Control
 
 **User Type Hierarchy:**
+
 ```python
 class UserType(models.TextChoices):
     CANDIDATE = 'candidate', 'Candidate'
@@ -244,6 +249,7 @@ class VerificationStatus(models.TextChoices):
 ```
 
 **Custom Permission Classes:**
+
 ```python
 from rest_framework.permissions import BasePermission
 
@@ -303,6 +309,7 @@ class IsSubaccountOwner(BasePermission):
 - **Email**: TLS encryption for all outbound email communications
 
 **Sensitive Data Encryption:**
+
 ```python
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -328,6 +335,7 @@ class EncryptedField(models.TextField):
 ### 5.2 Input Validation & Sanitization
 
 **Multi-Layer Validation:**
+
 ```python
 # 1. Frontend TypeScript validation
 interface MagicLinkRequest {
@@ -361,6 +369,7 @@ class CustomUser(AbstractUser):
 ```
 
 **File Upload Security:**
+
 ```python
 class SecureFileUploadView(APIView):
     def post(self, request):
@@ -394,6 +403,7 @@ class SecureFileUploadView(APIView):
 ### 6.1 Security Event Logging
 
 **Comprehensive Audit Trail:**
+
 ```python
 class SecurityEvent(models.Model):
     """Security-related events for audit and compliance"""
@@ -426,6 +436,7 @@ class SecurityEvent(models.Model):
 ```
 
 **Real-time Security Monitoring:**
+
 ```python
 class SecurityMonitor:
     @staticmethod
@@ -495,6 +506,7 @@ class SecurityMonitor:
 ### 7.1 Data Subject Rights Implementation
 
 **Right of Access:**
+
 ```python
 class DataExportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -524,6 +536,7 @@ class DataExportView(APIView):
 ```
 
 **Right to Erasure (Right to be Forgotten):**
+
 ```python
 class AccountDeletionView(APIView):
     permission_classes = [IsAuthenticated]
@@ -590,6 +603,7 @@ class AccountDeletionView(APIView):
 - Regular consent review and renewal processes
 
 **Storage Limitation:**
+
 ```python
 class DataRetentionManager:
     RETENTION_PERIODS = {
@@ -735,9 +749,9 @@ This authentication architecture has been designed with security-first principle
 
 ---
 
-*Document Version: 2.0*
-*Last Updated: July 2025*
-*Security Review Status: Validated - Ready for Implementation*
+_Document Version: 2.0_
+_Last Updated: July 2025_
+_Security Review Status: Validated - Ready for Implementation_
 
 ## Request Examples
 
@@ -746,23 +760,28 @@ This section provides practical examples of how to interact with the authenticat
 ### Table of Contents
 
 #### 🚀 [Registration Examples](#registration-examples)
+
 - [Candidate Registration](#candidate-registration)
 - [Employer Registration](#employer-registration)
 
 #### 🔗 [Magic Link Authentication](#magic-link-authentication-examples)
+
 - [Request Magic Link](#request-magic-link)
 - [Verify Magic Link](#verify-magic-link)
 
 #### 🔑 [JWT Token Management](#jwt-token-management-examples)
+
 - [Refresh Token](#refresh-token)
 - [Verify Token](#verify-token)
 
 #### 👤 [Authenticated Requests](#authenticated-requests-examples)
+
 - [Get Current User](#get-current-user)
 - [Get User Profile](#get-user-profile)
 - [Update User Profile](#update-user-profile)
 
 #### 🔐 [Two-Factor Authentication](#two-factor-authentication-examples)
+
 - [Set Up TOTP Device](#set-up-totp-device)
 - [Verify TOTP Device](#verify-totp-device)
 - [Authenticate with TOTP](#authenticate-with-totp)
@@ -770,17 +789,20 @@ This section provides practical examples of how to interact with the authenticat
 - [Verify Backup Code](#verify-backup-code)
 
 #### 🌐 [OAuth Examples](#oauth-examples)
+
 - [Initiate OAuth Login](#initiate-oauth-login)
 - [OAuth Callback (Internal)](#oauth-callback-internal)
 - [List Connected Social Accounts](#list-connected-social-accounts)
 - [Disconnect Social Account](#disconnect-social-account)
 
 #### ❌ [Error Response Examples](#error-response-examples)
+
 - [Unauthenticated Request](#unauthenticated-request)
 - [Expired Token](#expired-token)
 - [Rate Limited](#rate-limited)
 
 #### 💻 [Frontend Integration](#frontend-integration-examples)
+
 - [JavaScript/TypeScript API Client](#javascripttypescript-api-client)
 - [React Hook Example](#react-hook-example)
 
@@ -791,6 +813,7 @@ This section provides practical examples of how to interact with the authenticat
 #### Candidate Registration
 
 **Request:**
+
 ```http
 POST /api/v1/users/register/candidate/
 Content-Type: application/json
@@ -804,6 +827,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -833,6 +857,7 @@ Content-Type: application/json
 ```
 
 **Response (Email Already Exists):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -847,6 +872,7 @@ Content-Type: application/json
 #### Employer Registration
 
 **Request:**
+
 ```http
 POST /api/v1/users/register/employer/
 Content-Type: application/json
@@ -861,6 +887,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -897,6 +924,7 @@ Content-Type: application/json
 #### Request Magic Link
 
 **Request:**
+
 ```http
 POST /api/v1/users/magic-link/
 Content-Type: application/json
@@ -908,6 +936,7 @@ Host: localhost:8000
 ```
 
 **Response (User Exists):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -919,6 +948,7 @@ Content-Type: application/json
 ```
 
 **Response (User Doesn't Exist - Same for Security):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -932,6 +962,7 @@ Content-Type: application/json
 #### Verify Magic Link
 
 **Request:**
+
 ```http
 POST /api/v1/auth/magic-link/verify/
 Content-Type: application/json
@@ -943,6 +974,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -954,6 +986,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid/Expired Token):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -968,6 +1001,7 @@ Content-Type: application/json
 #### Refresh Token
 
 **Request:**
+
 ```http
 POST /api/v1/auth/token/refresh/
 Content-Type: application/json
@@ -979,6 +1013,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -991,6 +1026,7 @@ Content-Type: application/json
 #### Verify Token
 
 **Request:**
+
 ```http
 POST /api/v1/auth/token/verify/
 Content-Type: application/json
@@ -1002,6 +1038,7 @@ Host: localhost:8000
 ```
 
 **Response (Valid Token):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1010,6 +1047,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid Token):**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1025,6 +1063,7 @@ Content-Type: application/json
 #### Get Current User
 
 **Request:**
+
 ```http
 GET /api/v1/auth/me/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1032,6 +1071,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1054,6 +1094,7 @@ Content-Type: application/json
 #### Get User Profile
 
 **Request:**
+
 ```http
 GET /api/v1/users/profile/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1061,6 +1102,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1083,6 +1125,7 @@ Content-Type: application/json
 #### Update User Profile
 
 **Request:**
+
 ```http
 PATCH /api/v1/users/profile/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1097,6 +1140,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1121,6 +1165,7 @@ Content-Type: application/json
 #### Set Up TOTP Device
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/setup/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1133,6 +1178,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -1155,6 +1201,7 @@ Content-Type: application/json
 #### Verify TOTP Device
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/verify/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1168,6 +1215,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1180,6 +1228,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid Code):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -1192,6 +1241,7 @@ Content-Type: application/json
 #### Authenticate with TOTP
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/authenticate/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1204,6 +1254,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1217,6 +1268,7 @@ Content-Type: application/json
 #### Get Backup Codes
 
 **Request:**
+
 ```http
 GET /api/v1/auth/2fa/backup-codes/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1224,6 +1276,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1251,6 +1304,7 @@ Content-Type: application/json
 #### Verify Backup Code
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/backup-codes/verify/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1263,6 +1317,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1279,12 +1334,14 @@ Content-Type: application/json
 #### Initiate OAuth Login
 
 **Request:**
+
 ```http
 GET /api/v1/auth/oauth/google-oauth2/login/?redirect_uri=/dashboard
 Host: localhost:8000
 ```
 
 **Response (Redirect):**
+
 ```http
 HTTP/1.1 302 Found
 Location: https://accounts.google.com/oauth/authorize?client_id=your-client-id&redirect_uri=http%3A//localhost%3A8000/api/v1/auth/oauth/google-oauth2/callback/&scope=email+profile&response_type=code&state=abc123def456
@@ -1293,12 +1350,14 @@ Location: https://accounts.google.com/oauth/authorize?client_id=your-client-id&r
 #### OAuth Callback (Internal)
 
 **Request (From Google):**
+
 ```http
 GET /api/v1/auth/oauth/google-oauth2/callback/?code=AUTH_CODE&state=abc123def456
 Host: localhost:8000
 ```
 
 **Response (Success - Redirect to Frontend):**
+
 ```http
 HTTP/1.1 302 Found
 Location: http://localhost:3000/auth/oauth/complete?access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.oauth123&refresh_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYwNTI5NjQwMCwidXNlcl9pZCI6MTIzfQ.oauth456
@@ -1307,6 +1366,7 @@ Location: http://localhost:3000/auth/oauth/complete?access_token=eyJ0eXAiOiJKV1Q
 #### List Connected Social Accounts
 
 **Request:**
+
 ```http
 GET /api/v1/auth/oauth/accounts/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1314,6 +1374,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1344,6 +1405,7 @@ Content-Type: application/json
 #### Disconnect Social Account
 
 **Request:**
+
 ```http
 POST /api/v1/auth/oauth/google-oauth2/disconnect/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1354,6 +1416,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1369,12 +1432,14 @@ Content-Type: application/json
 #### Unauthenticated Request
 
 **Request:**
+
 ```http
 GET /api/v1/users/user-profile/
 Host: localhost:8000
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1387,6 +1452,7 @@ Content-Type: application/json
 #### Expired Token
 
 **Request:**
+
 ```http
 GET /api/v1/auth/me/
 Authorization: Bearer expired_token_here
@@ -1394,6 +1460,7 @@ Host: localhost:8000
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1407,6 +1474,7 @@ Content-Type: application/json
 #### Rate Limited
 
 **Request:**
+
 ```http
 POST /api/v1/users/magic-link/
 Content-Type: application/json
@@ -1418,6 +1486,7 @@ Host: localhost:8000
 ```
 
 **Response (Too Many Requests):**
+
 ```http
 HTTP/1.1 429 Too Many Requests
 Content-Type: application/json
@@ -1434,20 +1503,20 @@ Retry-After: 60
 
 ```javascript
 class SafeJobAPI {
-  constructor(baseURL = 'http://localhost:8000') {
+  constructor(baseURL = "http://localhost:8000") {
     this.baseURL = baseURL;
-    this.accessToken = localStorage.getItem('access_token');
-    this.refreshToken = localStorage.getItem('refresh_token');
+    this.accessToken = localStorage.getItem("access_token");
+    this.refreshToken = localStorage.getItem("refresh_token");
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
+        "Content-Type": "application/json",
+        ...options.headers,
       },
-      ...options
+      ...options,
     };
 
     // Add authorization header if we have a token
@@ -1471,20 +1540,23 @@ class SafeJobAPI {
 
   async refreshAccessToken() {
     try {
-      const response = await fetch(`${this.baseURL}/api/v1/auth/token/refresh/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: this.refreshToken })
-      });
+      const response = await fetch(
+        `${this.baseURL}/api/v1/auth/token/refresh/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh: this.refreshToken }),
+        },
+      );
 
       if (response.ok) {
-             const data = await response.json();
+        const data = await response.json();
         this.accessToken = data.access;
-        localStorage.setItem('access_token', data.access);
+        localStorage.setItem("access_token", data.access);
         return true;
       }
-           } catch (error) {
-      console.error('Token refresh failed:', error);
+    } catch (error) {
+      console.error("Token refresh failed:", error);
     }
 
     // Refresh failed, clear tokens and redirect to login
@@ -1494,26 +1566,26 @@ class SafeJobAPI {
 
   async register(userData) {
     const endpoint = userData.company_name
-      ? '/api/v1/users/register/employer/'
-      : '/api/v1/users/register/candidate/';
+      ? "/api/v1/users/register/employer/"
+      : "/api/v1/users/register/candidate/";
 
     return this.request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(userData)
+      method: "POST",
+      body: JSON.stringify(userData),
     });
   }
 
   async requestMagicLink(email) {
-    return this.request('/api/v1/users/magic-link/', {
-      method: 'POST',
-      body: JSON.stringify({ email })
+    return this.request("/api/v1/users/magic-link/", {
+      method: "POST",
+      body: JSON.stringify({ email }),
     });
   }
 
   async verifyMagicLink(token) {
-    const response = await this.request('/api/v1/auth/magic-link/verify/', {
-      method: 'POST',
-      body: JSON.stringify({ token })
+    const response = await this.request("/api/v1/auth/magic-link/verify/", {
+      method: "POST",
+      body: JSON.stringify({ token }),
     });
 
     if (response.ok) {
@@ -1525,29 +1597,29 @@ class SafeJobAPI {
   }
 
   async getCurrentUser() {
-    return this.request('/api/v1/auth/me/');
+    return this.request("/api/v1/auth/me/");
   }
 
   async updateProfile(profileData) {
-    return this.request('/api/v1/users/profile/', {
-      method: 'PATCH',
-      body: JSON.stringify(profileData)
+    return this.request("/api/v1/users/profile/", {
+      method: "PATCH",
+      body: JSON.stringify(profileData),
     });
   }
 
   setTokens(accessToken, refreshToken) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
   }
 
   logout() {
     this.accessToken = null;
     this.refreshToken = null;
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    window.location.href = '/login';
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.href = "/login";
   }
 }
 
@@ -1558,20 +1630,20 @@ const api = new SafeJobAPI();
 async function registerCandidate() {
   try {
     const response = await api.register({
-      email: 'john@example.com',
-      first_name: 'John',
-      last_name: 'Doe'
+      email: "john@example.com",
+      first_name: "John",
+      last_name: "Doe",
     });
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Registration successful:', data.message);
+      console.log("Registration successful:", data.message);
     } else {
       const error = await response.json();
-      console.error('Registration failed:', error);
+      console.error("Registration failed:", error);
     }
   } catch (error) {
-    console.error('Network error:', error);
+    console.error("Network error:", error);
   }
 }
 
@@ -1579,10 +1651,10 @@ async function registerCandidate() {
 async function login(email) {
   try {
     const response = await api.requestMagicLink(email);
-           const data = await response.json();
+    const data = await response.json();
     console.log(data.message);
   } catch (error) {
-    console.error('Login request failed:', error);
+    console.error("Login request failed:", error);
   }
 }
 
@@ -1592,15 +1664,15 @@ async function verifyLogin(token) {
     const response = await api.verifyMagicLink(token);
 
     if (response.ok) {
-      console.log('Login successful!');
+      console.log("Login successful!");
       // Redirect to dashboard
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     } else {
       const error = await response.json();
-      console.error('Login verification failed:', error);
+      console.error("Login verification failed:", error);
     }
-           } catch (error) {
-    console.error('Verification error:', error);
+  } catch (error) {
+    console.error("Verification error:", error);
   }
 }
 ```
@@ -1608,14 +1680,14 @@ async function verifyLogin(token) {
 #### React Hook Example
 
 ```javascript
-import { useState, useEffect, useContext, createContext } from 'react';
+import { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -1635,7 +1707,7 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
           }
         } catch (error) {
-          console.error('Failed to get user:', error);
+          console.error("Failed to get user:", error);
         }
       }
       setLoading(false);
@@ -1680,20 +1752,16 @@ export const AuthProvider = ({ children }) => {
     logout,
     register,
     verifyMagicLink,
-    api
+    api,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Usage in components:
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -1701,9 +1769,9 @@ function LoginForm() {
     const success = await login(email);
 
     if (success) {
-      setMessage('Magic link sent! Check your email.');
+      setMessage("Magic link sent! Check your email.");
     } else {
-      setMessage('Failed to send magic link. Please try again.');
+      setMessage("Failed to send magic link. Please try again.");
     }
   };
 

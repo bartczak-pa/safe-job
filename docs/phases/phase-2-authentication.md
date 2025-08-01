@@ -52,6 +52,7 @@ Phase 2 implements the complete authentication and user management system for th
 **Implementation Details:**
 
 **Custom User Model (`users/models.py`):**
+
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.gis.db import models
@@ -90,6 +91,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 ```
 
 **Magic Link System (`authentication/utils/magic_link.py`):**
+
 ```python
 import secrets
 import hashlib
@@ -97,6 +99,9 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class MagicLinkManager:
     EXPIRY_MINUTES = 15
@@ -141,12 +146,16 @@ class MagicLinkManager:
 ```
 
 **JWT Authentication (`authentication/jwt.py`):**
+
 ```python
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
@@ -197,6 +206,7 @@ class JWTAuthentication(BaseAuthentication):
 - Profile endpoints require authentication
 
 **API Endpoints (`authentication/api/views.py`):**
+
 ```python
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -291,27 +301,29 @@ def verify_magic_link(request):
 - Profile editing form updates user data
 
 **Authentication Context (`src/store/authStore.ts`):**
+
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import axios from "axios";
 
 interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  emailVerified: boolean
-  languagePreference: string
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  emailVerified: boolean;
+  languagePreference: string;
 }
 
 interface AuthState {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (token: string, user: User) => void
-  logout: () => void
-  updateUser: (userData: Partial<User>) => void
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (token: string, user: User) => void;
+  logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -323,36 +335,37 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
 
       login: (token: string, user: User) => {
-        set({ token, user, isAuthenticated: true })
+        set({ token, user, isAuthenticated: true });
         // Set token in axios defaults
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       },
 
       logout: () => {
-        set({ token: null, user: null, isAuthenticated: false })
-        delete axios.defaults.headers.common['Authorization']
+        set({ token: null, user: null, isAuthenticated: false });
+        delete axios.defaults.headers.common["Authorization"];
       },
 
       updateUser: (userData: Partial<User>) => {
-        const currentUser = get().user
+        const currentUser = get().user;
         if (currentUser) {
-          set({ user: { ...currentUser, ...userData } })
+          set({ user: { ...currentUser, ...userData } });
         }
-      }
+      },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         token: state.token,
         user: state.user,
-        isAuthenticated: state.isAuthenticated
-      })
-    }
-  )
-)
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);
 ```
 
 **Login Component (`src/components/auth/LoginForm.tsx`):**
+
 ```typescript
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -447,6 +460,7 @@ export const LoginForm: React.FC = () => {
 - Privacy settings control profile visibility
 
 **Profile Models:**
+
 ```python
 # candidates/models.py
 class CandidateProfile(models.Model):
@@ -541,6 +555,7 @@ class EmployerProfile(models.Model):
 - Image upload validates file types and sizes
 
 **Profile API Endpoints:**
+
 ```python
 # candidates/api/views.py
 class CandidateProfileViewSet(viewsets.ModelViewSet):

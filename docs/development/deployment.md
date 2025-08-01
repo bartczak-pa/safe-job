@@ -5,18 +5,21 @@ This guide covers deployment strategies and procedures for the Safe Job Platform
 ## Deployment Environments
 
 ### Development
+
 - **Purpose**: Local development and testing
 - **URL**: http://localhost:8000
 - **Database**: Local PostgreSQL with test data
 - **Monitoring**: Basic logging
 
 ### Staging
+
 - **Purpose**: Pre-production testing and QA
 - **URL**: https://staging.safejob.nl
 - **Database**: Staging PostgreSQL with sanitized production data
 - **Monitoring**: Application monitoring and logging
 
 ### Production
+
 - **Purpose**: Live application serving real users
 - **URL**: https://safejob.nl
 - **Database**: Production PostgreSQL with backups
@@ -188,49 +191,51 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "config.wsgi:applic
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
   "memory": "1024",
-  "containerDefinitions": [
-    {
-      "name": "backend",
-      "image": "ACCOUNT.dkr.ecr.REGION.amazonaws.com/safejob-backend:latest",
-      "portMappings": [
-        {
-          "containerPort": 8000,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-        {
-          "name": "DJANGO_SETTINGS_MODULE",
-          "value": "config.settings.production"
-        },
-        {
-          "name": "DATABASE_URL",
-          "value": "postgresql://user:pass@host:5432/db"
-        }
-      ],
-      "secrets": [
-        {
-          "name": "SECRET_KEY",
-          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT:secret:safejob/django-secret"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/safejob-backend",
-          "awslogs-region": "eu-west-1",
-          "awslogs-stream-prefix": "ecs"
-        }
+  "containerDefinitions":
+    [
+      {
+        "name": "backend",
+        "image": "ACCOUNT.dkr.ecr.REGION.amazonaws.com/safejob-backend:latest",
+        "portMappings": [{ "containerPort": 8000, "protocol": "tcp" }],
+        "environment":
+          [
+            {
+              "name": "DJANGO_SETTINGS_MODULE",
+              "value": "config.settings.production",
+            },
+            {
+              "name": "DATABASE_URL",
+              "value": "postgresql://user:pass@host:5432/db",
+            },
+          ],
+        "secrets":
+          [
+            {
+              "name": "SECRET_KEY",
+              "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT:secret:safejob/django-secret",
+            },
+          ],
+        "logConfiguration":
+          {
+            "logDriver": "awslogs",
+            "options":
+              {
+                "awslogs-group": "/ecs/safejob-backend",
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+              },
+          },
+        "healthCheck":
+          {
+            "command":
+              ["CMD-SHELL", "curl -f http://localhost:8000/health/ || exit 1"],
+            "interval": 30,
+            "timeout": 5,
+            "retries": 3,
+            "startPeriod": 60,
+          },
       },
-      "healthCheck": {
-        "command": ["CMD-SHELL", "curl -f http://localhost:8000/health/ || exit 1"],
-        "interval": 30,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 60
-      }
-    }
-  ]
+    ],
 }
 ```
 
@@ -253,39 +258,39 @@ jobs:
     environment: production
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
-    - name: Build and push Docker image
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-        ECR_REPOSITORY: safejob-backend
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPOSITORY: safejob-backend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-    - name: Deploy to ECS
-      run: |
-        aws ecs update-service \
-          --cluster safejob-production \
-          --service safejob-backend \
-          --force-new-deployment
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster safejob-production \
+            --service safejob-backend \
+            --force-new-deployment
 
-    - name: Wait for deployment
-      run: |
-        aws ecs wait services-stable \
-          --cluster safejob-production \
-          --services safejob-backend
+      - name: Wait for deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster safejob-production \
+            --services safejob-backend
 ```
 
 ### Blue-Green Deployment
@@ -411,7 +416,13 @@ metrics:
   namespace: SafeJob/Application
   metrics_collected:
     cpu:
-      measurement: ["cpu_usage_idle", "cpu_usage_iowait", "cpu_usage_system", "cpu_usage_user"]
+      measurement:
+        [
+          "cpu_usage_idle",
+          "cpu_usage_iowait",
+          "cpu_usage_system",
+          "cpu_usage_user",
+        ]
       metrics_collection_interval: 60
     disk:
       measurement: ["used_percent"]
