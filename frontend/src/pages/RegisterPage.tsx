@@ -27,10 +27,10 @@ export const RegisterPage: React.FC = () => {
         <div className="card">
           <form className="space-y-6">
             {/* Role Selection */}
-            <div>
-              <label className="mb-3 block text-sm font-medium text-gray-700">
+            <fieldset>
+              <legend className="mb-3 block text-sm font-medium text-gray-700">
                 I am a:
-              </label>
+              </legend>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -55,7 +55,7 @@ export const RegisterPage: React.FC = () => {
                   Employer
                 </button>
               </div>
-            </div>
+            </fieldset>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
