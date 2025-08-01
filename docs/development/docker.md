@@ -376,7 +376,7 @@ healthcheck:
 
 # Frontend health check
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+  test: ["CMD", "curl", "-f", "http://localhost:5173/"]
   interval: 30s
   timeout: 10s
   retries: 3
