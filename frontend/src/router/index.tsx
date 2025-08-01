@@ -1,5 +1,5 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { ProtectedRoute, PublicRoute } from "../components/layout";
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { ProtectedRoute, PublicRoute } from '../components/layout';
 import {
   HomePage,
   LoginPage,
@@ -7,19 +7,19 @@ import {
   DashboardPage,
   UnauthorizedPage,
   AboutPage,
-} from "../pages";
+} from '../pages';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <HomePage />,
   },
   {
-    path: "/about",
+    path: '/about',
     element: <AboutPage />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: (
       <PublicRoute>
         <LoginPage />
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/register",
+    path: '/register',
     element: (
       <PublicRoute>
         <RegisterPage />
@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/dashboard",
+    path: '/dashboard',
     element: (
       <ProtectedRoute>
         <DashboardPage />
@@ -43,12 +43,12 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/unauthorized",
+    path: '/unauthorized',
     element: <UnauthorizedPage />,
   },
   // Candidate-only routes
   {
-    path: "/jobs",
+    path: '/jobs',
     element: (
       <ProtectedRoute requiredRole="candidate">
         <div>Jobs Page - Coming Soon</div>
@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/applications",
+    path: '/applications',
     element: (
       <ProtectedRoute requiredRole="candidate">
         <div>Applications Page - Coming Soon</div>
@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
   },
   // Employer-only routes
   {
-    path: "/post-job",
+    path: '/post-job',
     element: (
       <ProtectedRoute requiredRole="employer">
         <div>Post Job Page - Coming Soon</div>
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/manage-jobs",
+    path: '/manage-jobs',
     element: (
       <ProtectedRoute requiredRole="employer">
         <div>Manage Jobs Page - Coming Soon</div>
@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
   },
   // Admin-only routes
   {
-    path: "/admin",
+    path: '/admin',
     element: (
       <ProtectedRoute requiredRole="admin">
         <div>Admin Panel - Coming Soon</div>
@@ -91,7 +91,7 @@ export const router = createBrowserRouter([
   },
   // Catch all - redirect to home
   {
-    path: "*",
+    path: '*',
     element: <Navigate to="/" replace />,
   },
 ]);

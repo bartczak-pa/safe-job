@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const LoginPage: React.FC = () => {
   return (
@@ -9,11 +9,8 @@ export const LoginPage: React.FC = () => {
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{" "}
-          <Link
-            to="/register"
-            className="font-medium text-primary-600 hover:text-primary-500"
-          >
+          Or{' '}
+          <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
             create a new account
           </Link>
         </p>
@@ -23,10 +20,7 @@ export const LoginPage: React.FC = () => {
         <div className="card">
           <form className="space-y-6">
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
@@ -54,9 +48,7 @@ export const LoginPage: React.FC = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">
-                  Passwordless authentication
-                </span>
+                <span className="bg-white px-2 text-gray-500">Passwordless authentication</span>
               </div>
             </div>
 

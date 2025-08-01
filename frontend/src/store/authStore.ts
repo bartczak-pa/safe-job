@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { AuthState, User } from "../types/auth";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { AuthState, User } from '../types/auth';
 
 interface AuthActions {
   login: (user: User) => void;
@@ -45,11 +45,11 @@ export const useAuthStore = create<AuthStore>()(
       clearError: () => set({ error: null }),
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    },
-  ),
+    }
+  )
 );

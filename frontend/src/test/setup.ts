@@ -1,5 +1,5 @@
-import "@testing-library/jest-dom";
-import { TextDecoder, TextEncoder } from "util";
+import '@testing-library/jest-dom';
+import { TextDecoder, TextEncoder } from 'util';
 
 // Polyfill for TextEncoder/TextDecoder
 global.TextEncoder = TextEncoder;
@@ -11,7 +11,7 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
   unobserve: jest.fn(),
   root: null,
-  rootMargin: "",
+  rootMargin: '',
   thresholds: [],
   takeRecords: jest.fn(),
 }));
@@ -24,7 +24,7 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
 }));
 
 // Mock window.matchMedia
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation((query: string) => ({
     matches: false,

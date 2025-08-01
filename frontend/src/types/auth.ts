@@ -3,7 +3,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: "candidate" | "employer" | "admin";
+  role: 'candidate' | 'employer' | 'admin';
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
@@ -24,5 +24,5 @@ export interface RegisterData {
   email: string;
   firstName: string;
   lastName: string;
-  role: "candidate" | "employer";
+  role: 'candidate' | 'employer';
 }
