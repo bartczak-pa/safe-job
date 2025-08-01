@@ -207,6 +207,13 @@ class EmployerProfile(models.Model):
                 'can_view_candidate_details': True,
                 'max_active_jobs': 50,
                 'max_monthly_job_posts': 100
+            },
+            'suspended': {
+                'can_post_jobs': False,
+                'can_contact_candidates': False,
+                'can_view_candidate_details': False,
+                'max_active_jobs': 0,
+                'max_monthly_job_posts': 0
             }
         }
 

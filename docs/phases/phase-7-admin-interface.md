@@ -57,7 +57,7 @@ from django.urls import path, reverse
 from django.shortcuts import render, redirect
 from django.db.models import Count, Q
 from django.utils.html import format_html
-from apps.documents.models import Document
+from safe_job.documents.models import Document
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 
@@ -561,7 +561,7 @@ class ContentModerationService:
             result = response.results[0]
 
             if result.flagged:
-                categories = [cat for cat, flagged in result.categories if flagged]
+                categories = [cat for cat, flagged in result.categories.items() if flagged]
                 return {
                     'rule': None,
                     'reason': f'AI flagged categories: {", ".join(categories)}',
@@ -1199,7 +1199,7 @@ class AnalyticsService:
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
-            ip = request.META.get('REMOTE_ADDR')
+            ip = request.META.get('REMOTE_ADDR') or '0.0.0.0'
         return ip
 ```
 
