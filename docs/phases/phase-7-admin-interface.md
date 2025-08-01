@@ -57,6 +57,7 @@ from django.urls import path, reverse
 from django.shortcuts import render, redirect
 from django.db.models import Count, Q
 from django.utils.html import format_html
+from apps.documents.models import Document
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 

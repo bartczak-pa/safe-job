@@ -169,7 +169,7 @@ Mobile-first approach with Tailwind CSS breakpoints:
 
 ### Test Structure
 
-```
+```text
 src/
 ├── components/
 │   ├── Button/
@@ -220,7 +220,7 @@ VITE_ENVIRONMENT=development
 
 ## 📚 Project Structure
 
-```
+```text
 frontend/
 ├── public/                 # Static assets
 ├── src/

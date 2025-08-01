@@ -59,7 +59,7 @@ format-backend: ## Format backend code only
 
 format-frontend: ## Format frontend code only
 	@echo "⚛️  Formatting frontend code..."
-	docker compose exec frontend npm run format
+	docker compose run --rm frontend npm run format
 
 lint-backend: ## Run backend-specific linting
 	@echo "🔍 Running backend linting..."
@@ -69,13 +69,13 @@ lint-backend: ## Run backend-specific linting
 
 lint-frontend: ## Run frontend-specific linting
 	@echo "🔍 Running frontend linting..."
-	docker compose exec frontend npm run lint
-	docker compose exec frontend npm run format:check
-	docker compose exec frontend npm run type-check
+	docker compose run --rm frontend npm run lint
+	docker compose run --rm frontend npm run format:check
+	docker compose run --rm frontend npm run type-check
 
 frontend-build: ## Build frontend for production
 	@echo "🏗️  Building frontend for production..."
-	docker compose exec frontend npm run build
+	docker compose run --rm frontend npm run build
 
 # Django management
 migrate: ## Run Django migrations
@@ -175,7 +175,7 @@ update-deps: ## Update all dependencies (backend + frontend)
 	@echo "🐍 Updating backend dependencies..."
 	cd backend && poetry update
 	@echo "⚛️  Updating frontend dependencies..."
-	docker compose exec frontend npm update
+	docker compose run --rm frontend npm update
 
 update-deps-backend: ## Update Python dependencies only
 	@echo "📦 Updating backend dependencies..."
@@ -183,14 +183,14 @@ update-deps-backend: ## Update Python dependencies only
 
 update-deps-frontend: ## Update frontend dependencies only
 	@echo "📦 Updating frontend dependencies..."
-	docker compose exec frontend npm update
+	docker compose run --rm frontend npm update
 
 install-deps: ## Install all dependencies (backend + frontend)
 	@echo "📦 Installing all dependencies..."
 	@echo "🐍 Installing backend dependencies..."
 	cd backend && poetry install --with dev
 	@echo "⚛️  Installing frontend dependencies..."
-	docker compose exec frontend npm install
+	docker compose run --rm frontend npm install
 
 install-deps-backend: ## Install Python dependencies only
 	@echo "📦 Installing backend dependencies..."
@@ -198,7 +198,7 @@ install-deps-backend: ## Install Python dependencies only
 
 install-deps-frontend: ## Install frontend dependencies only
 	@echo "📦 Installing frontend dependencies..."
-	docker compose exec frontend npm install
+	docker compose run --rm frontend npm install
 
 # Security
 security-check: ## Run security checks
