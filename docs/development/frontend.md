@@ -1,6 +1,6 @@
 # Frontend Development Guide
 
-The Safe Job Platform frontend is built with React 19, TypeScript, and modern development tools for a robust, type-safe, and maintainable user interface.
+The Safe Job Platform frontend is built with React 18, TypeScript, and modern development tools for a robust, type-safe, and maintainable user interface.
 
 ## 🏗️ Technology Stack
 
