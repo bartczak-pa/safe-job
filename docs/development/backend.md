@@ -130,6 +130,7 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'rest_framework.authtoken',  # Token authentication
     'corsheaders',
     'drf_spectacular',
 
@@ -191,13 +192,43 @@ The `apps.core` module provides shared functionality across the platform:
 # apps/core/models.py
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 import uuid
+
+class SoftDeleteManager(models.Manager):
+    """Manager that excludes soft-deleted objects by default."""
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+    def all_with_deleted(self):
+        return super().get_queryset()
+
+    def only_deleted(self):
+        return super().get_queryset().filter(is_deleted=True)
 
 class BaseModel(models.Model):
     """Base model with common fields for all models."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False, db_index=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()  # Access to all objects including deleted
+
+    def soft_delete(self):
+        """Soft delete the object."""
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def restore(self):
+        """Restore a soft-deleted object."""
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save()
 
     class Meta:
         abstract = True
@@ -257,11 +288,18 @@ class HealthCheckView(APIView):
         return Response(health_status, status=status.HTTP_200_OK)
 
     def _check_database(self):
+        """Check database connectivity with proper resource management."""
         try:
             connection = connections['default']
-            connection.cursor().execute('SELECT 1')
-            return True
-        except Exception:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT 1')
+                result = cursor.fetchone()
+                return result is not None
+        except Exception as e:
+            # Log the specific error for debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Database health check failed: {e}")
             return False
 
     def _check_cache(self):
@@ -668,6 +706,7 @@ poetry run python manage.py test --verbosity=2
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # For API clients
         # JWT authentication will be added in Phase 2
     ],
     'DEFAULT_PERMISSION_CLASSES': [
