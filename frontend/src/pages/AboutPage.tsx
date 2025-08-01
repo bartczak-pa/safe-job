@@ -104,7 +104,7 @@ export const AboutPage: React.FC = () => {
 
             {/* Contact */}
             <section className="rounded-lg bg-primary-50 p-6">
-              <h2 className="text-primary-900 mb-4 text-2xl font-bold">Get Started Today</h2>
+              <h2 className="mb-4 text-2xl font-bold text-primary-900">Get Started Today</h2>
               <p className="mb-6 text-primary-700">
                 Join thousands of workers and employers who trust Safe Job Platform for secure,
                 transparent temporary employment opportunities.
@@ -118,7 +118,7 @@ export const AboutPage: React.FC = () => {
                 </Link>
                 <Link
                   to="/login"
-                  className="border-primary-300 inline-flex items-center justify-center rounded-md border bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-sm hover:bg-primary-50"
+                  className="inline-flex items-center justify-center rounded-md border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-sm hover:bg-primary-50"
                 >
                   Sign In
                 </Link>
