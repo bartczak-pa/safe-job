@@ -20,12 +20,11 @@ Our Docker architecture provides:
 ```mermaid
 graph TD
     subgraph "Docker Compose Stack"
-        FE[Frontend Container<br/>React 19 + Vite<br/>Port 3000]
+        FE[Frontend Container<br/>React 18 + Vite<br/>Port 3000]
         BE[Backend Container<br/>Django 5.2.4<br/>Port 8000]
         DB[(Database<br/>PostgreSQL 16 + PostGIS<br/>Port 5432)]
         REDIS[(Cache<br/>Redis 7.4<br/>Port 6379)]
         DOCS[Documentation<br/>MkDocs + Material<br/>Port 8001]
-    end
 
     subgraph "External Access"
         USER[Developer]
