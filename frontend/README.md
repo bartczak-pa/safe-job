@@ -263,4 +263,3 @@ frontend/
 ---
 
 **Safe Job Platform Frontend** - Built with ❤️ for worker safety and fair employment in the Netherlands.
-test change
