@@ -72,29 +72,29 @@ graph TD
 
 ### 3.1 Core Technologies
 
-| Component | Technology | Version | Justification |
-|-----------|------------|---------|---------------|
-| **Backend Framework** | Django + DRF | 5.2.4 | Mature framework, batteries-included, excellent single-developer productivity |
-| **Database** | PostgreSQL + PostGIS | 16 | ACID compliance, geospatial support, excellent performance for job matching |
-| **Real-time Layer** | Django Channels + Redis | Latest | Native Django integration, WebSocket support, horizontal scaling capability |
-| **Frontend** | React + TypeScript | 19 | Modern development experience, excellent TypeScript support, rich ecosystem |
-| **Build Tool** | Vite | Latest | Fast development builds, optimized production bundles |
-| **Styling** | Tailwind CSS | Latest | Utility-first CSS, mobile-first responsive design |
-| **Authentication** | Custom Magic Link + JWT | SimpleJWT | Passwordless auth, reduced friction, secure token-based API access |
-| **Email Service** | Resend | Latest | High deliverability, simple API, generous free tier |
-| **File Storage** | AWS S3 + CloudFront | Latest | Secure storage, global CDN, server-side encryption |
-| **Containerization** | Docker | Latest | Consistent environments, simplified deployment |
-| **Orchestration** | AWS ECS Fargate | Latest | Serverless containers, auto-scaling, cost optimization |
+| Component             | Technology              | Version   | Justification                                                                 |
+| --------------------- | ----------------------- | --------- | ----------------------------------------------------------------------------- |
+| **Backend Framework** | Django + DRF            | 5.2.4     | Mature framework, batteries-included, excellent single-developer productivity |
+| **Database**          | PostgreSQL + PostGIS    | 16        | ACID compliance, geospatial support, excellent performance for job matching   |
+| **Real-time Layer**   | Django Channels + Redis | Latest    | Native Django integration, WebSocket support, horizontal scaling capability   |
+| **Frontend**          | React + TypeScript      | 19        | Modern development experience, excellent TypeScript support, rich ecosystem   |
+| **Build Tool**        | Vite                    | Latest    | Fast development builds, optimized production bundles                         |
+| **Styling**           | Tailwind CSS            | Latest    | Utility-first CSS, mobile-first responsive design                             |
+| **Authentication**    | Custom Magic Link + JWT | SimpleJWT | Passwordless auth, reduced friction, secure token-based API access            |
+| **Email Service**     | Resend                  | Latest    | High deliverability, simple API, generous free tier                           |
+| **File Storage**      | AWS S3 + CloudFront     | Latest    | Secure storage, global CDN, server-side encryption                            |
+| **Containerization**  | Docker                  | Latest    | Consistent environments, simplified deployment                                |
+| **Orchestration**     | AWS ECS Fargate         | Latest    | Serverless containers, auto-scaling, cost optimization                        |
 
 ### 3.2 Development Tools
 
-| Tool | Purpose | Rationale |
-|------|---------|-----------|
-| **Testing** | pytest + Jest + RTL | Comprehensive backend/frontend test coverage |
-| **Code Quality** | ruff + eslint + prettier | Automated code formatting and linting |
-| **API Documentation** | drf-spectacular | Auto-generated OpenAPI documentation |
-| **Monitoring** | AWS CloudWatch | Built-in AWS monitoring, log aggregation |
-| **CI/CD** | GitHub Actions | Automated testing, building, deployment |
+| Tool                  | Purpose                  | Rationale                                    |
+| --------------------- | ------------------------ | -------------------------------------------- |
+| **Testing**           | pytest + Jest + RTL      | Comprehensive backend/frontend test coverage |
+| **Code Quality**      | ruff + eslint + prettier | Automated code formatting and linting        |
+| **API Documentation** | drf-spectacular          | Auto-generated OpenAPI documentation         |
+| **Monitoring**        | AWS CloudWatch           | Built-in AWS monitoring, log aggregation     |
+| **CI/CD**             | GitHub Actions           | Automated testing, building, deployment      |
 
 ---
 
@@ -121,6 +121,7 @@ backend/src/safe_job/
 ### 4.2 App Responsibilities
 
 #### 4.2.1 Core App
+
 **Purpose**: Shared utilities and base functionality
 
 **Key Components:**
@@ -134,6 +135,7 @@ backend/src/safe_job/
 **Models**: `BaseModel`, `Notification`, `AuditLog`
 
 #### 4.2.2 Users App
+
 **Purpose**: Core user management and authentication
 
 **Key Components:**
@@ -148,6 +150,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/auth/`, `/api/v1/users/`
 
 #### 4.2.3 Candidates App
+
 **Purpose**: Candidate profiles and job seeker functionality
 
 **Key Components:**
@@ -162,6 +165,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/candidates/`
 
 #### 4.2.4 Employers App
+
 **Purpose**: Employer profiles and verification
 
 **Key Components:**
@@ -176,6 +180,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/employers/`
 
 #### 4.2.5 Jobs App
+
 **Purpose**: Job posting and management
 
 **Key Components:**
@@ -190,6 +195,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/jobs/`
 
 #### 4.2.6 Applications App
+
 **Purpose**: Job application workflow
 
 **Key Components:**
@@ -204,6 +210,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/applications/`
 
 #### 4.2.7 Messaging App
+
 **Purpose**: Real-time communication
 
 **Key Components:**
@@ -218,6 +225,7 @@ backend/src/safe_job/
 **WebSocket**: `/ws/chat/`
 
 #### 4.2.8 Documents App
+
 **Purpose**: File upload and verification
 
 **Key Components:**
@@ -232,6 +240,7 @@ backend/src/safe_job/
 **APIs**: `/api/v1/documents/`
 
 #### 4.2.9 API Gateway App
+
 **Purpose**: Centralized API management
 
 **Key Components:**
@@ -360,6 +369,7 @@ erDiagram
 - Distance calculations in kilometers
 
 **Example Queries:**
+
 ```sql
 -- Find jobs within 25km of candidate location
 SELECT j.*, ST_Distance(j.geo_location, ST_Point(5.1214, 52.0907)::geography) / 1000 as distance_km
@@ -379,6 +389,7 @@ ORDER BY distance_km;
 - Pseudonymization capabilities for analytics
 
 **Audit Trail Design:**
+
 ```python
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -442,6 +453,7 @@ class BaseModel(models.Model):
 #### 6.1.3 Permission System
 
 **Role-Based Access Control:**
+
 ```python
 # Custom permission classes
 class IsCandidate(BasePermission):
@@ -515,6 +527,7 @@ class IsVerifiedEmployer(BasePermission):
 #### 7.2.1 Database Optimization
 
 **Indexing Strategy:**
+
 ```sql
 -- Geospatial index for job location queries
 CREATE INDEX idx_jobs_location ON jobs_job USING GIST (geo_location);
@@ -536,6 +549,7 @@ CREATE INDEX idx_jobs_fulltext ON jobs_job USING GIN (to_tsvector('english', tit
 #### 7.2.2 Caching Strategy
 
 **Multi-Level Caching:**
+
 ```python
 # API response caching
 @cache_page(60 * 15)  # 15 minutes
@@ -572,7 +586,7 @@ def candidate_skills(self):
 graph TD
     subgraph "Development Environment"
         subgraph "Docker Compose Stack"
-            FE[Frontend Container<br/>React 18 + Vite]
+            FE[Frontend Container<br/>React 19 + Vite]
             BE[Backend Container<br/>Django 5.2.4 + DRF]
             DB[(PostgreSQL 16<br/>+ PostGIS)]
             REDIS[(Redis 7.4<br/>Cache & Sessions)]
@@ -631,6 +645,7 @@ FROM nginx:alpine AS production
 ```
 
 **Docker Compose Configuration:**
+
 - **Frontend Service**: React dev server with hot reload on port 3000
 - **Backend Service**: Django with health checks on port 8000
 - **Database Service**: PostgreSQL 16 + PostGIS with data persistence
@@ -648,6 +663,7 @@ FROM nginx:alpine AS production
 - **Health Checks**: `/health/` endpoint for load balancer monitoring
 
 **Resource Allocation:**
+
 ```yaml
 # ECS Task Definition
 web_service:
@@ -682,25 +698,27 @@ websocket_service:
 **Current Implementation: 3 Comprehensive GitHub Actions Workflows**
 
 #### 8.2.1 Main CI/CD Pipeline (`ci.yml`)
+
 ```yaml
 name: CI/CD Pipeline
 on:
   push:
-    branches: [main, develop, 'feature/**', 'hotfix/**']
+    branches: [main, develop, "feature/**", "hotfix/**"]
   pull_request:
     branches: [main, develop]
 
 jobs:
-  test:                    # ✅ Backend testing with PostgreSQL + Redis
-  frontend-test:           # ✅ Frontend testing with Node.js
-  lint:                    # ✅ Code quality (Black, Ruff, MyPy)
-  security:               # ✅ Security scanning (Bandit, Safety)
-  build:                  # ✅ Docker multi-stage builds
-  docs:                   # ✅ Documentation validation
-  ci-success:             # ✅ Branch protection summary
+  test: # ✅ Backend testing with PostgreSQL + Redis
+  frontend-test: # ✅ Frontend testing with Node.js
+  lint: # ✅ Code quality (Black, Ruff, MyPy)
+  security: # ✅ Security scanning (Bandit, Safety)
+  build: # ✅ Docker multi-stage builds
+  docs: # ✅ Documentation validation
+  ci-success: # ✅ Branch protection summary
 ```
 
 #### 8.2.2 Implemented Features
+
 - **Comprehensive Testing**: Backend (Django tests) + Frontend (Jest/RTL)
 - **Code Quality**: Automated linting, formatting, and type checking
 - **Security Scanning**: Dependency vulnerabilities and code security
@@ -710,6 +728,7 @@ jobs:
 - **Branch Protection**: Required status checks for PR merging
 
 #### 8.2.3 Local CI Simulation
+
 ```bash
 # Run full CI pipeline locally
 make ci
@@ -724,6 +743,7 @@ make docker-build      # Build Docker images
 ### 8.3 Environment Configuration
 
 **Environment Management:**
+
 ```python
 # settings/base.py
 from decouple import config
@@ -753,6 +773,7 @@ AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
 ### 9.1 Logging Strategy
 
 **Structured Logging:**
+
 ```python
 import structlog
 
@@ -781,6 +802,7 @@ logger.error("Database connection failed",
 ### 9.2 Metrics Collection
 
 **Application Metrics:**
+
 ```python
 # Custom metrics with django-prometheus
 from django_prometheus.metrics import Counter, Histogram
@@ -805,6 +827,7 @@ def api_view(request):
 ### 9.3 Health Monitoring
 
 **Health Check Endpoints:**
+
 ```python
 # health/views.py
 class HealthCheckView(APIView):
@@ -832,31 +855,31 @@ class HealthCheckView(APIView):
 
 ### 10.1 Technical Risks
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|-------------------|
-| **AWS Free Tier Limits** | Medium | High | Daily usage monitoring, graceful degradation, cost alerts |
-| **Database Performance** | Low | High | Proper indexing, query optimization, connection pooling |
-| **Real-time Scalability** | Low | Medium | Load testing, Redis clustering plan, horizontal scaling |
-| **File Storage Costs** | Medium | Medium | File size limits, automated cleanup, lifecycle policies |
-| **Third-party Service Outages** | Low | Medium | Multiple provider support, circuit breaker pattern |
+| Risk                            | Probability | Impact | Mitigation Strategy                                       |
+| ------------------------------- | ----------- | ------ | --------------------------------------------------------- |
+| **AWS Free Tier Limits**        | Medium      | High   | Daily usage monitoring, graceful degradation, cost alerts |
+| **Database Performance**        | Low         | High   | Proper indexing, query optimization, connection pooling   |
+| **Real-time Scalability**       | Low         | Medium | Load testing, Redis clustering plan, horizontal scaling   |
+| **File Storage Costs**          | Medium      | Medium | File size limits, automated cleanup, lifecycle policies   |
+| **Third-party Service Outages** | Low         | Medium | Multiple provider support, circuit breaker pattern        |
 
 ### 10.2 Security Risks
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|-------------------|
-| **Data Breach** | Low | Critical | Encryption, access controls, audit logging, security testing |
-| **API Abuse** | Medium | High | Rate limiting, API authentication, monitoring, blocking |
-| **File Upload Attacks** | Medium | High | Type validation, size limits, virus scanning, quarantine |
-| **Authentication Bypass** | Low | Critical | Security audits, penetration testing, bug bounty program |
+| Risk                      | Probability | Impact   | Mitigation Strategy                                          |
+| ------------------------- | ----------- | -------- | ------------------------------------------------------------ |
+| **Data Breach**           | Low         | Critical | Encryption, access controls, audit logging, security testing |
+| **API Abuse**             | Medium      | High     | Rate limiting, API authentication, monitoring, blocking      |
+| **File Upload Attacks**   | Medium      | High     | Type validation, size limits, virus scanning, quarantine     |
+| **Authentication Bypass** | Low         | Critical | Security audits, penetration testing, bug bounty program     |
 
 ### 10.3 Operational Risks
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|-------------------|
-| **Single Developer Bottleneck** | High | Critical | Comprehensive documentation, automated testing, code reviews |
-| **Deployment Failures** | Medium | High | Blue-green deployment, automated rollback, staging environment |
-| **Data Loss** | Low | Critical | Automated backups, point-in-time recovery, disaster recovery plan |
-| **Compliance Violations** | Low | High | Legal review, GDPR compliance checklist, audit trails |
+| Risk                            | Probability | Impact   | Mitigation Strategy                                               |
+| ------------------------------- | ----------- | -------- | ----------------------------------------------------------------- |
+| **Single Developer Bottleneck** | High        | Critical | Comprehensive documentation, automated testing, code reviews      |
+| **Deployment Failures**         | Medium      | High     | Blue-green deployment, automated rollback, staging environment    |
+| **Data Loss**                   | Low         | Critical | Automated backups, point-in-time recovery, disaster recovery plan |
+| **Compliance Violations**       | Low         | High     | Legal review, GDPR compliance checklist, audit trails             |
 
 ---
 
@@ -865,6 +888,7 @@ class HealthCheckView(APIView):
 ### 11.1 Phase 1: Foundation ✅ **COMPLETED**
 
 **✅ Backend Infrastructure:**
+
 - ✅ Django 5.2.4 project with modular app structure (`apps.core` implemented)
 - ✅ PostgreSQL 16 + PostGIS database with Docker orchestration
 - ✅ Redis 7.4 for caching, sessions, and future real-time features
@@ -872,6 +896,7 @@ class HealthCheckView(APIView):
 - ✅ Health check endpoints (`/health/`) with service monitoring
 
 **✅ Frontend Foundation:**
+
 - ✅ React 19 + TypeScript + Vite development environment
 - ✅ Tailwind CSS v3.4 with custom design system
 - ✅ React Router with protected routes and role-based access
@@ -880,12 +905,14 @@ class HealthCheckView(APIView):
 - ✅ Jest + React Testing Library with comprehensive test configuration
 
 **✅ Development Environment:**
+
 - ✅ Docker Compose orchestration with hot reload and file watching
 - ✅ Comprehensive Makefile with 40+ development commands
 - ✅ Pre-commit hooks with automated code quality enforcement
 - ✅ ESLint, Prettier, and TypeScript strict mode configuration
 
 **✅ CI/CD Pipeline:**
+
 - ✅ GitHub Actions with 3 comprehensive workflows
 - ✅ Automated testing for both backend and frontend
 - ✅ Security scanning with Bandit, Safety, and dependency checks
@@ -894,6 +921,7 @@ class HealthCheckView(APIView):
 - ✅ Codecov integration for test coverage reporting
 
 **✅ Documentation System:**
+
 - ✅ MkDocs with Material theme and comprehensive structure
 - ✅ Containerized documentation serving with hot reload
 - ✅ Automated documentation validation in CI/CD pipeline
@@ -903,6 +931,7 @@ class HealthCheckView(APIView):
 **Foundation Complete**: All prerequisites met for Phase 2 implementation
 
 **Ready Components:**
+
 - ✅ JWT authentication libraries installed (`djangorestframework-simplejwt`)
 - ✅ Frontend authentication store structure (`/frontend/src/store/authStore.ts`)
 - ✅ Protected route components implemented in React Router
@@ -911,6 +940,7 @@ class HealthCheckView(APIView):
 - ✅ User model structure designed and ready for implementation
 
 **Next Implementation Tasks:**
+
 - 🚧 Custom User model with email-based authentication
 - 🚧 Magic link token generation and verification system
 - 🚧 User registration endpoints for candidates and employers
@@ -920,21 +950,25 @@ class HealthCheckView(APIView):
 ### 11.3 Phase 3+: Future Development 🚧 **Ready for Sequential Implementation**
 
 **Phase 3: Core Business Models & APIs**
+
 - User profiles (candidates, employers)
 - Job posting and management system
 - Basic matching algorithm implementation
 
 **Phase 4: Application & Matching System**
+
 - Job application workflow
 - PostGIS geospatial job search
 - Advanced matching algorithms
 
 **Phase 5: Real-time Messaging System**
+
 - Django Channels WebSocket implementation
 - Real-time chat functionality
 - Message history and notifications
 
 **Phase 6+: Advanced Features**
+
 - Document management and verification
 - Admin interfaces and moderation tools
 - Frontend polish and mobile optimization
@@ -1045,6 +1079,6 @@ This architecture has been thoroughly validated through systematic analysis of b
 
 ---
 
-*Architecture Document Version: 2.0*
-*Last Updated: July 2025*
-*Validation Status: Complete - Ready for Implementation*
+_Architecture Document Version: 2.0_
+_Last Updated: July 2025_
+_Validation Status: Complete - Ready for Implementation_

@@ -78,16 +78,16 @@ All API responses follow a consistent format:
 
 ```json
 {
-    "status": "success",
-    "data": {
-        // Response data here
-    },
-    "meta": {
-        "page": 1,
-        "per_page": 20,
-        "total": 100,
-        "total_pages": 5
-    }
+  "status": "success",
+  "data": {
+    // Response data here
+  },
+  "meta": {
+    "page": 1,
+    "per_page": 20,
+    "total": 100,
+    "total_pages": 5
+  }
 }
 ```
 
@@ -95,14 +95,14 @@ All API responses follow a consistent format:
 
 ```json
 {
-    "status": "error",
-    "error": {
-        "code": "VALIDATION_ERROR",
-        "message": "Invalid input data",
-        "details": {
-            "field_name": ["This field is required"]
-        }
+  "status": "error",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input data",
+    "details": {
+      "field_name": ["This field is required"]
     }
+  }
 }
 ```
 

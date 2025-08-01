@@ -10,6 +10,7 @@ This directory contains business requirements, product specifications, and busin
 ## 🎯 Purpose
 
 The business documentation provides:
+
 - **Product Vision**: Clear understanding of what we're building and why
 - **Requirements**: Detailed user stories and functional requirements
 - **Business Logic**: How the platform operates from a business perspective
@@ -26,6 +27,7 @@ The business documentation provides:
 ## 💼 Business Overview
 
 The Safe Job Platform connects:
+
 - **Legitimate Hiring Agencies**: Verified companies posting job opportunities
 - **Temporary Workers**: Job seekers looking for legitimate employment
 - **Regulatory Compliance**: Ensuring safe and legal employment practices

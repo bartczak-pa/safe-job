@@ -52,6 +52,7 @@ Phase 4 implements the job application system and basic matching algorithm that 
 **Implementation Details:**
 
 **Application Models (`applications/models.py`):**
+
 ```python
 from django.contrib.gis.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -356,6 +357,7 @@ class ApplicationStatusHistory(models.Model):
 - Couple applications handle joint decision logic
 
 **API Implementation (`applications/api/views.py`):**
+
 ```python
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -628,6 +630,7 @@ class CoupleApplicationViewSet(viewsets.ModelViewSet):
 - Scoring system ranks matches meaningfully
 
 **Matching Service Implementation (`applications/services.py`):**
+
 ```python
 from django.contrib.gis.measure import Distance
 from django.contrib.gis.geos import Point

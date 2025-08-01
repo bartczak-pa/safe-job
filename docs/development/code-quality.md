@@ -50,6 +50,7 @@ pre-commit run --all-files
 When you commit code, these checks run automatically:
 
 #### Standard Checks
+
 - Remove trailing whitespace
 - Fix end of files (ensure newline)
 - Check YAML syntax (except mkdocs.yml)
@@ -57,16 +58,19 @@ When you commit code, these checks run automatically:
 - Check for merge conflicts
 
 #### Python Code Quality (backend files only)
+
 - **Black**: Format code to consistent style
 - **isort**: Sort and organize imports
 - **Ruff**: Lint code for errors and style issues
 - **Bandit**: Scan for security vulnerabilities
 
 #### File Security
+
 - Check for accidentally committed `.env.*.local` files
 - Prevent committing sensitive files
 
 #### Docker
+
 - Lint Dockerfiles with hadolint
 
 ### Configuration
@@ -82,9 +86,9 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-        exclude: ^mkdocs\.yml$  # MkDocs uses special YAML tags
+        exclude: ^mkdocs\.yml$ # MkDocs uses special YAML tags
       - id: check-added-large-files
-        args: ['--maxkb=1000']
+        args: ["--maxkb=1000"]
 
   # Python formatting and linting
   - repo: https://github.com/psf/black
@@ -114,7 +118,7 @@ repos:
     hooks:
       - id: bandit
         files: ^backend/
-        args: ['-r', '--skip', 'B101,B601']
+        args: ["-r", "--skip", "B101,B601"]
         exclude: ^backend/.*/(migrations|tests)/.*$
 ```
 
@@ -245,14 +249,14 @@ Add to your VS Code settings (`settings.json`):
 
 ```json
 {
-    "python.formatting.provider": "black",
-    "python.linting.enabled": true,
-    "python.linting.ruffEnabled": true,
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true
-    },
-    "python.sortImports.args": ["--profile", "black"]
+  "python.formatting.provider": "black",
+  "python.linting.enabled": true,
+  "python.linting.ruffEnabled": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "python.sortImports.args": ["--profile", "black"]
 }
 ```
 
@@ -287,6 +291,7 @@ If a hook fails:
 4. **Commit again**
 
 Example workflow:
+
 ```bash
 # Make changes to code
 git add .

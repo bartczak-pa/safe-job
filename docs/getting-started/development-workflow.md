@@ -6,13 +6,13 @@ This guide outlines the development workflow for the Safe Job Platform, includin
 
 ### Branch Types
 
-| Branch Type | Pattern | Purpose | Lifespan |
-|-------------|---------|---------|----------|
-| **Main** | `main` | Production-ready releases | Permanent |
-| **Develop** | `develop` | Integration of completed features | Permanent |
-| **Feature** | `feature/description` | Individual feature development | Temporary |
-| **Hotfix** | `hotfix/description` | Emergency production fixes | Temporary |
-| **Documentation** | `docs/description` | Documentation updates | Temporary |
+| Branch Type       | Pattern               | Purpose                           | Lifespan  |
+| ----------------- | --------------------- | --------------------------------- | --------- |
+| **Main**          | `main`                | Production-ready releases         | Permanent |
+| **Develop**       | `develop`             | Integration of completed features | Permanent |
+| **Feature**       | `feature/description` | Individual feature development    | Temporary |
+| **Hotfix**        | `hotfix/description`  | Emergency production fixes        | Temporary |
+| **Documentation** | `docs/description`    | Documentation updates             | Temporary |
 
 ### Branch Flow Diagram
 
@@ -94,6 +94,7 @@ git push -u origin feature/authentication-system
 ### 3. Creating Pull Requests
 
 #### PR Title Format
+
 ```
 type(scope): brief description
 
@@ -105,11 +106,14 @@ refactor(models): optimize database queries
 ```
 
 #### PR Description Template
+
 ```markdown
 ## 📋 Summary
+
 Brief description of changes and motivation.
 
 ## 🔄 Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Documentation update
@@ -117,16 +121,19 @@ Brief description of changes and motivation.
 - [ ] Performance improvement
 
 ## 🧪 Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 
 ## 📚 Documentation
+
 - [ ] Code comments updated
 - [ ] API documentation updated
 - [ ] User documentation updated
 
 ## 🔍 Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Breaking changes documented
@@ -136,7 +143,9 @@ Brief description of changes and motivation.
 ### 4. Review and Merge Process
 
 #### Automated Checks
+
 Every PR triggers these checks:
+
 - **Build validation** - Code compiles/builds successfully
 - **Test suite** - All tests pass
 - **Documentation** - Docs build without errors
@@ -144,6 +153,7 @@ Every PR triggers these checks:
 - **Code quality** - Linting and formatting checks
 
 #### Manual Review Process
+
 1. **Self-review** - Review your own PR first
 2. **Request review** - Assign reviewers (yourself for solo development)
 3. **Address feedback** - Make requested changes
@@ -152,16 +162,19 @@ Every PR triggers these checks:
 #### Merge Strategies
 
 **For Feature Branches → Develop:**
+
 - Use **"Squash and merge"** to keep clean history
 - Ensure commit message follows conventional format
 
 **For Develop → Main:**
+
 - Use **"Create a merge commit"** to preserve feature history
 - Tag releases after merging to main
 
 ## 🛡️ Branch Protection Rules
 
 ### Main Branch Protection
+
 - ✅ Require pull request reviews (1 reviewer)
 - ✅ Require status checks to pass
 - ✅ Require up-to-date branches
@@ -169,11 +182,13 @@ Every PR triggers these checks:
 - ✅ Require conversation resolution
 
 ### Develop Branch Protection
+
 - ✅ Require status checks to pass
 - ❌ Require pull request reviews (flexibility for solo dev)
 - ✅ Require up-to-date branches
 
 ### Feature Branch Guidelines
+
 - No protection rules (development flexibility)
 - Automated checks still run on push
 - Regular cleanup of merged branches
@@ -181,6 +196,7 @@ Every PR triggers these checks:
 ## 📋 Phase-Based Development
 
 ### Phase Workflow
+
 Each development phase follows this pattern:
 
 ```bash
@@ -207,6 +223,7 @@ git push origin feature/phase-1-foundation
 ```
 
 ### Phase Completion Checklist
+
 - [ ] All phase tasks completed
 - [ ] Tests written and passing
 - [ ] Documentation updated
@@ -287,6 +304,7 @@ git push origin develop
 ## 🏷️ Release Management
 
 ### Versioning Strategy
+
 - **Semantic Versioning** (MAJOR.MINOR.PATCH)
 - **v1.0.0** - Initial MVP release
 - **v1.1.0** - New features added
@@ -337,6 +355,7 @@ git remote prune origin
 ```
 
 ### Weekly Review
+
 - Clean up merged branches
 - Review open PRs
 - Update documentation

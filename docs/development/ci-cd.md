@@ -9,12 +9,14 @@ This document describes the continuous integration and deployment setup for the 
 The main CI/CD workflow that runs comprehensive tests and checks on every push and pull request.
 
 **Triggers:**
+
 - Push to `main`, `develop`, `feature/**`, `hotfix/**`
 - Pull requests to `main`, `develop`
 
 **Jobs:**
 
 #### Test Job
+
 - **Services**: PostgreSQL 16 + PostGIS, Redis 7.4
 - **Python**: 3.13 with Poetry dependency management
 - **System deps**: GDAL, GEOS, PostGIS libraries
@@ -25,26 +27,30 @@ The main CI/CD workflow that runs comprehensive tests and checks on every push a
   - Upload to Codecov
 
 #### Lint Job
+
 - **Tools**: Black, isort, Ruff, MyPy
 - **Checks**:
-    - Code formatting (Black)
-    - Import sorting (isort)
-    - Linting and code quality (Ruff)
-    - Type checking (MyPy) - optional
+  - Code formatting (Black)
+  - Import sorting (isort)
+  - Linting and code quality (Ruff)
+  - Type checking (MyPy) - optional
 
 #### Security Job
+
 - **Tools**: Safety, Bandit
 - **Checks**:
-    - Dependency vulnerability scanning (Safety)
-    - Code security analysis (Bandit)
-    - Sensitive files detection
+  - Dependency vulnerability scanning (Safety)
+  - Code security analysis (Bandit)
+  - Sensitive files detection
 
 #### Build Job
+
 - **Docker**: Multi-stage build with caching
 - **Tests**: Full Docker Compose integration test
 - **Verification**: Health checks and container tests
 
 #### Documentation Job
+
 - **Tool**: MkDocs with Material theme
 - **Checks**: Build validation and structure verification
 
@@ -186,6 +192,7 @@ make ci
 Recommended GitHub branch protection settings:
 
 ### For `main` branch:
+
 - ✅ Require pull request reviews before merging
 - ✅ Require status checks to pass before merging
   - `Quick Repository Checks`
@@ -196,6 +203,7 @@ Recommended GitHub branch protection settings:
 - ✅ Allow force pushes (for emergency fixes)
 
 ### For `develop` branch:
+
 - ✅ Require pull request reviews before merging
 - ✅ Require status checks to pass before merging
   - `Quick Repository Checks`

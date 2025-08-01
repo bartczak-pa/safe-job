@@ -20,8 +20,7 @@ Our Docker architecture provides:
 ```mermaid
 graph TD
     subgraph "Docker Compose Stack"
-        FE[Frontend Container<br/>React 18 + Vite<br/>Port 3000]
-        FE[Frontend Container<br/>React 18 + Vite<br/>Port 3000]
+        FE[Frontend Container<br/>React 19 + Vite<br/>Port 3000]
         BE[Backend Container<br/>Django 5.2.4<br/>Port 8000]
         DB[(Database<br/>PostgreSQL 16 + PostGIS<br/>Port 5432)]
         REDIS[(Cache<br/>Redis 7.4<br/>Port 6379)]
@@ -43,13 +42,13 @@ graph TD
 
 ### Container Details
 
-| Service | Container | Purpose | Ports | Health Check |
-|---------|-----------|---------|-------|--------------|
-| **Frontend** | `safejob_frontend` | React development server | 3000:5173 | `curl -f http://localhost:3000/` |
-| **Backend** | `safejob_backend` | Django API server | 8000:8000 | `curl -f http://localhost:8000/health/` |
-| **Database** | `safejob_db` | PostgreSQL + PostGIS | 5432:5432 | `pg_isready -U safejob -d safejob` |
-| **Redis** | `safejob_redis` | Cache and sessions | 6379:6379 | `redis-cli ping` |
-| **Documentation** | `safejob_docs` | MkDocs server | 8001:8001 | `curl -f http://localhost:8001/` |
+| Service           | Container          | Purpose                  | Ports     | Health Check                            |
+| ----------------- | ------------------ | ------------------------ | --------- | --------------------------------------- |
+| **Frontend**      | `safejob_frontend` | React development server | 3000:5173 | `curl -f http://localhost:3000/`        |
+| **Backend**       | `safejob_backend`  | Django API server        | 8000:8000 | `curl -f http://localhost:8000/health/` |
+| **Database**      | `safejob_db`       | PostgreSQL + PostGIS     | 5432:5432 | `pg_isready -U safejob -d safejob`      |
+| **Redis**         | `safejob_redis`    | Cache and sessions       | 6379:6379 | `redis-cli ping`                        |
+| **Documentation** | `safejob_docs`     | MkDocs server            | 8001:8001 | `curl -f http://localhost:8001/`        |
 
 > **Note**: Port mapping format is `HOST_PORT:CONTAINER_PORT`. For example, `3000:5173` means host port 3000 maps to container port 5173 (Vite dev server).
 
@@ -208,18 +207,18 @@ Our Docker setup uses several volume types for optimal performance:
 # docker-compose.yml volumes
 volumes:
   # Backend development volumes
-  - ./backend/apps:/app/apps                    # Hot reload
-  - ./backend/config:/app/config               # Configuration
-  - ./backend/manage.py:/app/manage.py         # Django management
+  - ./backend/apps:/app/apps # Hot reload
+  - ./backend/config:/app/config # Configuration
+  - ./backend/manage.py:/app/manage.py # Django management
 
   # Frontend development volumes
-  - ./frontend/src:/app/src                    # Hot reload
-  - ./frontend/public:/app/public              # Static assets
-  - frontend_node_modules:/app/node_modules    # Performance optimization
+  - ./frontend/src:/app/src # Hot reload
+  - ./frontend/public:/app/public # Static assets
+  - frontend_node_modules:/app/node_modules # Performance optimization
 
   # Persistent data volumes
-  - postgres_data:/var/lib/postgresql/data     # Database persistence
-  - redis_data:/data                           # Redis persistence
+  - postgres_data:/var/lib/postgresql/data # Database persistence
+  - redis_data:/data # Redis persistence
 ```
 
 ### Volume Types Explained
@@ -230,6 +229,7 @@ volumes:
 ./backend/apps:/app/apps
 ./frontend/src:/app/src
 ```
+
 - **Purpose**: Enable hot reload and file watching
 - **Behavior**: Changes on host immediately reflect in container
 - **Performance**: Direct host filesystem access
@@ -240,6 +240,7 @@ volumes:
 frontend_node_modules:/app/node_modules
 postgres_data:/var/lib/postgresql/data
 ```
+
 - **Purpose**: Optimize performance and persist data
 - **Behavior**: Docker-managed, isolated from host
 - **Performance**: Optimized for container access
@@ -250,6 +251,7 @@ postgres_data:/var/lib/postgresql/data
 ./frontend/vite.config.ts:/app/vite.config.ts
 ./backend/pyproject.toml:/app/pyproject.toml
 ```
+
 - **Purpose**: Share specific configuration files
 - **Behavior**: Individual file synchronization
 - **Use Case**: Configuration that affects container behavior
@@ -413,6 +415,7 @@ docker compose logs -f backend frontend
 ### Health Check Endpoints
 
 #### Backend Health Check (`/health/`)
+
 ```python
 # apps/core/views.py
 class HealthCheckView(APIView):
@@ -430,6 +433,7 @@ class HealthCheckView(APIView):
 ```
 
 **Response Format:**
+
 ```json
 {
   "status": "healthy",
@@ -447,14 +451,16 @@ class HealthCheckView(APIView):
 ### Development Performance Tips
 
 #### 1. **Volume Optimization**
+
 ```yaml
 # Use named volumes for node_modules
 volumes:
-  - frontend_node_modules:/app/node_modules  # Faster than bind mount
-  - ./frontend/src:/app/src                  # Hot reload source code only
+  - frontend_node_modules:/app/node_modules # Faster than bind mount
+  - ./frontend/src:/app/src # Hot reload source code only
 ```
 
 #### 2. **Selective File Watching**
+
 ```yaml
 # Configure file watching patterns
 develop:
@@ -463,12 +469,13 @@ develop:
       path: ./frontend/src
       target: /app/src
       ignore:
-        - "**/*.test.*"        # Ignore test files
-        - "**/*.spec.*"        # Ignore spec files
+        - "**/*.test.*" # Ignore test files
+        - "**/*.spec.*" # Ignore spec files
         - "**/node_modules/**" # Ignore dependencies
 ```
 
 #### 3. **Build Cache Optimization**
+
 ```dockerfile
 # Copy package files first for better layer caching
 COPY package*.json ./
@@ -479,15 +486,16 @@ COPY . .
 ```
 
 #### 4. **Resource Limits**
+
 ```yaml
 # Set appropriate resource limits
 deploy:
   resources:
     limits:
-      cpus: '0.5'
+      cpus: "0.5"
       memory: 512M
     reservations:
-      cpus: '0.25'
+      cpus: "0.25"
       memory: 256M
 ```
 
@@ -509,6 +517,7 @@ docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
 ### Common Issues & Solutions
 
 #### 1. **Port Already in Use**
+
 ```bash
 # Error: Port 3000 already in use
 # Solution: Find and kill process
@@ -520,6 +529,7 @@ docker compose -f docker-compose.override.yml up
 ```
 
 #### 2. **Volume Permission Issues**
+
 ```bash
 # Error: Permission denied
 # Solution: Fix ownership
@@ -530,6 +540,7 @@ docker compose exec --user $(id -u):$(id -g) backend bash
 ```
 
 #### 3. **Database Connection Refused**
+
 ```bash
 # Check if database container is running
 docker compose ps db
@@ -545,6 +556,7 @@ docker compose exec db pg_isready -U safejob -d safejob
 ```
 
 #### 4. **Frontend Build Failures**
+
 ```bash
 # Clear node_modules volume
 docker compose down
@@ -556,6 +568,7 @@ docker compose exec frontend npm ls
 ```
 
 #### 5. **Memory Issues**
+
 ```bash
 # Check container resource usage
 docker stats
@@ -571,6 +584,7 @@ services:
 ```
 
 #### 6. **File Sync Issues**
+
 ```bash
 # Force rebuild without cache
 docker compose build --no-cache
@@ -610,6 +624,7 @@ docker compose exec backend ps aux
 ### Development Security
 
 #### 1. **Environment Variables**
+
 ```bash
 # Use .env files for secrets
 echo "POSTGRES_PASSWORD=$(openssl rand -base64 32)" > .envs/.env.development.local
@@ -617,6 +632,7 @@ echo "REDIS_PASSWORD=$(openssl rand -base64 32)" >> .envs/.env.development.local
 ```
 
 #### 2. **Container Security**
+
 ```dockerfile
 # Run as non-root user
 RUN addgroup --system appgroup && adduser --system --group appuser
@@ -630,19 +646,21 @@ FROM python:3.13.1-slim AS base
 ```
 
 #### 3. **Network Security**
+
 ```yaml
 # Restrict service communication
 networks:
   default:
     driver: bridge
-    internal: true  # Prevent external access
+    internal: true # Prevent external access
 ```
 
 #### 4. **Volume Security**
+
 ```yaml
 # Use read-only mounts where possible
 volumes:
-  - ./config:/app/config:ro  # Read-only configuration
+  - ./config:/app/config:ro # Read-only configuration
 ```
 
 ### Security Scanning
@@ -714,6 +732,7 @@ docker system info
 ### Hot Reload Configuration
 
 #### Backend Hot Reload
+
 ```python
 # Django development server with automatic reload
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -727,40 +746,43 @@ INSTALLED_APPS = [
 ```
 
 #### Frontend Hot Reload
+
 ```typescript
 // vite.config.ts
 export default defineConfig({
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 5173,
     watch: {
-      usePolling: true,  // Required for Docker
+      usePolling: true, // Required for Docker
     },
     hmr: {
       port: 5173,
     },
   },
-})
+});
 ```
 
 ### File Watching Best Practices
 
 1. **Exclude Unnecessary Files**
+
    ```yaml
    volumes:
      - ./src:/app/src
-     - /app/src/node_modules  # Exclude node_modules
+     - /app/src/node_modules # Exclude node_modules
    ```
 
 2. **Use Polling for Containers**
+
    ```javascript
    // webpack.config.js
    module.exports = {
      watchOptions: {
        poll: 1000,
-       ignored: /node_modules/
-     }
-   }
+       ignored: /node_modules/,
+     },
+   };
    ```
 
 3. **Optimize Watch Patterns**
@@ -780,9 +802,10 @@ export default defineConfig({
 ### Custom Docker Compose Configurations
 
 #### Development Override
+
 ```yaml
 # docker-compose.override.yml
-version: '3.8'
+version: "3.8"
 services:
   backend:
     environment:
@@ -795,13 +818,14 @@ services:
     environment:
       - VITE_DEV_MODE=true
     ports:
-      - "3001:5173"  # Alternative port
+      - "3001:5173" # Alternative port
 ```
 
 #### Production Configuration
+
 ```yaml
 # docker-compose.prod.yml
-version: '3.8'
+version: "3.8"
 services:
   backend:
     build:
@@ -832,6 +856,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up
 ### Container Orchestration
 
 #### Service Dependencies
+
 ```yaml
 services:
   backend:
@@ -843,6 +868,7 @@ services:
 ```
 
 #### Scaling Services
+
 ```bash
 # Scale frontend instances
 docker compose up --scale frontend=3

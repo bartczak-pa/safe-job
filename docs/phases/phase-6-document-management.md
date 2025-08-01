@@ -44,6 +44,7 @@ Phase 6 implements a comprehensive document management system with secure file u
 **Implementation Details:**
 
 **AWS S3 Configuration (`config/settings/base.py`):**
+
 ```python
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -85,6 +86,7 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 ```
 
 **Document Models (`documents/models.py`):**
+
 ```python
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
@@ -325,6 +327,7 @@ class DocumentComment(models.Model):
 ```
 
 **File Upload Service (`documents/services.py`):**
+
 ```python
 import hashlib
 import magic
@@ -559,6 +562,7 @@ class DocumentProcessingService:
 - [ ] Create document expiration and cleanup system
 
 **Document API (`documents/api/views.py`):**
+
 ```python
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -771,6 +775,7 @@ class DocumentCategoryViewSet(viewsets.ReadOnlyModelViewSet):
 - [ ] Build document sharing and permission management interface
 
 **File Upload Component (`frontend/src/components/documents/FileUpload.tsx`):**
+
 ```typescript
 import React, { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'

@@ -228,7 +228,8 @@ health: ## Check health of all services
 	@echo "Backend API:"
 	@curl -f http://localhost:8000/health/ || echo "❌ Backend not responding"
 	@echo -e "\nFrontend App:"
-	@curl -f http://localhost:3000/ || echo "❌ Frontend not responding"
+	@FRONTEND_PORT=$$(docker compose port frontend 5173 2>/dev/null | cut -d: -f2 || echo "3000"); \
+	curl -f http://localhost:$$FRONTEND_PORT/ || echo "❌ Frontend not responding"
 	@echo -e "\nDatabase:"
 	@docker compose exec db pg_isready -U safejob -d safejob || echo "❌ Database not ready"
 	@echo -e "\nRedis:"

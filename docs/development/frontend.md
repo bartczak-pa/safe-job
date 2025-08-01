@@ -1,12 +1,12 @@
 # Frontend Development Guide
 
-The Safe Job Platform frontend is built with React 18, TypeScript, and modern development tools for a robust, type-safe, and maintainable user interface.
+The Safe Job Platform frontend is built with React 19, TypeScript, and modern development tools for a robust, type-safe, and maintainable user interface.
 
 ## 🏗️ Technology Stack
 
 ### Core Framework
 
-- **React 18**: Stable React version with modern features
+- **React 19**: Latest React version with modern features
 - **TypeScript**: Full type safety and enhanced developer experience
 - **Vite**: Lightning-fast build tool and development server
 
@@ -65,12 +65,14 @@ frontend/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - Docker and Docker Compose (for containerized development)
 
 ### Development Environment
 
 #### Option 1: Docker Development (Recommended)
+
 ```bash
 # Start the entire development stack
 make dev
@@ -80,6 +82,7 @@ make dev
 ```
 
 #### Option 2: Local Development
+
 ```bash
 cd frontend
 npm install
@@ -88,21 +91,22 @@ npm run dev
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
-| `npm run test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Run ESLint linting |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check code formatting |
-| `npm run type-check` | Run TypeScript type checking |
+| Command                | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `npm run dev`          | Start development server with hot reload |
+| `npm run build`        | Build for production                     |
+| `npm run preview`      | Preview production build locally         |
+| `npm run test`         | Run unit tests                           |
+| `npm run test:watch`   | Run tests in watch mode                  |
+| `npm run lint`         | Run ESLint linting                       |
+| `npm run format`       | Format code with Prettier                |
+| `npm run format:check` | Check code formatting                    |
+| `npm run type-check`   | Run TypeScript type checking             |
 
 ## 🎨 Design System
 
 ### Colors
+
 The application uses a consistent color palette defined in Tailwind configuration:
 
 ```typescript
@@ -121,19 +125,21 @@ colors: {
 ```
 
 ### Typography
+
 - **Font Family**: Inter (loaded via Google Fonts)
 - **Font Sizes**: Tailwind's default scale (text-sm, text-base, text-lg, etc.)
 - **Font Weights**: 400 (normal), 500 (medium), 600 (semibold), 700 (bold)
 
 ### Components
+
 Reusable components are built with consistent styling:
 
 ```typescript
 // Button component example
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline'
-  size?: 'sm' | 'md' | 'lg'
-  children: React.ReactNode
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
+  children: React.ReactNode;
 }
 ```
 
@@ -142,18 +148,20 @@ interface ButtonProps {
 ### Global State (Zustand)
 
 #### Authentication Store
+
 ```typescript
 // src/store/authStore.ts
 interface AuthState {
-  user: User | null
-  isAuthenticated: boolean
-  login: (credentials: LoginCredentials) => Promise<void>
-  logout: () => void
-  error: string | null
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => void;
+  error: string | null;
 }
 ```
 
 The auth store persists to localStorage and handles:
+
 - User authentication state
 - Login/logout actions
 - Error handling
@@ -162,6 +170,7 @@ The auth store persists to localStorage and handles:
 ### Server State (React Query)
 
 React Query handles all server-side data:
+
 - API caching and synchronization
 - Background refetching
 - Optimistic updates
@@ -171,16 +180,17 @@ React Query handles all server-side data:
 // Example API hook
 export const useProfile = () => {
   return useQuery({
-    queryKey: ['profile'],
+    queryKey: ["profile"],
     queryFn: fetchProfile,
     staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-}
+  });
+};
 ```
 
 ## 🛣️ Routing & Navigation
 
 ### Route Structure
+
 ```typescript
 // src/router/index.tsx
 const router = createBrowserRouter([
@@ -204,6 +214,7 @@ const router = createBrowserRouter([
 ```
 
 ### Protected Routes
+
 Routes are protected based on authentication status and user roles:
 
 ```typescript
@@ -251,6 +262,7 @@ describe('Button', () => {
 ```
 
 ### Testing Configuration
+
 - **Test Environment**: jsdom for DOM simulation
 - **Test Utils**: Custom render function with providers
 - **Mocking**: MSW for API mocking in tests
@@ -259,6 +271,7 @@ describe('Button', () => {
 ## 🔧 Development Workflow
 
 ### Code Quality
+
 - **Pre-commit Hooks**: Automatic linting and formatting
 - **TypeScript**: Strict type checking
 - **ESLint Rules**: React, TypeScript, and accessibility rules
@@ -313,19 +326,20 @@ export const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
 ```typescript
 // Custom hook for API integration
 export const useApi = <T>(endpoint: string) => {
-  const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Hook logic
 
-  return { data, loading, error }
-}
+  return { data, loading, error };
+};
 ```
 
 ## 📱 Responsive Design
 
 ### Breakpoints (Tailwind CSS)
+
 - **sm**: 640px and up
 - **md**: 768px and up
 - **lg**: 1024px and up
@@ -336,14 +350,16 @@ export const useApi = <T>(endpoint: string) => {
 
 ```jsx
 // Example responsive component
-<div className="
+<div
+  className="
   grid
   grid-cols-1
   gap-4
   sm:grid-cols-2
   lg:grid-cols-3
   xl:grid-cols-4
-">
+"
+>
   {/* Grid items */}
 </div>
 ```
@@ -351,12 +367,14 @@ export const useApi = <T>(endpoint: string) => {
 ## 🔐 Security Considerations
 
 ### Authentication
+
 - JWT tokens stored securely
 - Automatic token refresh
 - Protected API routes
 - CSRF protection
 
 ### Data Validation
+
 - Input validation with TypeScript
 - API response validation
 - XSS prevention
@@ -365,6 +383,7 @@ export const useApi = <T>(endpoint: string) => {
 ## 🚀 Build & Deployment
 
 ### Production Build
+
 ```bash
 # Build for production
 npm run build
@@ -374,11 +393,14 @@ npm run preview
 ```
 
 ### Docker Production
+
 The frontend uses multi-stage Docker builds:
+
 - **Development**: Hot reload with volume mounting
 - **Production**: Nginx-served static files
 
 ### Environment Variables
+
 ```bash
 # .env file
 VITE_API_URL=http://localhost:8000/api
@@ -388,12 +410,14 @@ VITE_APP_NAME=Safe Job Platform
 ## 📊 Performance Optimization
 
 ### Vite Optimizations
+
 - **Hot Module Replacement**: Instant updates during development
 - **Tree Shaking**: Remove unused code
 - **Code Splitting**: Lazy load routes and components
 - **Asset Optimization**: Automatic image and CSS optimization
 
 ### React Optimizations
+
 - **React.memo**: Prevent unnecessary re-renders
 - **useMemo/useCallback**: Memoize expensive computations
 - **Lazy Loading**: Dynamic imports for routes
@@ -402,12 +426,14 @@ VITE_APP_NAME=Safe Job Platform
 ## 🐛 Debugging
 
 ### Development Tools
+
 - **React Developer Tools**: Component inspection
 - **Redux DevTools**: State debugging (for Zustand)
 - **Vite Dev Server**: Source maps and hot reload
 - **TypeScript**: Compile-time error detection
 
 ### Error Handling
+
 ```typescript
 // Error boundary for component errors
 class ErrorBoundary extends React.Component {
@@ -416,36 +442,40 @@ class ErrorBoundary extends React.Component {
 
 // API error handling with React Query
 const { data, error, isError } = useQuery({
-  queryKey: ['data'],
+  queryKey: ["data"],
   queryFn: fetchData,
   onError: (error) => {
-    console.error('API Error:', error)
+    console.error("API Error:", error);
     // Handle error appropriately
   },
-})
+});
 ```
 
 ## 📝 Best Practices
 
 ### Code Organization
+
 - One component per file
 - Clear naming conventions
 - Consistent file structure
 - Proper TypeScript types
 
 ### Performance
+
 - Minimize re-renders with proper dependencies
 - Use React.memo for expensive components
 - Implement proper loading states
 - Optimize images and assets
 
 ### Accessibility
+
 - Semantic HTML elements
 - ARIA attributes where needed
 - Keyboard navigation support
 - Screen reader compatibility
 
 ### Testing
+
 - Test user interactions, not implementation details
 - Mock external dependencies
 - Test error states and edge cases

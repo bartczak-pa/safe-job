@@ -6,27 +6,27 @@ Welcome to the comprehensive documentation for the **Safe Job Platform** - a sec
 
 - :rocket: **Getting Started**
 
-    Quick start guide and project overview to get you up and running with the Safe Job Platform development environment.
+  Quick start guide and project overview to get you up and running with the Safe Job Platform development environment.
 
-    [Get Started :octicons-arrow-right-24:](getting-started/overview.md)
+  [Get Started :octicons-arrow-right-24:](getting-started/overview.md)
 
 - :briefcase: **Business & Requirements**
 
-    Business concept, market analysis, and detailed product requirements driving the platform development.
+  Business concept, market analysis, and detailed product requirements driving the platform development.
 
-    [Business Docs :octicons-arrow-right-24:](business/business-concept.md)
+  [Business Docs :octicons-arrow-right-24:](business/business-concept.md)
 
 - :gear: **Architecture & Design**
 
-    System architecture, technical decisions, and implementation strategy for scalable development.
+  System architecture, technical decisions, and implementation strategy for scalable development.
 
-    [Architecture :octicons-arrow-right-24:](architecture/architecture.md)
+  [Architecture :octicons-arrow-right-24:](architecture/architecture.md)
 
 - :clipboard: **Implementation Plan**
 
-    Detailed phase-by-phase development roadmap with timeline and deliverables breakdown.
+  Detailed phase-by-phase development roadmap with timeline and deliverables breakdown.
 
-    [Project Plan :octicons-arrow-right-24:](plan.md)
+  [Project Plan :octicons-arrow-right-24:](plan.md)
 
 </div>
 
@@ -51,21 +51,21 @@ Safe Job addresses critical issues in the Dutch temporary work sector by creatin
 
 ## 🏗️ Technology Stack
 
-| Component | Technology | Status |
-|-----------|------------|--------|
-| **Backend** | Django 5.2.4 + DRF | ✅ **Implemented** |
-| **Database** | PostgreSQL 16 + PostGIS | ✅ **Implemented** |
-| **Cache/Sessions** | Redis 7.4 | ✅ **Implemented** |
-| **Frontend** | React 19 + TypeScript + Vite | ✅ **Implemented** |
-| **Styling** | Tailwind CSS v3.4 | ✅ **Implemented** |
-| **State Management** | Zustand + React Query | ✅ **Implemented** |
-| **Containerization** | Docker + Docker Compose | ✅ **Implemented** |
-| **CI/CD** | GitHub Actions | ✅ **Implemented** |
-| **Documentation** | MkDocs + Material Theme | ✅ **Implemented** |
-| **Real-time** | Django Channels + Redis | 🚧 *Ready for Phase 5* |
-| **Storage** | AWS S3 + CloudFront | 🚧 *Ready for Phase 6* |
-| **Email** | Resend | 🚧 *Ready for Phase 2* |
-| **Deployment** | Docker + AWS ECS Fargate | 🚧 *Ready for Deployment* |
+| Component            | Technology                   | Status                    |
+| -------------------- | ---------------------------- | ------------------------- |
+| **Backend**          | Django 5.2.4 + DRF           | ✅ **Implemented**        |
+| **Database**         | PostgreSQL 16 + PostGIS      | ✅ **Implemented**        |
+| **Cache/Sessions**   | Redis 7.4                    | ✅ **Implemented**        |
+| **Frontend**         | React 19 + TypeScript + Vite | ✅ **Implemented**        |
+| **Styling**          | Tailwind CSS v3.4            | ✅ **Implemented**        |
+| **State Management** | Zustand + React Query        | ✅ **Implemented**        |
+| **Containerization** | Docker + Docker Compose      | ✅ **Implemented**        |
+| **CI/CD**            | GitHub Actions               | ✅ **Implemented**        |
+| **Documentation**    | MkDocs + Material Theme      | ✅ **Implemented**        |
+| **Real-time**        | Django Channels + Redis      | 🚧 _Ready for Phase 5_    |
+| **Storage**          | AWS S3 + CloudFront          | 🚧 _Ready for Phase 6_    |
+| **Email**            | Resend                       | 🚧 _Ready for Phase 2_    |
+| **Deployment**       | Docker + AWS ECS Fargate     | 🚧 _Ready for Deployment_ |
 
 ## 🚀 Development Status
 
@@ -156,12 +156,14 @@ Safe Job addresses critical issues in the Dutch temporary work sector by creatin
 ## 🎯 Success Metrics
 
 ### Technical Goals
+
 - **Performance**: Sub-200ms API response times
 - **Availability**: 99%+ uptime after launch
 - **Security**: Zero critical vulnerabilities
 - **Mobile**: Full responsive functionality
 
 ### Business Goals
+
 - **Adoption**: 10+ active employers, 50+ candidates
 - **Engagement**: 5+ minute average sessions
 - **Quality**: <5% technical support tickets
@@ -179,14 +181,17 @@ Safe Job addresses critical issues in the Dutch temporary work sector by creatin
 ## 📚 Documentation Sections
 
 ### Business Documentation
+
 Understanding the market, requirements, and business logic behind the platform.
 
 ### Architecture Documentation
+
 Technical design decisions, system architecture, and implementation strategy.
 
 ### Implementation Documentation
+
 Phase-by-phase development plans with detailed task breakdowns and timelines.
 
 ---
 
-*Built with ❤️ for worker safety and fair employment in the Netherlands*
+_Built with ❤️ for worker safety and fair employment in the Netherlands_

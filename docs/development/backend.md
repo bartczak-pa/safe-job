@@ -5,16 +5,19 @@ The Safe Job Platform backend is built with Django 5.2.4, PostgreSQL with PostGI
 ## 🏗️ Technology Stack
 
 ### Core Framework
+
 - **Django 5.2.4**: Latest Django with async support and modern features
 - **Django REST Framework**: Powerful toolkit for building Web APIs
 - **Python 3.13**: Latest Python with enhanced type annotations and performance
 
 ### Database & Storage
+
 - **PostgreSQL 16**: Advanced open-source relational database
 - **PostGIS Extension**: Geospatial support for location-based matching
 - **Redis 7.4**: High-performance in-memory data structure store
 
 ### Development Tools
+
 - **Poetry**: Modern dependency management and packaging
 - **Ruff**: Lightning-fast Python linter and formatter
 - **Black**: Uncompromising code formatter
@@ -22,6 +25,7 @@ The Safe Job Platform backend is built with Django 5.2.4, PostgreSQL with PostGI
 - **Bandit**: Security linter for Python code
 
 ### API & Documentation
+
 - **drf-spectacular**: Auto-generated OpenAPI 3.0 documentation
 - **django-cors-headers**: CORS handling for frontend integration
 - **django-ratelimit**: Rate limiting for API protection
@@ -60,6 +64,7 @@ backend/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Python 3.13+
 - Poetry (for dependency management)
 - Docker and Docker Compose (for containerized development)
@@ -68,6 +73,7 @@ backend/
 ### Development Environment
 
 #### Option 1: Docker Development (Recommended)
+
 ```bash
 # Start the entire development stack
 make dev
@@ -78,6 +84,7 @@ make dev
 ```
 
 #### Option 2: Local Development
+
 ```bash
 cd backend
 
@@ -99,15 +106,15 @@ poetry run python manage.py runserver
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `poetry run python manage.py runserver` | Start development server |
-| `poetry run python manage.py migrate` | Run database migrations |
-| `poetry run python manage.py makemigrations` | Create new migrations |
-| `poetry run python manage.py test` | Run test suite |
-| `poetry run python manage.py shell` | Open Django shell |
-| `poetry run python manage.py collectstatic` | Collect static files |
-| `poetry run python manage.py createsuperuser` | Create admin user |
+| Command                                       | Description              |
+| --------------------------------------------- | ------------------------ |
+| `poetry run python manage.py runserver`       | Start development server |
+| `poetry run python manage.py migrate`         | Run database migrations  |
+| `poetry run python manage.py makemigrations`  | Create new migrations    |
+| `poetry run python manage.py test`            | Run test suite           |
+| `poetry run python manage.py shell`           | Open Django shell        |
+| `poetry run python manage.py collectstatic`   | Collect static files     |
+| `poetry run python manage.py createsuperuser` | Create admin user        |
 
 ## ⚙️ Configuration Management
 
@@ -188,6 +195,7 @@ EMAIL_HOST_PASSWORD=your_resend_api_key
 The `apps.core` module provides shared functionality across the platform:
 
 #### Base Models
+
 ```python
 # apps/core/models.py
 from django.db import models
@@ -255,6 +263,7 @@ class AuditableModel(BaseModel):
 ```
 
 #### Health Check System
+
 ```python
 # apps/core/views.py
 from rest_framework.views import APIView
@@ -311,6 +320,7 @@ class HealthCheckView(APIView):
 ```
 
 #### Utility Functions
+
 ```python
 # apps/core/utils.py
 import re
@@ -380,6 +390,7 @@ urlpatterns = [
 The platform uses PostgreSQL 16 with PostGIS extension for geospatial capabilities:
 
 #### Database Configuration
+
 ```python
 # config/settings/base.py
 DATABASES = {
@@ -398,6 +409,7 @@ DATABASES = {
 ```
 
 #### Geospatial Model Example (Future Implementation)
+
 ```python
 # Example for future job model with location
 from django.contrib.gis.db import models
@@ -1162,6 +1174,7 @@ jobs = Job.objects.with_employer_info().with_application_counts().active_jobs()
 ### Common Development Issues
 
 #### 1. **Database Connection Issues**
+
 ```bash
 # Check database status
 docker compose ps db
@@ -1179,6 +1192,7 @@ docker compose up -d
 ```
 
 #### 2. **Migration Issues**
+
 ```bash
 # Check migration status
 poetry run python manage.py showmigrations
@@ -1194,6 +1208,7 @@ poetry run python manage.py migrate
 ```
 
 #### 3. **Dependency Issues**
+
 ```bash
 # Update Poetry lock file
 poetry lock --no-update
@@ -1206,6 +1221,7 @@ poetry cache clear --all pypi
 ```
 
 #### 4. **Permission Issues**
+
 ```bash
 # Fix file permissions
 sudo chown -R $USER:$USER ./backend
@@ -1249,24 +1265,28 @@ LOGGING['loggers']['django.db.backends'] = {
 ## 📚 Best Practices
 
 ### Code Organization
+
 - One model per file for complex models
 - Use abstract base classes for common functionality
 - Implement custom managers and querysets for reusable logic
 - Follow Django's naming conventions
 
 ### Security
+
 - Never commit secrets to version control
 - Use environment variables for configuration
 - Implement proper input validation
 - Follow OWASP security guidelines
 
 ### Performance
+
 - Use `select_related()` and `prefetch_related()` to avoid N+1 queries
 - Implement database indexes for frequently queried fields
 - Use caching for expensive operations
 - Monitor database query performance
 
 ### Testing
+
 - Write tests for all business logic
 - Use factories for test data generation
 - Test both success and failure scenarios

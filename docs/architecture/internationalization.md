@@ -28,14 +28,14 @@ The Safe Job platform internationalization strategy balances rapid MVP delivery 
 **Target Market Analysis:**
 Based on Dutch temporary work demographics and business requirements:
 
-| Language | Market Size | Business Priority | Implementation Phase |
-|----------|-------------|-------------------|----------------------|
-| **English (en)** | Universal | Critical | MVP (Weeks 1-8) |
-| **Dutch (nl)** | Primary market | High | Phase 2 (Months 3-4) |
-| **Polish (pl)** | Large worker demographic | High | Phase 2 (Months 3-4) |
-| **Romanian (ro)** | Significant population | Medium | Phase 3 (Months 5-6) |
-| **Bulgarian (bg)** | EU worker demographic | Medium | Phase 3 (Months 5-6) |
-| **Ukrainian (uk)** | Refugee/worker support | Medium | Phase 3 (Months 5-6) |
+| Language           | Market Size              | Business Priority | Implementation Phase |
+| ------------------ | ------------------------ | ----------------- | -------------------- |
+| **English (en)**   | Universal                | Critical          | MVP (Weeks 1-8)      |
+| **Dutch (nl)**     | Primary market           | High              | Phase 2 (Months 3-4) |
+| **Polish (pl)**    | Large worker demographic | High              | Phase 2 (Months 3-4) |
+| **Romanian (ro)**  | Significant population   | Medium            | Phase 3 (Months 5-6) |
+| **Bulgarian (bg)** | EU worker demographic    | Medium            | Phase 3 (Months 5-6) |
+| **Ukrainian (uk)** | Refugee/worker support   | Medium            | Phase 3 (Months 5-6) |
 
 ---
 
@@ -44,6 +44,7 @@ Based on Dutch temporary work demographics and business requirements:
 ### 2.1 Technical Configuration
 
 **Django Settings (MVP):**
+
 ```python
 # settings/base.py - MVP Configuration
 USE_I18N = False           # Disabled for MVP simplicity
@@ -58,40 +59,44 @@ LOCALE_PATHS = []         # No locale directories needed for MVP
 ```
 
 **Frontend Configuration (React):**
+
 ```typescript
 // src/i18n.ts - MVP stub for future expansion
 export const i18n = {
-  language: 'en',
+  language: "en",
   t: (key: string, params?: any) => {
     // MVP: Return keys as-is, ready for translation system
     return key;
-  }
+  },
 };
 ```
 
 ### 2.2 Content Strategy (MVP)
 
 **Text Content Approach:**
+
 - **Clear, Simple English**: Accessible to international audience
 - **Technical Term Consistency**: Standard job market terminology
 - **Cultural Neutrality**: Avoid idioms or culture-specific references
 - **Professional Tone**: Appropriate for business/employment context
 
 **Content Categories:**
+
 ```typescript
 // Content organization ready for i18n extraction
 const contentAreas = {
-  'auth': ['login', 'registration', 'password_reset'],
-  'jobs': ['search', 'details', 'requirements', 'application'],
-  'profile': ['candidate', 'employer', 'verification'],
-  'messaging': ['conversations', 'notifications'],
-  'admin': ['moderation', 'verification', 'reports']
+  auth: ["login", "registration", "password_reset"],
+  jobs: ["search", "details", "requirements", "application"],
+  profile: ["candidate", "employer", "verification"],
+  messaging: ["conversations", "notifications"],
+  admin: ["moderation", "verification", "reports"],
 };
 ```
 
 ### 2.3 Database Design (i18n Ready)
 
 **Schema Preparation:**
+
 ```python
 # models.py - MVP with i18n preparation
 class Job(models.Model):
@@ -120,6 +125,7 @@ class Job(models.Model):
 ### 3.1 Phase 2: Core European Languages (Months 3-4)
 
 **Technology Stack Enhancement:**
+
 ```python
 # settings/production.py - Post-MVP i18n activation
 USE_I18N = True
@@ -142,6 +148,7 @@ MIDDLEWARE = [
 ```
 
 **Database Schema Evolution:**
+
 ```python
 # Enhanced models for multi-language content
 class TranslatableContent(models.Model):
@@ -167,6 +174,7 @@ class JobTranslation(models.Model):
 ### 3.2 Translation Workflow Integration
 
 **Professional Translation Pipeline:**
+
 ```python
 # translation/services.py
 class TranslationService:
@@ -224,28 +232,29 @@ class TranslationService:
 ### 3.3 Frontend Internationalization
 
 **React i18next Integration:**
+
 ```typescript
 // src/i18n/index.ts - Full i18n implementation
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import Backend from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import Backend from "i18next-http-backend";
+import LanguageDetector from "i18next-browser-languagedetector";
 
 i18n
   .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
-    supportedLngs: ['en', 'nl', 'pl', 'ro', 'bg', 'uk'],
+    fallbackLng: "en",
+    supportedLngs: ["en", "nl", "pl", "ro", "bg", "uk"],
 
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
 
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
+      order: ["localStorage", "navigator", "htmlTag"],
+      caches: ["localStorage"],
     },
 
     interpolation: {
@@ -253,14 +262,15 @@ i18n
     },
 
     // Namespace organization
-    ns: ['common', 'auth', 'jobs', 'profile', 'messaging', 'admin'],
-    defaultNS: 'common',
+    ns: ["common", "auth", "jobs", "profile", "messaging", "admin"],
+    defaultNS: "common",
   });
 
 export default i18n;
 ```
 
 **Component Implementation:**
+
 ```typescript
 // components/JobCard.tsx - i18n implementation
 import { useTranslation } from 'react-i18next';
@@ -302,6 +312,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
 ### 4.1 Dynamic Content Translation
 
 **Real-time Translation Service:**
+
 ```python
 # services/realtime_translation.py
 class RealTimeTranslationService:
@@ -333,6 +344,7 @@ class RealTimeTranslationService:
 ```
 
 **Smart Content Detection:**
+
 ```python
 class ContentIntelligence:
     """AI-powered content analysis for translation optimization"""
@@ -367,6 +379,7 @@ class ContentIntelligence:
 ### 4.2 Localization Features
 
 **Cultural Adaptation:**
+
 ```python
 # localization/adapters.py
 class LocalizationAdapter:
@@ -414,6 +427,7 @@ class LocalizationAdapter:
 ```
 
 **Legal Compliance Localization:**
+
 ```python
 class LegalComplianceLocalizer:
     """Ensure legal text compliance in different languages"""
@@ -522,6 +536,7 @@ class LegalComplianceLocalizer:
 ### 6.1 Translation Quality Framework
 
 **Quality Assurance Process:**
+
 ```python
 # qa/translation_quality.py
 class TranslationQualityAssurance:
@@ -576,6 +591,7 @@ class TranslationQualityAssurance:
 ### 6.2 User Testing Framework
 
 **Native Speaker Testing:**
+
 ```python
 class LocalizationTesting:
     """Framework for native speaker testing"""
@@ -630,6 +646,7 @@ class LocalizationTesting:
 ### 7.1 Performance Optimization
 
 **Translation Caching Strategy:**
+
 ```python
 # caching/translation_cache.py
 class TranslationCache:
@@ -688,6 +705,7 @@ class TranslationCache:
 ### 7.2 Bundle Size Optimization
 
 **Frontend Bundle Management:**
+
 ```typescript
 // webpack/i18n-optimization.js
 const I18nOptimizationPlugin = {
@@ -699,15 +717,15 @@ const I18nOptimizationPlugin = {
   // Split translations by route
   getRouteTranslations(route: string, language: string) {
     const routeMap = {
-      '/jobs': ['jobs', 'common'],
-      '/profile': ['profile', 'common'],
-      '/auth': ['auth', 'common'],
-      '/messaging': ['messaging', 'common'],
+      "/jobs": ["jobs", "common"],
+      "/profile": ["profile", "common"],
+      "/auth": ["auth", "common"],
+      "/messaging": ["messaging", "common"],
     };
 
-    const namespaces = routeMap[route] || ['common'];
+    const namespaces = routeMap[route] || ["common"];
     return Promise.all(
-      namespaces.map(ns => this.loadTranslations(language, ns))
+      namespaces.map((ns) => this.loadTranslations(language, ns)),
     );
   },
 
@@ -715,7 +733,7 @@ const I18nOptimizationPlugin = {
   compressTranslations(translations: object) {
     // Remove unused keys, minify JSON
     return JSON.stringify(translations);
-  }
+  },
 };
 ```
 
@@ -770,9 +788,9 @@ This internationalization strategy balances immediate business needs with long-t
 
 ---
 
-*Document Version: 2.0*
-*Last Updated: July 2025*
-*Internationalization Status: Strategy Validated - Ready for Implementation*
+_Document Version: 2.0_
+_Last Updated: July 2025_
+_Internationalization Status: Strategy Validated - Ready for Implementation_
 
 ## Future Implementation Strategy
 
@@ -781,6 +799,7 @@ This internationalization strategy balances immediate business needs with long-t
 Django's built-in i18n framework will be configured when multi-language support is added:
 
 **MVP Settings (English Only):**
+
 ```python
 # settings/base.py
 USE_I18N = False  # Disabled for MVP simplicity
@@ -789,6 +808,7 @@ TIME_ZONE = 'Europe/Amsterdam'  # Netherlands timezone
 ```
 
 **Post-MVP Settings:**
+
 ```python
 # settings/base.py
 USE_I18N = True
@@ -805,6 +825,7 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 ### URL Configuration
 
 URLs can be prefixed with language codes using `i18n_patterns` in `backend/src/safe_job/config/urls.py`. For example:
+
 ```
 /en/admin/ - English admin interface
 /nl/admin/ - Dutch admin interface
@@ -815,6 +836,7 @@ A language switcher endpoint is available at `/i18n/setlang/` to change the curr
 ### Translation Workflow
 
 1. Mark strings for translation in Python code using `gettext_lazy` (imported as `_`):
+
    ```python
    from django.utils.translation import gettext_lazy as _
 
@@ -823,6 +845,7 @@ A language switcher endpoint is available at `/i18n/setlang/` to change the curr
    ```
 
 2. Extract translatable strings to message files:
+
    ```
    make makemessages
    ```
@@ -852,17 +875,19 @@ Translation files are stored in `frontend/public/locales/{language_code}/{namesp
 ### Translation Workflow
 
 1. Mark strings for translation in React components:
+
    ```tsx
-   import { useTranslation } from 'react-i18next';
+   import { useTranslation } from "react-i18next";
 
    function MyComponent() {
      const { t } = useTranslation();
 
-     return <h1>{t('welcome')}</h1>;
+     return <h1>{t("welcome")}</h1>;
    }
    ```
 
 2. Extract translatable strings to JSON files:
+
    ```
    npm run extract-translations
    ```

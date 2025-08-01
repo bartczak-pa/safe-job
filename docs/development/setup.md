@@ -26,6 +26,7 @@ make setup
 ```
 
 This script will:
+
 - Generate secure passwords for development
 - Create `.envs/.env.development.local` with secure configuration
 - Create compatibility symlink at `.env`
@@ -49,11 +50,11 @@ make test
 
 After setup, these services will be available:
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Backend API | http://localhost:8000 | Django REST API |
-| PostgreSQL | localhost:5432 | Database with PostGIS |
-| Redis | localhost:6379 | Caching and sessions |
+| Service       | URL                   | Purpose                     |
+| ------------- | --------------------- | --------------------------- |
+| Backend API   | http://localhost:8000 | Django REST API             |
+| PostgreSQL    | localhost:5432        | Database with PostGIS       |
+| Redis         | localhost:6379        | Caching and sessions        |
 | Documentation | http://localhost:8001 | MkDocs documentation server |
 
 ## Local Python Development (Alternative)
@@ -175,6 +176,7 @@ make test-coverage
 ### Test Settings
 
 Tests use the `config.settings.test` module which:
+
 - Uses in-memory SQLite with Spatialite for speed
 - Disables logging for cleaner output
 - Uses in-memory caching
@@ -254,6 +256,7 @@ git push origin feature/your-feature-name
 ```
 
 The pre-commit hooks will automatically:
+
 - Format code with Black
 - Sort imports with isort
 - Lint with Ruff

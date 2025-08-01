@@ -50,6 +50,7 @@ Phase 9 establishes a robust, scalable production infrastructure on AWS using mo
 - Infrastructure can be deployed/destroyed reliably
 
 **Implementation Details:**
+
 ```hcl
 # infrastructure/terraform/main.tf
 terraform {
@@ -525,6 +526,7 @@ resource "aws_db_instance" "read_replica" {
 - Web application firewall blocks common attacks
 
 **Implementation Details:**
+
 ```hcl
 # infrastructure/terraform/security.tf
 # KMS Key for encryption
@@ -879,6 +881,7 @@ resource "aws_wafv2_web_acl_association" "main" {
 - Database migrations run safely before deployment
 
 **Implementation Details:**
+
 ```yaml
 # .github/workflows/ci-cd.yml
 name: CI/CD Pipeline
@@ -925,77 +928,77 @@ jobs:
           - 6379:6379
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        cache: 'pip'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-    - name: Install dependencies
-      run: |
-        cd backend
-        pip install -r requirements/test.txt
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements/test.txt
 
-    - name: Run tests
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/safe_job_test
-        REDIS_URL: redis://localhost:6379/0
-        SECRET_KEY: test-secret-key-for-ci
-        DEBUG: True
-      run: |
-        cd backend
-        python manage.py migrate
-        python manage.py collectstatic --noinput
-        pytest --cov=src --cov-report=xml --cov-report=term-missing
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/safe_job_test
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: True
+        run: |
+          cd backend
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+          pytest --cov=src --cov-report=xml --cov-report=term-missing
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        file: backend/coverage.xml
-        flags: backend
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: backend/coverage.xml
+          flags: backend
 
   test-frontend:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
 
-    - name: Install dependencies
-      run: |
-        cd frontend
-        npm ci
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
 
-    - name: Run linting
-      run: |
-        cd frontend
-        npm run lint
+      - name: Run linting
+        run: |
+          cd frontend
+          npm run lint
 
-    - name: Run tests
-      run: |
-        cd frontend
-        npm run test:ci
+      - name: Run tests
+        run: |
+          cd frontend
+          npm run test:ci
 
-    - name: Build production bundle
-      run: |
-        cd frontend
-        npm run build
+      - name: Build production bundle
+        run: |
+          cd frontend
+          npm run build
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: frontend-build
-        path: frontend/dist/
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/dist/
 
   # Security scanning
   security-scan:
@@ -1003,21 +1006,21 @@ jobs:
     needs: [test-backend, test-frontend]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
 
-    - name: Upload Trivy scan results
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: "trivy-results.sarif"
 
   # Build and push Docker images
   build-and-push:
@@ -1030,51 +1033,51 @@ jobs:
       frontend-image: ${{ steps.frontend-image.outputs.image }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Build and push backend image
-      id: backend-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        cd backend
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
-        docker tag $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build and push backend image
+        id: backend-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Download frontend build
-      uses: actions/download-artifact@v3
-      with:
-        name: frontend-build
-        path: frontend/dist/
+      - name: Download frontend build
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/dist/
 
-    - name: Build and push frontend image
-      id: frontend-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        cd frontend
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
-        docker tag $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build and push frontend image
+        id: frontend-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd frontend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   # Deploy to staging
   deploy-staging:
@@ -1084,37 +1087,37 @@ jobs:
     environment: staging
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Deploy to ECS
-      run: |
-        aws ecs update-service \
-          --cluster safe-job-cluster-staging \
-          --service safe-job-backend-staging \
-          --force-new-deployment \
-          --task-definition safe-job-backend-staging
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster safe-job-cluster-staging \
+            --service safe-job-backend-staging \
+            --force-new-deployment \
+            --task-definition safe-job-backend-staging
 
-    - name: Wait for deployment
-      run: |
-        aws ecs wait services-stable \
-          --cluster safe-job-cluster-staging \
-          --services safe-job-backend-staging
+      - name: Wait for deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster safe-job-cluster-staging \
+            --services safe-job-backend-staging
 
-    - name: Run database migrations
-      run: |
-        aws ecs run-task \
-          --cluster safe-job-cluster-staging \
-          --task-definition safe-job-migrate-staging \
-          --launch-type FARGATE \
-          --network-configuration "awsvpcConfiguration={subnets=[subnet-xxx,subnet-yyy],securityGroups=[sg-xxx],assignPublicIp=DISABLED}"
+      - name: Run database migrations
+        run: |
+          aws ecs run-task \
+            --cluster safe-job-cluster-staging \
+            --task-definition safe-job-migrate-staging \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-xxx,subnet-yyy],securityGroups=[sg-xxx],assignPublicIp=DISABLED}"
 
   # Deploy to production
   deploy-production:
@@ -1124,57 +1127,57 @@ jobs:
     environment: production
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Create new task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: infrastructure/ecs/task-definition-production.json
-        container-name: backend
-        image: ${{ needs.build-and-push.outputs.backend-image }}
+      - name: Create new task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: infrastructure/ecs/task-definition-production.json
+          container-name: backend
+          image: ${{ needs.build-and-push.outputs.backend-image }}
 
-    - name: Deploy to ECS with blue-green
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: safe-job-backend-production
-        cluster: safe-job-cluster-production
-        wait-for-service-stability: true
-        wait-for-minutes: 10
+      - name: Deploy to ECS with blue-green
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: safe-job-backend-production
+          cluster: safe-job-cluster-production
+          wait-for-service-stability: true
+          wait-for-minutes: 10
 
-    - name: Run smoke tests
-      run: |
-        curl -f https://api.safe-job.nl/health/ || exit 1
-        curl -f https://safe-job.nl/ || exit 1
+      - name: Run smoke tests
+        run: |
+          curl -f https://api.safe-job.nl/health/ || exit 1
+          curl -f https://safe-job.nl/ || exit 1
 
-    - name: Notify deployment success
-      if: success()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: success
-        channel: '#deployments'
-        message: '🚀 Production deployment successful!'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify deployment success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: "#deployments"
+          message: "🚀 Production deployment successful!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Notify deployment failure
-      if: failure()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: failure
-        channel: '#deployments'
-        message: '🚨 Production deployment failed!'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify deployment failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: "#deployments"
+          message: "🚨 Production deployment failed!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
 ### 9.3 Monitoring and Observability
@@ -1202,6 +1205,7 @@ jobs:
 - SLA metrics tracked and reported automatically
 
 **Implementation Details:**
+
 ```hcl
 # infrastructure/terraform/monitoring.tf
 # CloudWatch Log Groups
@@ -1435,6 +1439,7 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
 ```
 
 #### 9.3.2 Application Performance Monitoring Integration
+
 **Duration**: 4 hours
 
 **Priority**: Medium
