@@ -181,6 +181,7 @@ def magic_link_request_view(request):
 **Secure Token Handling:**
 
 ```python
+from datetime import datetime, timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 

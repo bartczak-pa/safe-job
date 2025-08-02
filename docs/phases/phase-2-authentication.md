@@ -109,11 +109,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 ```python
 import secrets
 import hashlib
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.core.cache import cache
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -135,7 +136,7 @@ class MagicLinkManager:
             'user_id': str(user.id),
             'email': user.email,
             'type': request_type,
-            'created_at': datetime.now().isoformat()
+            'created_at': timezone.now()  # Native datetime for cache serialization
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
 
