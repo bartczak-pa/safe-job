@@ -83,19 +83,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         """Override save to generate username if not set"""
         if not self.username:
-            for _ in range(5):  # give up after a few attempts
+            for attempt in range(10):  # double the retries for high concurrency
                 self.username = self.generate_username()
                 try:
                     with transaction.atomic():
                         return super().save(*args, **kwargs)
                 except IntegrityError:
-                    continue
-            raise IntegrityError("Could not generate unique username")
-        return super().save(*args, **kwargs)
+                    if attempt == 9:
+                        raise
+                    # loop and try a new candidate
+        # updates also run in a transaction for consistency
+        with transaction.atomic():
+            return super().save(*args, **kwargs)
 
     def generate_username(self):
         """Generate unique username from email"""
-        base = self.email.split('@')[0].lower()
+        base = self.email.split('@')[0].lower()[:140]  # leave room for a numeric suffix
         username = base
         counter = 1
         while User.objects.filter(username=username).exclude(pk=self.pk).exists():
