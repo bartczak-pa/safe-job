@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with the Safe Job Platform development environment in minutes.
+Get up and running with the Safe Job Platform development environment in minutes using our automated setup and Makefile commands.
 
 ## 🚀 Prerequisites
 
@@ -8,159 +8,255 @@ Before you begin, ensure you have the following installed:
 
 - **Git** - Version control system
 - **Docker & Docker Compose** - Containerization platform
-- **Node.js 18+** - JavaScript runtime for frontend development
-- **Python 3.11+** - Backend development language
+- **Make** - Build automation (usually pre-installed on Linux/Mac)
 
 ## ⚡ Quick Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/pawel-org/safe-job.git
+git clone <repository-url>
 cd safe-job
 ```
 
-### 2. Environment Configuration
+### 2. Automated Environment Setup
 
 ```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit environment variables (development defaults are provided)
-nano .env
+# Run the automated setup script (creates secure passwords and environment)
+make setup
 ```
 
-### 3. Start Development Environment
+This command will:
+
+- Generate secure passwords for PostgreSQL and Redis
+- Create `.envs/.env.development.local` with proper configuration
+- Build and start all Docker services
+- Verify that all services are healthy
+
+### 3. Verify Installation
 
 ```bash
-# Build and start all services
-docker-compose up --build
-
-# Or run in background
-docker-compose up -d --build
+# Check all services are running and healthy
+make health
 ```
 
-### 4. Initialize Database
+You should see:
+
+- ✅ Backend API responding
+- ✅ Database ready and accepting connections
+- ✅ Redis responding with authentication
+- ✅ Documentation server running
+
+### 4. Access the Application
+
+| Service              | URL                                                                | Purpose               |
+| -------------------- | ------------------------------------------------------------------ | --------------------- |
+| **Backend API**      | [http://localhost:8000](http://localhost:8000)                     | Django REST API       |
+| **API Health Check** | [http://localhost:8000/health/](http://localhost:8000/health/)     | Service status        |
+| **Documentation**    | [http://localhost:8001/safe-job/](http://localhost:8001/safe-job/) | Project documentation |
+| **PostgreSQL**       | `localhost:5432`                                                   | Database with PostGIS |
+| **Redis**            | `localhost:6379`                                                   | Caching and sessions  |
+
+## 🛠️ Development Commands
+
+### Essential Makefile Commands
 
 ```bash
-# Run initial migrations
-docker-compose exec backend python manage.py migrate
+# Show all available commands
+make help
 
-# Create superuser (optional)
-docker-compose exec backend python manage.py createsuperuser
+# Development environment
+make dev            # Start development environment
+make health         # Check health of all services
+make clean          # Stop and clean up environment
 
-# Load sample data (optional)
-docker-compose exec backend python manage.py loaddata fixtures/sample_data.json
+# Testing
+make test           # Run Django tests
+make ci             # Run full CI checks locally
+
+# Code quality
+make lint           # Run all linting checks
+make format         # Format code with Black and isort
+make install-hooks  # Install pre-commit hooks
+make run-hooks      # Run pre-commit hooks on all files
+
+# Django management
+make migrate        # Run database migrations
+make shell          # Open Django shell in container
+make superuser      # Create Django superuser
+
+# Documentation
+make docs-serve     # Start documentation server
+make docs-build     # Build documentation
+make docs-stop      # Stop documentation server
 ```
-
-### 5. Access the Application
-
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend API**: [http://localhost:8000/api/](http://localhost:8000/api/)
-- **Django Admin**: [http://localhost:8000/admin/](http://localhost:8000/admin/)
-- **API Documentation**: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
-
-## 🛠️ Development Workflow
 
 ### Running Tests
 
 ```bash
-# Backend tests
-docker-compose exec backend python manage.py test
+# Run Django tests
+make test
 
-# Frontend tests  
-docker-compose exec frontend npm test
+# Or run tests directly in container
+docker compose exec backend python manage.py test
 
-# End-to-end tests
-docker-compose exec e2e npm run test:e2e
+# Run specific test
+docker compose exec backend python manage.py test apps.core.tests.HealthCheckTestCase
+
+# Run tests with coverage
+docker compose exec backend coverage run --source='.' manage.py test
+docker compose exec backend coverage report
 ```
 
-### Code Quality Checks
+### Code Quality and Pre-commit
 
 ```bash
-# Python linting and formatting
-docker-compose exec backend ruff check .
-docker-compose exec backend black .
+# Install pre-commit hooks (one-time setup)
+make install-hooks
 
-# TypeScript linting
-docker-compose exec frontend npm run lint
-docker-compose exec frontend npm run type-check
+# Run all code quality checks
+make lint
+
+# Format code
+make format
+
+# Run pre-commit hooks manually
+make run-hooks
 ```
+
+The pre-commit hooks will automatically:
+
+- Format code with Black
+- Sort imports with isort
+- Lint with Ruff
+- Run security checks with Bandit
+- Validate YAML files
+- Check for merge conflicts
 
 ### Database Operations
 
 ```bash
+# Run migrations
+make migrate
+
 # Create new migration
-docker-compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py makemigrations
 
-# Apply migrations
-docker-compose exec backend python manage.py migrate
+# Access Django shell
+make shell
 
-# Access database shell
-docker-compose exec db psql -U postgres -d safejob
+# Create superuser
+make superuser
+
+# Access database directly
+docker compose exec db psql -U safejob -d safejob
 ```
 
 ## 📁 Project Structure
 
 ```
 safe-job/
-├── backend/                 # Django application
-│   ├── apps/               # Django apps (users, jobs, etc.)
-│   ├── config/             # Django settings and configuration
-│   └── requirements.txt    # Python dependencies
-├── frontend/               # React application
-│   ├── src/               # React components and logic
-│   ├── public/            # Static assets
-│   └── package.json       # Node.js dependencies
-├── docs/                  # Documentation (MkDocs)
-├── docker-compose.yml     # Development environment setup
-├── .env.example          # Environment variables template
-└── README.md             # Project overview
+├── backend/                    # Django REST API
+│   ├── apps/                  # Django applications
+│   │   └── core/             # Core app with health checks
+│   ├── config/               # Django settings
+│   │   ├── settings/         # Environment-specific settings
+│   │   └── wsgi.py          # WSGI configuration
+│   ├── Dockerfile           # Backend container definition
+│   └── pyproject.toml       # Python dependencies (Poetry)
+├── docs/                      # MkDocs documentation
+│   ├── getting-started/      # Setup and workflow guides
+│   ├── development/          # Development documentation
+│   ├── architecture/         # System design docs
+│   ├── business/            # Business requirements
+│   ├── phases/              # Implementation phases
+│   ├── Dockerfile           # Documentation container
+│   └── requirements.txt # Documentation dependencies
+├── .envs/                     # Environment configurations
+│   ├── .env.example         # Template for all environments
+│   ├── .env.development.local # Active development config
+│   └── .env.test            # CI/CD testing config
+├── .github/workflows/         # GitHub Actions CI/CD
+├── scripts/                   # Setup and utility scripts
+├── docker-compose.yml         # Development environment
+├── Makefile                   # Development commands
+├── mkdocs.yml                # Documentation configuration
+├── .pre-commit-config.yaml   # Code quality hooks
+└── requirements.txt      # Documentation dependencies
 ```
 
-## 🔧 Common Tasks
+## 🔧 Common Development Tasks
 
 ### Adding New Dependencies
 
-**Backend (Python):**
-```bash
-# Add to requirements.txt, then rebuild
-docker-compose build backend
-docker-compose up -d backend
-```
+**Backend (Python with Poetry):**
 
-**Frontend (Node.js):**
 ```bash
-# Install package
-docker-compose exec frontend npm install package-name
+# Add new dependency
+docker compose exec backend poetry add package-name
 
-# Or add to package.json and rebuild
-docker-compose build frontend
+# Add development dependency
+docker compose exec backend poetry add --group dev package-name
+
+# Update pyproject.toml and rebuild
+docker compose build backend
 ```
 
 ### Working with Django Apps
 
 ```bash
 # Create new Django app
-docker-compose exec backend python manage.py startapp app_name
+docker compose exec backend python manage.py startapp app_name
 
-# Generate API documentation
-docker-compose exec backend python manage.py spectacular --file schema.yml
+# Create and run migrations
+docker compose exec backend python manage.py makemigrations
+make migrate
+
+# Access Django admin
+# First create superuser: make superuser
+# Then visit: http://localhost:8000/admin/
+```
+
+### Environment Management
+
+```bash
+# Reset development environment
+make clean
+make setup
+
+# Update environment variables
+# Edit .envs/.env.development.local
+# Then restart: make dev
+```
+
+### Docker Operations
+
+```bash
+# View logs
+docker compose logs backend
+docker compose logs db
+docker compose logs docs
+
+# Rebuild specific service
+docker compose build backend --no-cache
+docker compose up -d backend
+
+# Clean Docker resources
+docker system prune -f
 ```
 
 ### Database Management
 
 ```bash
 # Reset database (WARNING: destroys all data)
-docker-compose down -v
-docker-compose up -d db
-docker-compose exec backend python manage.py migrate
+docker compose down -v
+make setup
 
-# Backup database
-docker-compose exec db pg_dump -U postgres safejob > backup.sql
+# Create database backup
+docker compose exec db pg_dump -U safejob safejob > backup_$(date +%Y%m%d_%H%M%S).sql
 
-# Restore database
-docker-compose exec -T db psql -U postgres safejob < backup.sql
+# Restore from backup
+docker compose exec -T db psql -U safejob safejob < backup_file.sql
 ```
 
 ## 🚨 Troubleshooting
@@ -168,70 +264,150 @@ docker-compose exec -T db psql -U postgres safejob < backup.sql
 ### Common Issues
 
 **Port Already in Use:**
-```bash
-# Check what's using the port
-lsof -i :8000
-lsof -i :3000
 
-# Kill the process or change ports in docker-compose.yml
+```bash
+# Check what's using the ports
+lsof -i :8000  # Backend
+lsof -i :8001  # Documentation
+lsof -i :5432  # PostgreSQL
+lsof -i :6379  # Redis
+
+# Stop the services and restart
+make clean
+make dev
 ```
 
-**Permission Issues (Linux/Mac):**
-```bash
-# Fix Docker permission issues
-sudo chown -R $USER:$USER .
+**Environment File Issues:**
 
-# Or run Docker commands with sudo
-sudo docker-compose up
+```bash
+# Regenerate environment with secure passwords
+make clean-env
+make setup
+```
+
+**Docker Permission Issues (Linux):**
+
+```bash
+# Add user to docker group
+sudo usermod -aG docker $USER
+# Log out and back in
+
+# Or fix file permissions
+sudo chown -R $USER:$USER .
 ```
 
 **Database Connection Issues:**
+
 ```bash
-# Restart database service
-docker-compose restart db
+# Check service health
+make health
+
+# Restart database
+docker compose restart db
 
 # Check database logs
-docker-compose logs db
+docker compose logs db
+
+# Verify environment variables
+cat .envs/.env.development.local | grep POSTGRES
+```
+
+**Pre-commit Hook Issues:**
+
+```bash
+# Reinstall hooks
+make install-hooks
+
+# Skip hooks temporarily (not recommended)
+git commit --no-verify
 ```
 
 **Build Failures:**
+
 ```bash
-# Clean rebuild
-docker-compose down
-docker-compose build --no-cache
-docker-compose up
+# Clean rebuild all services
+make clean
+docker system prune -f
+make setup
+```
+
+**Documentation Not Loading:**
+
+```bash
+# Restart documentation service
+make docs-stop
+make docs-serve
+
+# Check documentation logs
+docker compose logs docs
+```
+
+### Health Check Commands
+
+```bash
+# Check all services
+make health
+
+# Individual service checks
+curl http://localhost:8000/health/          # Backend API
+curl http://localhost:8001/safe-job/        # Documentation
+docker compose exec db pg_isready -U safejob -d safejob  # Database
 ```
 
 ### Getting Help
 
-1. **Check the logs**: `docker-compose logs [service-name]`
-2. **Verify environment**: Ensure `.env` file is properly configured
-3. **Review documentation**: Check relevant sections in this documentation
-4. **Test in isolation**: Run services individually to isolate issues
+1. **Run health check**: `make health` to see service status
+2. **Check logs**: `docker compose logs [service-name]`
+3. **Verify environment**: `cat .envs/.env.development.local`
+4. **Reset environment**: `make clean && make setup`
+5. **Check documentation**: Browse to [http://localhost:8001/safe-job/](http://localhost:8001/safe-job/)
 
 ## 📚 Next Steps
 
 Once you have the development environment running:
 
-1. **Explore the codebase** - Familiarize yourself with the Django apps and React components
+1. **Explore the codebase** - Familiarize yourself with the Django backend structure
 2. **Review the architecture** - Read the [System Architecture](../architecture/architecture.md) documentation
-3. **Check the project plan** - Understand the development phases in [Project Plan](../plan.md)
-4. **Start developing** - Begin with [Phase 1 tasks](../phases/phase-1-foundation.md)
+3. **Understand the development process** - Check [Code Quality](../development/code-quality.md) and [Testing](../development/testing.md) guides
+4. **Check the project plan** - Understand the development phases in [Project Plan](../plan.md)
+5. **Start developing** - Begin with [Phase 2 Authentication](../phases/phase-2-authentication.md) tasks
 
 ## 🔄 Keeping Up to Date
 
 ```bash
 # Pull latest changes
-git pull origin main
+git pull origin develop
 
-# Rebuild containers with updates
-docker-compose build
+# Update environment and rebuild
+make clean
+make setup
 
-# Update dependencies
-docker-compose exec backend pip install -r requirements.txt
-docker-compose exec frontend npm install
+# Update documentation dependencies
+pip install -r docs/requirements.txt
+make docs-serve
+```
+
+## ⚡ Quick Command Reference
+
+```bash
+# Essential commands
+make setup       # Initial setup
+make dev         # Start development
+make health      # Check service status
+make test        # Run tests
+make lint        # Code quality checks
+make clean       # Stop and cleanup
+
+# Development workflow
+make install-hooks  # Setup pre-commit
+make format        # Format code
+make migrate       # Run migrations
+make shell         # Django shell
+make docs-serve    # Start docs
 ```
 
 ---
 
-You're now ready to start developing! For detailed implementation guidance, proceed to the [Phase 1 Foundation](../phases/phase-1-foundation.md) documentation.
+🎉 **You're now ready to start developing!**
+
+Visit the documentation at [http://localhost:8001/safe-job/](http://localhost:8001/safe-job/) for detailed guides and proceed to [Phase 2 Authentication](../phases/phase-2-authentication.md) to begin implementation.

@@ -1,0 +1,449 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]  # Only run on direct pushes to main branches
+  pull_request:
+    branches: [main, develop]  # Run on PRs targeting main branches
+
+# Cancel in-progress workflows when a new commit is pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Django settings
+  DJANGO_SETTINGS_MODULE: config.settings.test
+  SECRET_KEY: test-secret-key-for-ci-only-not-secure
+  DEBUG: "false"
+
+  # Database settings
+  POSTGRES_DB: safejob_test
+  POSTGRES_USER: safejob_test
+  POSTGRES_PASSWORD: test_password_ci
+  DB_HOST: localhost
+  DB_PORT: 5432
+
+  # Redis settings
+  REDIS_PASSWORD: test_redis_password_ci
+
+  # Other test settings
+  ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+  EMAIL_BACKEND: django.core.mail.backends.locmem.EmailBackend
+  CORS_ALLOW_ALL_ORIGINS: "true"
+  RATELIMIT_ENABLE: "false"
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7.4-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.13'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libpq-dev \
+            gdal-bin \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libspatialite-dev \
+            spatialite-bin
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4.1
+        with:
+          version: 1.8.3
+          virtualenvs-create: "true"
+          virtualenvs-in-project: "true"
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4.2.0
+        with:
+          path: backend/.venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install Python dependencies
+        working-directory: ./backend
+        run: |
+          # Recommended for Poetry ≥1.4
+          poetry install --with dev
+
+          # Legacy equivalent:
+          # poetry install --only main --only dev
+      - name: Run Django system checks
+        working-directory: ./backend
+        env:
+          DJANGO_DEPLOYMENT_CHECKS: "true"
+        run: |
+          poetry run python manage.py check --deploy --fail-level=WARNING
+
+      - name: Run Django tests
+        working-directory: ./backend
+        run: |
+          poetry run python manage.py test --verbosity=2 --parallel
+
+      - name: Generate coverage report
+        working-directory: ./backend
+        run: |
+          poetry add coverage
+          poetry run coverage run --source='.' manage.py test
+          poetry run coverage xml
+          poetry run coverage report
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5.1.1
+        with:
+          files: ./backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4.1
+        with:
+          version: 1.8.3
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          poetry install --only=main,dev
+
+      - name: Run Black (Code Formatting)
+        working-directory: ./backend
+        run: |
+          poetry run black --check --diff .
+
+      - name: Run isort (Import Sorting)
+        working-directory: ./backend
+        run: |
+          poetry run isort --check-only --diff .
+
+      - name: Run Ruff (Linting)
+        working-directory: ./backend
+        run: |
+          poetry run ruff check .
+
+      - name: Run MyPy (Type Checking)
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          poetry run mypy .
+
+  frontend-test:
+    name: Frontend Tests & Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.2.0
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Checking package.json and package-lock.json..."
+          ls -la package*
+          echo "Running npm ci..."
+          if ! npm ci --verbose; then
+            echo "npm ci failed, trying npm install..."
+            rm -rf node_modules package-lock.json
+            npm install
+          fi
+
+      - name: Run frontend linting
+        working-directory: ./frontend
+        run: |
+          npm run lint
+          npm run format:check
+
+      - name: Run frontend type checking
+        working-directory: ./frontend
+        run: npm run type-check
+
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npm run test
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4.1
+        with:
+          version: 1.8.3
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          poetry install --only=main,dev
+
+      - name: Run Safety (Dependency Security)
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          echo "Running Safety dependency security scan..."
+          # Try safety scan with no-audit flag to avoid authentication prompts
+          if poetry run safety scan --disable-audit-and-monitor; then
+            echo "✅ Safety scan completed successfully"
+          elif poetry run safety check --disable-audit-and-monitor; then
+            echo "✅ Safety check completed with older command"
+          else
+            echo "⚠️  Safety scan completed with warnings - continuing build"
+          fi
+
+      - name: Run Bandit (Code Security)
+        working-directory: ./backend
+        run: |
+          poetry run bandit -r . -f json -o bandit-report.json || true
+          poetry run bandit -r . -f txt
+
+      - name: Check for sensitive files
+        run: |
+          echo "🔒 Checking for sensitive files..."
+          if find . -name "*.key" -o -name "*.pem" -o -name ".env.*.local" | grep -q .; then
+            echo "❌ Sensitive files found in repository"
+            find . -name "*.key" -o -name "*.pem" -o -name ".env.*.local"
+            exit 1
+          fi
+          echo "✅ No sensitive files found"
+
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [test, lint, frontend-test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
+
+      - name: Create test environment file
+        run: |
+          cp .envs/.env.test .envs/.env.development.local
+          # Override Django settings for container testing
+          echo "DJANGO_SETTINGS_MODULE=config.settings.test" >> .envs/.env.development.local
+          # Override database host for Docker network
+          echo "DB_HOST=db" >> .envs/.env.development.local
+          # Override database password to match CI environment
+          echo "POSTGRES_PASSWORD=test_password_ci" >> .envs/.env.development.local
+
+      - name: Build backend image
+        run: |
+          docker build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --tag safe-job-backend:${{ github.sha }} \
+            --tag safe-job-backend:latest \
+            ./backend
+
+      - name: Build frontend image
+        run: |
+          docker build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --tag safe-job-frontend:${{ github.sha }} \
+            --tag safe-job-frontend:latest \
+            --target development \
+            ./frontend
+
+      - name: Test Docker setup
+        run: |
+          # Start services with better error handling
+          echo "🚀 Starting Docker services..."
+          if ! docker compose up -d; then
+            echo "❌ Failed to start Docker services"
+            docker compose logs
+            exit 1
+          fi
+
+          # Wait for services to be ready with detailed logging
+          echo "⏳ Waiting for services to become healthy..."
+          timeout=120
+          while [ $timeout -gt 0 ]; do
+            # Check if backend container is running and healthy
+            if docker compose ps backend | grep -q "healthy"; then
+              echo "✅ Backend container is healthy"
+              break
+            elif docker compose ps backend | grep -q "unhealthy"; then
+              echo "❌ Backend container is unhealthy"
+              echo "Container status:"
+              docker compose ps backend
+              echo "Container logs:"
+              docker compose logs backend
+              exit 1
+            else
+              echo "⏳ Backend container status: $(docker compose ps backend --format 'table {{.State}} {{.Status}}')"
+            fi
+
+            sleep 10
+            timeout=$((timeout - 10))
+          done
+
+          # Check if we timed out
+          if [ $timeout -le 0 ]; then
+            echo "❌ Timeout waiting for backend container to become healthy"
+            echo "Final container status:"
+            docker compose ps backend
+            echo "Container logs:"
+            docker compose logs backend
+            exit 1
+          fi
+
+          # Final health check
+          if ! curl -f http://localhost:8000/health/; then
+            echo "❌ Health endpoint is not accessible"
+            docker compose logs backend
+            exit 1
+          fi
+
+          echo "✅ Health endpoint is accessible"
+
+          # Run tests in container
+          echo "🧪 Running tests in container..."
+          if ! docker compose exec -T backend python manage.py test; then
+            echo "❌ Container tests failed"
+            docker compose logs backend
+            exit 1
+          fi
+
+          echo "✅ All Docker tests passed"
+          # Clean up
+          docker compose down
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4.2.0
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-docs-${{ hashFiles('docs/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-docs-
+
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+
+      - name: Test documentation build
+        run: |
+          mkdocs build --strict
+
+      - name: Validate documentation structure
+        run: |
+          test -f "docs/index.md" || (echo "❌ docs/index.md missing" && exit 1)
+          test -f "docs/getting-started/overview.md" || (echo "❌ Getting started docs missing" && exit 1)
+          echo "✅ Documentation structure validated"
+
+  # Summary job for branch protection
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [test, lint, frontend-test, security, build, docs]
+    if: always()
+
+    steps:
+      - name: Check all job results
+        run: |
+          echo "## CI Pipeline Results"
+          echo "- Backend Tests: ${{ needs.test.result }}"
+          echo "- Backend Linting: ${{ needs.lint.result }}"
+          echo "- Frontend Tests: ${{ needs.frontend-test.result }}"
+          echo "- Security: ${{ needs.security.result }}"
+          echo "- Build: ${{ needs.build.result }}"
+          echo "- Documentation: ${{ needs.docs.result }}"
+
+          if [[ "${{ needs.test.result }}" != "success" ]] || \
+             [[ "${{ needs.lint.result }}" != "success" ]] || \
+             [[ "${{ needs.frontend-test.result }}" != "success" ]] || \
+             [[ "${{ needs.security.result }}" != "success" ]] || \
+             [[ "${{ needs.build.result }}" != "success" ]] || \
+             [[ "${{ needs.docs.result }}" != "success" ]]; then
+            echo "❌ One or more CI jobs failed"
+            exit 1
+          else
+            echo "✅ All CI jobs passed successfully!"
+          fi

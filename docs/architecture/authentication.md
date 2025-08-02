@@ -9,12 +9,14 @@ The Safe Job platform implements a **passwordless authentication system** optimi
 ### 1.1 Core Authentication Methods
 
 **Primary Authentication: Magic Link System**
+
 - Passwordless authentication via secure email tokens
 - JWT-based API access with refresh token rotation
 - Integrated rate limiting and brute force protection
 - Comprehensive audit logging for compliance
 
 **Future Authentication Methods (Post-MVP):**
+
 - **TOTP Two-Factor Authentication**: Additional security for high-risk accounts
 - **OAuth Integration**: Social login via Google, Facebook, and Apple
 - **SMS Verification**: Phone number verification for enhanced security
@@ -40,7 +42,7 @@ sequenceDiagram
     participant API as Django API
     participant DB as Database
     participant EMAIL as Resend Service
-    
+
     U->>+FE: Enter email address
     FE->>+API: POST /api/v1/auth/magic-link/
     API->>API: Generate secure token
@@ -50,7 +52,7 @@ sequenceDiagram
     EMAIL-->>-API: Email sent confirmation
     API-->>-FE: "Magic link sent" response
     FE-->>-U: "Check your email" message
-    
+
     U->>U: Click magic link in email
     U->>+FE: Magic link redirect
     FE->>+API: POST /api/v1/auth/magic-link/verify/
@@ -67,6 +69,7 @@ sequenceDiagram
 ### 2.2 Magic Link Security Implementation
 
 **Token Generation:**
+
 ```python
 import secrets
 import hashlib
@@ -79,17 +82,17 @@ class MagicLinkService:
         """Generate cryptographically secure magic link token"""
         # 32 bytes = 256 bits of entropy
         raw_token = secrets.token_urlsafe(32)
-        
+
         # Hash token for database storage (prevents rainbow table attacks)
         token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
-        
+
         return raw_token, token_hash
-    
+
     @staticmethod
-    def create_magic_link(user_email: str) -> MagicLinkToken:
+    def create_magic_link(user_email: str, request=None) -> MagicLinkToken:
         """Create magic link token with security controls"""
         raw_token, token_hash = MagicLinkService.generate_token()
-        
+
         # Single-use token with 15-minute expiration
         magic_link = MagicLinkToken.objects.create(
             email=user_email.lower(),
@@ -98,11 +101,12 @@ class MagicLinkService:
             ip_address=get_client_ip(request),  # Optional IP binding
             user_agent=request.META.get('HTTP_USER_AGENT', '')
         )
-        
+
         return magic_link, raw_token
 ```
 
 **Security Features:**
+
 - **Cryptographic Security**: 256-bit entropy with secure random generation
 - **Single-Use Tokens**: Automatically invalidated after verification
 - **Time-Limited**: 15-minute expiration window (configurable)
@@ -114,6 +118,7 @@ class MagicLinkService:
 ### 2.3 Rate Limiting and Abuse Prevention
 
 **Multi-Layer Rate Limiting:**
+
 ```python
 from django_ratelimit.decorators import ratelimit
 
@@ -126,6 +131,7 @@ def magic_link_request_view(request):
 ```
 
 **Protection Mechanisms:**
+
 - **IP-based Limiting**: 10 requests per minute per IP address
 - **Email-based Limiting**: 3 magic links per hour per email address
 - **User-Agent Limiting**: 20 requests per minute per user agent
@@ -139,12 +145,14 @@ def magic_link_request_view(request):
 ### 3.1 Token Architecture
 
 **Token Strategy:**
+
 - **Access Tokens**: Short-lived (15 minutes), stateless API authentication
 - **Refresh Tokens**: Long-lived (7 days), secure storage with rotation
 - **Token Blacklisting**: Immediate revocation capability
 - **Sliding Expiration**: Automatic renewal for active users
 
 **JWT Claims Structure:**
+
 ```python
 # Access Token Claims
 {
@@ -171,6 +179,7 @@ def magic_link_request_view(request):
 ### 3.2 Token Security Implementation
 
 **Secure Token Handling:**
+
 ```python
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
@@ -180,14 +189,14 @@ class SafeJobTokenService:
     def generate_tokens(user):
         """Generate secure JWT token pair"""
         refresh = RefreshToken.for_user(user)
-        
+
         # Add custom claims
         refresh['user_type'] = user.user_type
         refresh['email'] = user.email
-        
+
         # Access token inherits claims from refresh
         access = refresh.access_token
-        
+
         # Log token generation for audit
         TokenGenerationEvent.objects.create(
             user=user,
@@ -195,12 +204,12 @@ class SafeJobTokenService:
             ip_address=get_client_ip(),
             expires_at=refresh['exp']
         )
-        
+
         return {
             'refresh': str(refresh),
             'access': str(access)
         }
-    
+
     @staticmethod
     def revoke_token(token_id: str):
         """Immediately revoke token by blacklisting"""
@@ -211,6 +220,7 @@ class SafeJobTokenService:
 ```
 
 **Token Security Features:**
+
 - **Asymmetric Signing**: RS256 algorithm with key rotation capability
 - **Automatic Rotation**: Refresh tokens rotated on each use
 - **Blacklist Support**: Immediate token revocation for security incidents
@@ -224,6 +234,7 @@ class SafeJobTokenService:
 ### 4.1 Role-Based Access Control
 
 **User Type Hierarchy:**
+
 ```python
 class UserType(models.TextChoices):
     CANDIDATE = 'candidate', 'Candidate'
@@ -238,19 +249,20 @@ class VerificationStatus(models.TextChoices):
 ```
 
 **Custom Permission Classes:**
+
 ```python
 from rest_framework.permissions import BasePermission
 
 class IsCandidate(BasePermission):
     """Permission for candidate-only endpoints"""
     def has_permission(self, request, view):
-        return (request.user.is_authenticated and 
+        return (request.user.is_authenticated and
                 request.user.user_type == UserType.CANDIDATE)
 
 class IsVerifiedEmployer(BasePermission):
     """Permission for verified employers only"""
     def has_permission(self, request, view):
-        return (request.user.is_authenticated and 
+        return (request.user.is_authenticated and
                 request.user.user_type == UserType.EMPLOYER and
                 hasattr(request.user, 'employer_profile') and
                 request.user.employer_profile.verification_status == VerificationStatus.APPROVED)
@@ -283,34 +295,37 @@ class IsSubaccountOwner(BasePermission):
 ### 5.1 Encryption Strategy
 
 **Data at Rest Encryption:**
+
 - **Database**: AWS RDS encryption with customer-managed KMS keys
 - **File Storage**: S3 server-side encryption (SSE-KMS) with key rotation
 - **Application Level**: Sensitive fields encrypted using Django's `cryptography` library
 - **Backup Encryption**: Automated backups encrypted with separate keys
 
 **Data in Transit Encryption:**
+
 - **HTTPS**: TLS 1.3 for all HTTP communications with HSTS headers
 - **WebSocket Security**: WSS (WebSocket Secure) for real-time messaging
 - **API Communication**: Certificate pinning for mobile apps (future)
 - **Email**: TLS encryption for all outbound email communications
 
 **Sensitive Data Encryption:**
+
 ```python
 from cryptography.fernet import Fernet
 from django.conf import settings
 
 class EncryptedField(models.TextField):
     """Custom field for encrypting sensitive data"""
-    
+
     def __init__(self, *args, **kwargs):
         self.cipher = Fernet(settings.FIELD_ENCRYPTION_KEY)
         super().__init__(*args, **kwargs)
-    
+
     def from_db_value(self, value, expression, connection):
         if value is None:
             return value
         return self.cipher.decrypt(value.encode()).decode()
-    
+
     def to_db_value(self, value, connection):
         if value is None:
             return value
@@ -320,6 +335,7 @@ class EncryptedField(models.TextField):
 ### 5.2 Input Validation & Sanitization
 
 **Multi-Layer Validation:**
+
 ```python
 # 1. Frontend TypeScript validation
 interface MagicLinkRequest {
@@ -332,15 +348,15 @@ class MagicLinkRequestSerializer(serializers.Serializer):
         max_length=254,
         validators=[validate_email_deliverable]
     )
-    
+
     def validate_email(self, value):
         # Normalize email (lowercase, strip whitespace)
         email = value.lower().strip()
-        
+
         # Check against spam domains
         if is_disposable_email(email):
             raise ValidationError("Disposable email addresses not allowed")
-            
+
         return email
 
 # 3. Database constraints
@@ -353,27 +369,28 @@ class CustomUser(AbstractUser):
 ```
 
 **File Upload Security:**
+
 ```python
 class SecureFileUploadView(APIView):
     def post(self, request):
         uploaded_file = request.FILES.get('document')
-        
+
         # 1. File size validation (10MB limit)
         if uploaded_file.size > 10 * 1024 * 1024:
             raise ValidationError("File too large")
-        
+
         # 2. MIME type validation
         allowed_types = ['application/pdf', 'image/jpeg', 'image/png']
         if uploaded_file.content_type not in allowed_types:
             raise ValidationError("File type not allowed")
-        
+
         # 3. File signature validation (magic bytes)
         if not validate_file_signature(uploaded_file):
             raise ValidationError("File appears corrupted or malicious")
-        
+
         # 4. Virus scanning (future integration)
         # scan_result = virus_scanner.scan(uploaded_file)
-        
+
         # 5. Secure storage with random filename
         secure_filename = generate_secure_filename(uploaded_file.name)
         return upload_to_s3(uploaded_file, secure_filename)
@@ -386,10 +403,11 @@ class SecureFileUploadView(APIView):
 ### 6.1 Security Event Logging
 
 **Comprehensive Audit Trail:**
+
 ```python
 class SecurityEvent(models.Model):
     """Security-related events for audit and compliance"""
-    
+
     EVENT_TYPES = [
         ('LOGIN_SUCCESS', 'Successful Login'),
         ('LOGIN_FAILED', 'Failed Login Attempt'),
@@ -400,7 +418,7 @@ class SecurityEvent(models.Model):
         ('DATA_EXPORT', 'Personal Data Export'),
         ('DATA_DELETION', 'Account Deletion'),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
     ip_address = models.GenericIPAddressField()
@@ -418,6 +436,7 @@ class SecurityEvent(models.Model):
 ```
 
 **Real-time Security Monitoring:**
+
 ```python
 class SecurityMonitor:
     @staticmethod
@@ -428,7 +447,7 @@ class SecurityMonitor:
             ip_address=ip_address,
             timestamp__gte=timezone.now() - timedelta(seconds=time_window)
         ).count()
-        
+
         if recent_failures >= 5:
             SecurityEvent.objects.create(
                 event_type='SUSPICIOUS_ACTIVITY',
@@ -438,7 +457,7 @@ class SecurityMonitor:
             )
             return True
         return False
-    
+
     @staticmethod
     def detect_credential_stuffing(email: str, time_window: int = 3600):
         """Detect credential stuffing attacks"""
@@ -447,14 +466,14 @@ class SecurityMonitor:
             metadata__email=email,
             timestamp__gte=timezone.now() - timedelta(seconds=time_window)
         ).count()
-        
+
         if user_failures >= 10:
             # Temporarily lock account
             user = User.objects.filter(email=email).first()
             if user:
                 user.is_active = False
                 user.save()
-                
+
                 SecurityEvent.objects.create(
                     user=user,
                     event_type='ACCOUNT_LOCKED',
@@ -466,12 +485,14 @@ class SecurityMonitor:
 ### 6.2 Incident Response Framework
 
 **Automated Response Actions:**
+
 1. **Rate Limiting Escalation**: Automatic IP blocking for repeated violations
 2. **Account Protection**: Temporary account suspension for suspicious activity
 3. **Alert Generation**: Real-time notifications for security events
 4. **Evidence Collection**: Automatic log aggregation for incident investigation
 
 **Manual Response Procedures:**
+
 1. **Security Incident Classification**: Severity assessment and stakeholder notification
 2. **Forensic Investigation**: Log analysis and attack vector identification
 3. **Containment Actions**: System isolation and threat neutralization
@@ -485,10 +506,11 @@ class SecurityMonitor:
 ### 7.1 Data Subject Rights Implementation
 
 **Right of Access:**
+
 ```python
 class DataExportView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
         """Generate complete data export for user"""
         user_data = {
@@ -498,63 +520,64 @@ class DataExportView(APIView):
             'message_history': self.get_message_data(request.user),
             'audit_logs': self.get_security_events(request.user),
         }
-        
+
         # Generate secure download link
         export_file = generate_data_export(user_data)
         download_link = create_signed_url(export_file, expires_in=86400)  # 24 hours
-        
+
         # Log data access request
         SecurityEvent.objects.create(
             user=request.user,
             event_type='DATA_EXPORT',
             metadata={'export_size': len(user_data), 'format': 'JSON'}
         )
-        
+
         return Response({'download_url': download_link})
 ```
 
 **Right to Erasure (Right to be Forgotten):**
+
 ```python
 class AccountDeletionView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def delete(self, request):
         """Process account deletion with GDPR compliance"""
         user = request.user
-        
+
         # 1. Data retention check
         if self.has_legal_retention_requirement(user):
             return Response({
                 'error': 'Account cannot be deleted due to legal retention requirements',
                 'retention_period': '7 years for employment records'
             }, status=400)
-        
+
         # 2. Pseudonymization vs. deletion
         if self.requires_pseudonymization(user):
             self.pseudonymize_user_data(user)
         else:
             self.hard_delete_user_data(user)
-        
+
         # 3. Audit logging
         SecurityEvent.objects.create(
             user=user,
             event_type='DATA_DELETION',
             metadata={'deletion_type': 'user_requested', 'method': 'pseudonymization'}
         )
-        
+
         return Response({'message': 'Account deletion processed'})
-    
+
     def pseudonymize_user_data(self, user):
         """Replace personal data with pseudonymized identifiers"""
         pseudonym_id = f"deleted_user_{uuid.uuid4().hex[:8]}"
-        
+
         # Replace personal identifiers
         user.email = f"{pseudonym_id}@deleted.safejob.local"
         user.first_name = "Deleted"
         user.last_name = "User"
         user.is_active = False
         user.save()
-        
+
         # Pseudonymize related data
         if hasattr(user, 'candidate_profile'):
             profile = user.candidate_profile
@@ -566,18 +589,21 @@ class AccountDeletionView(APIView):
 ### 7.2 Privacy by Design Implementation
 
 **Data Minimization:**
+
 - Only essential personal data collected during registration
 - Optional fields clearly marked and not required for core functionality
 - Automatic data cleanup after retention periods expire
 - Regular data audit and purging of unnecessary information
 
 **Purpose Limitation:**
+
 - Clear consent mechanisms for each data processing purpose
 - Separate consent for marketing communications
 - Data usage strictly limited to stated purposes
 - Regular consent review and renewal processes
 
 **Storage Limitation:**
+
 ```python
 class DataRetentionManager:
     RETENTION_PERIODS = {
@@ -587,15 +613,15 @@ class DataRetentionManager:
         'marketing_consent': timedelta(days=730),        # 2 years
         'inactive_accounts': timedelta(days=365),        # 1 year
     }
-    
+
     @classmethod
     def cleanup_expired_data(cls):
         """Automated cleanup of expired personal data"""
         now = timezone.now()
-        
+
         for data_type, retention_period in cls.RETENTION_PERIODS.items():
             cutoff_date = now - retention_period
-            
+
             if data_type == 'inactive_accounts':
                 # Delete accounts inactive for 1 year
                 inactive_users = User.objects.filter(
@@ -604,7 +630,7 @@ class DataRetentionManager:
                 )
                 for user in inactive_users:
                     cls.pseudonymize_inactive_user(user)
-            
+
             elif data_type == 'security_logs':
                 # Clean old security events
                 SecurityEvent.objects.filter(
@@ -619,18 +645,21 @@ class DataRetentionManager:
 ### 8.1 Post-MVP Security Features
 
 **Enhanced Authentication (Months 3-4):**
+
 - **TOTP Two-Factor Authentication**: Time-based OTP for high-risk accounts
 - **Hardware Security Keys**: FIDO2/WebAuthn support for admin accounts
 - **Biometric Authentication**: Mobile app fingerprint/face recognition
 - **Risk-Based Authentication**: Machine learning-based fraud detection
 
 **Advanced Encryption (Months 5-6):**
+
 - **End-to-End Encryption**: Encrypted messaging between candidates and employers
 - **Zero-Knowledge Architecture**: Client-side encryption for sensitive documents
 - **Key Management Service**: Automated key rotation and secure key storage
 - **Field-Level Encryption**: Database column encryption for PII data
 
 **Security Monitoring (Months 6+):**
+
 - **SIEM Integration**: Security Information and Event Management
 - **Behavioral Analytics**: User behavior anomaly detection
 - **Threat Intelligence**: Integration with security threat feeds
@@ -639,12 +668,14 @@ class DataRetentionManager:
 ### 8.2 Compliance Roadmap
 
 **ISO 27001 Certification (Year 2):**
+
 - Information Security Management System implementation
 - Risk assessment and treatment procedures
 - Security awareness training program
 - Regular security audits and assessments
 
 **SOC 2 Type II Compliance (Year 2):**
+
 - Security, availability, and confidentiality controls
 - Independent auditor assessment
 - Continuous monitoring and reporting
@@ -657,6 +688,7 @@ class DataRetentionManager:
 ### 9.1 MVP Authentication Implementation
 
 **Week 1-2: Core Authentication**
+
 - [ ] Custom User model with email-based authentication
 - [ ] Magic link token generation and verification
 - [ ] JWT token integration with Django REST Framework
@@ -664,6 +696,7 @@ class DataRetentionManager:
 - [ ] Security event logging framework
 
 **Week 3-4: Security Hardening**
+
 - [ ] Input validation and sanitization
 - [ ] File upload security controls
 - [ ] HTTPS configuration with security headers
@@ -671,6 +704,7 @@ class DataRetentionManager:
 - [ ] Audit logging implementation
 
 **Week 5-6: Monitoring and Compliance**
+
 - [ ] Security monitoring dashboard
 - [ ] GDPR data export functionality
 - [ ] Account deletion with pseudonymization
@@ -680,6 +714,7 @@ class DataRetentionManager:
 ### 9.2 Security Testing Requirements
 
 **Automated Security Testing:**
+
 - [ ] SQL injection vulnerability scanning
 - [ ] Cross-site scripting (XSS) prevention testing
 - [ ] Authentication bypass attempt detection
@@ -687,6 +722,7 @@ class DataRetentionManager:
 - [ ] Token security and expiration testing
 
 **Manual Security Assessment:**
+
 - [ ] Penetration testing of authentication flows
 - [ ] Social engineering vulnerability assessment
 - [ ] Physical security review of development environment
@@ -700,6 +736,7 @@ class DataRetentionManager:
 The Safe Job platform authentication and security architecture provides comprehensive protection appropriate for handling sensitive employment data in the Dutch market. The passwordless magic link system optimizes for user experience while maintaining high security standards, and the comprehensive audit logging ensures GDPR compliance.
 
 **Key Security Strengths:**
+
 1. **Passwordless Design**: Eliminates password-related vulnerabilities
 2. **Comprehensive Monitoring**: Real-time security event detection and response
 3. **GDPR Compliance**: Built-in privacy controls and data protection measures
@@ -712,9 +749,9 @@ This authentication architecture has been designed with security-first principle
 
 ---
 
-*Document Version: 2.0*  
-*Last Updated: July 2025*  
-*Security Review Status: Validated - Ready for Implementation*
+_Document Version: 2.0_
+_Last Updated: July 2025_
+_Security Review Status: Validated - Ready for Implementation_
 
 ## Request Examples
 
@@ -723,23 +760,28 @@ This section provides practical examples of how to interact with the authenticat
 ### Table of Contents
 
 #### 🚀 [Registration Examples](#registration-examples)
+
 - [Candidate Registration](#candidate-registration)
 - [Employer Registration](#employer-registration)
 
 #### 🔗 [Magic Link Authentication](#magic-link-authentication-examples)
+
 - [Request Magic Link](#request-magic-link)
 - [Verify Magic Link](#verify-magic-link)
 
 #### 🔑 [JWT Token Management](#jwt-token-management-examples)
+
 - [Refresh Token](#refresh-token)
 - [Verify Token](#verify-token)
 
 #### 👤 [Authenticated Requests](#authenticated-requests-examples)
+
 - [Get Current User](#get-current-user)
 - [Get User Profile](#get-user-profile)
 - [Update User Profile](#update-user-profile)
 
 #### 🔐 [Two-Factor Authentication](#two-factor-authentication-examples)
+
 - [Set Up TOTP Device](#set-up-totp-device)
 - [Verify TOTP Device](#verify-totp-device)
 - [Authenticate with TOTP](#authenticate-with-totp)
@@ -747,17 +789,20 @@ This section provides practical examples of how to interact with the authenticat
 - [Verify Backup Code](#verify-backup-code)
 
 #### 🌐 [OAuth Examples](#oauth-examples)
+
 - [Initiate OAuth Login](#initiate-oauth-login)
 - [OAuth Callback (Internal)](#oauth-callback-internal)
 - [List Connected Social Accounts](#list-connected-social-accounts)
 - [Disconnect Social Account](#disconnect-social-account)
 
 #### ❌ [Error Response Examples](#error-response-examples)
+
 - [Unauthenticated Request](#unauthenticated-request)
 - [Expired Token](#expired-token)
 - [Rate Limited](#rate-limited)
 
 #### 💻 [Frontend Integration](#frontend-integration-examples)
+
 - [JavaScript/TypeScript API Client](#javascripttypescript-api-client)
 - [React Hook Example](#react-hook-example)
 
@@ -768,6 +813,7 @@ This section provides practical examples of how to interact with the authenticat
 #### Candidate Registration
 
 **Request:**
+
 ```http
 POST /api/v1/users/register/candidate/
 Content-Type: application/json
@@ -781,6 +827,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -810,6 +857,7 @@ Content-Type: application/json
 ```
 
 **Response (Email Already Exists):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -824,6 +872,7 @@ Content-Type: application/json
 #### Employer Registration
 
 **Request:**
+
 ```http
 POST /api/v1/users/register/employer/
 Content-Type: application/json
@@ -838,6 +887,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -874,6 +924,7 @@ Content-Type: application/json
 #### Request Magic Link
 
 **Request:**
+
 ```http
 POST /api/v1/users/magic-link/
 Content-Type: application/json
@@ -885,6 +936,7 @@ Host: localhost:8000
 ```
 
 **Response (User Exists):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -896,6 +948,7 @@ Content-Type: application/json
 ```
 
 **Response (User Doesn't Exist - Same for Security):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -909,6 +962,7 @@ Content-Type: application/json
 #### Verify Magic Link
 
 **Request:**
+
 ```http
 POST /api/v1/auth/magic-link/verify/
 Content-Type: application/json
@@ -920,6 +974,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -931,6 +986,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid/Expired Token):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -945,6 +1001,7 @@ Content-Type: application/json
 #### Refresh Token
 
 **Request:**
+
 ```http
 POST /api/v1/auth/token/refresh/
 Content-Type: application/json
@@ -956,6 +1013,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -968,6 +1026,7 @@ Content-Type: application/json
 #### Verify Token
 
 **Request:**
+
 ```http
 POST /api/v1/auth/token/verify/
 Content-Type: application/json
@@ -979,6 +1038,7 @@ Host: localhost:8000
 ```
 
 **Response (Valid Token):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -987,6 +1047,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid Token):**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1002,6 +1063,7 @@ Content-Type: application/json
 #### Get Current User
 
 **Request:**
+
 ```http
 GET /api/v1/auth/me/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1009,6 +1071,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1031,6 +1094,7 @@ Content-Type: application/json
 #### Get User Profile
 
 **Request:**
+
 ```http
 GET /api/v1/users/profile/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1038,6 +1102,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1060,6 +1125,7 @@ Content-Type: application/json
 #### Update User Profile
 
 **Request:**
+
 ```http
 PATCH /api/v1/users/profile/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1074,6 +1140,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1098,6 +1165,7 @@ Content-Type: application/json
 #### Set Up TOTP Device
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/setup/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1110,6 +1178,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -1132,6 +1201,7 @@ Content-Type: application/json
 #### Verify TOTP Device
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/verify/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1145,6 +1215,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1157,6 +1228,7 @@ Content-Type: application/json
 ```
 
 **Response (Invalid Code):**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -1169,6 +1241,7 @@ Content-Type: application/json
 #### Authenticate with TOTP
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/totp/authenticate/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1181,6 +1254,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1194,6 +1268,7 @@ Content-Type: application/json
 #### Get Backup Codes
 
 **Request:**
+
 ```http
 GET /api/v1/auth/2fa/backup-codes/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1201,6 +1276,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1228,6 +1304,7 @@ Content-Type: application/json
 #### Verify Backup Code
 
 **Request:**
+
 ```http
 POST /api/v1/auth/2fa/backup-codes/verify/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1240,6 +1317,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1256,12 +1334,14 @@ Content-Type: application/json
 #### Initiate OAuth Login
 
 **Request:**
+
 ```http
 GET /api/v1/auth/oauth/google-oauth2/login/?redirect_uri=/dashboard
 Host: localhost:8000
 ```
 
 **Response (Redirect):**
+
 ```http
 HTTP/1.1 302 Found
 Location: https://accounts.google.com/oauth/authorize?client_id=your-client-id&redirect_uri=http%3A//localhost%3A8000/api/v1/auth/oauth/google-oauth2/callback/&scope=email+profile&response_type=code&state=abc123def456
@@ -1270,12 +1350,14 @@ Location: https://accounts.google.com/oauth/authorize?client_id=your-client-id&r
 #### OAuth Callback (Internal)
 
 **Request (From Google):**
+
 ```http
 GET /api/v1/auth/oauth/google-oauth2/callback/?code=AUTH_CODE&state=abc123def456
 Host: localhost:8000
 ```
 
 **Response (Success - Redirect to Frontend):**
+
 ```http
 HTTP/1.1 302 Found
 Location: http://localhost:3000/auth/oauth/complete?access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.oauth123&refresh_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYwNTI5NjQwMCwidXNlcl9pZCI6MTIzfQ.oauth456
@@ -1284,6 +1366,7 @@ Location: http://localhost:3000/auth/oauth/complete?access_token=eyJ0eXAiOiJKV1Q
 #### List Connected Social Accounts
 
 **Request:**
+
 ```http
 GET /api/v1/auth/oauth/accounts/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1291,6 +1374,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1321,6 +1405,7 @@ Content-Type: application/json
 #### Disconnect Social Account
 
 **Request:**
+
 ```http
 POST /api/v1/auth/oauth/google-oauth2/disconnect/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA1MjkzMjAwLCJ1c2VyX2lkIjoxMjN9.def456
@@ -1331,6 +1416,7 @@ Host: localhost:8000
 ```
 
 **Response (Success):**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -1346,12 +1432,14 @@ Content-Type: application/json
 #### Unauthenticated Request
 
 **Request:**
+
 ```http
 GET /api/v1/users/user-profile/
 Host: localhost:8000
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1364,6 +1452,7 @@ Content-Type: application/json
 #### Expired Token
 
 **Request:**
+
 ```http
 GET /api/v1/auth/me/
 Authorization: Bearer expired_token_here
@@ -1371,6 +1460,7 @@ Host: localhost:8000
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
@@ -1384,6 +1474,7 @@ Content-Type: application/json
 #### Rate Limited
 
 **Request:**
+
 ```http
 POST /api/v1/users/magic-link/
 Content-Type: application/json
@@ -1395,6 +1486,7 @@ Host: localhost:8000
 ```
 
 **Response (Too Many Requests):**
+
 ```http
 HTTP/1.1 429 Too Many Requests
 Content-Type: application/json
@@ -1411,20 +1503,20 @@ Retry-After: 60
 
 ```javascript
 class SafeJobAPI {
-  constructor(baseURL = 'http://localhost:8000') {
+  constructor(baseURL = "http://localhost:8000") {
     this.baseURL = baseURL;
-    this.accessToken = localStorage.getItem('access_token');
-    this.refreshToken = localStorage.getItem('refresh_token');
+    this.accessToken = localStorage.getItem("access_token");
+    this.refreshToken = localStorage.getItem("refresh_token");
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
+        "Content-Type": "application/json",
+        ...options.headers,
       },
-      ...options
+      ...options,
     };
 
     // Add authorization header if we have a token
@@ -1448,20 +1540,23 @@ class SafeJobAPI {
 
   async refreshAccessToken() {
     try {
-      const response = await fetch(`${this.baseURL}/api/v1/auth/token/refresh/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: this.refreshToken })
-      });
+      const response = await fetch(
+        `${this.baseURL}/api/v1/auth/token/refresh/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh: this.refreshToken }),
+        },
+      );
 
       if (response.ok) {
-             const data = await response.json();
+        const data = await response.json();
         this.accessToken = data.access;
-        localStorage.setItem('access_token', data.access);
+        localStorage.setItem("access_token", data.access);
         return true;
       }
-           } catch (error) {
-      console.error('Token refresh failed:', error);
+    } catch (error) {
+      console.error("Token refresh failed:", error);
     }
 
     // Refresh failed, clear tokens and redirect to login
@@ -1471,26 +1566,26 @@ class SafeJobAPI {
 
   async register(userData) {
     const endpoint = userData.company_name
-      ? '/api/v1/users/register/employer/'
-      : '/api/v1/users/register/candidate/';
+      ? "/api/v1/users/register/employer/"
+      : "/api/v1/users/register/candidate/";
 
     return this.request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(userData)
+      method: "POST",
+      body: JSON.stringify(userData),
     });
   }
 
   async requestMagicLink(email) {
-    return this.request('/api/v1/users/magic-link/', {
-      method: 'POST',
-      body: JSON.stringify({ email })
+    return this.request("/api/v1/users/magic-link/", {
+      method: "POST",
+      body: JSON.stringify({ email }),
     });
   }
 
   async verifyMagicLink(token) {
-    const response = await this.request('/api/v1/auth/magic-link/verify/', {
-      method: 'POST',
-      body: JSON.stringify({ token })
+    const response = await this.request("/api/v1/auth/magic-link/verify/", {
+      method: "POST",
+      body: JSON.stringify({ token }),
     });
 
     if (response.ok) {
@@ -1502,29 +1597,29 @@ class SafeJobAPI {
   }
 
   async getCurrentUser() {
-    return this.request('/api/v1/auth/me/');
+    return this.request("/api/v1/auth/me/");
   }
 
   async updateProfile(profileData) {
-    return this.request('/api/v1/users/profile/', {
-      method: 'PATCH',
-      body: JSON.stringify(profileData)
+    return this.request("/api/v1/users/profile/", {
+      method: "PATCH",
+      body: JSON.stringify(profileData),
     });
   }
 
   setTokens(accessToken, refreshToken) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
   }
 
   logout() {
     this.accessToken = null;
     this.refreshToken = null;
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    window.location.href = '/login';
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.href = "/login";
   }
 }
 
@@ -1535,20 +1630,20 @@ const api = new SafeJobAPI();
 async function registerCandidate() {
   try {
     const response = await api.register({
-      email: 'john@example.com',
-      first_name: 'John',
-      last_name: 'Doe'
+      email: "john@example.com",
+      first_name: "John",
+      last_name: "Doe",
     });
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Registration successful:', data.message);
+      console.log("Registration successful:", data.message);
     } else {
       const error = await response.json();
-      console.error('Registration failed:', error);
+      console.error("Registration failed:", error);
     }
   } catch (error) {
-    console.error('Network error:', error);
+    console.error("Network error:", error);
   }
 }
 
@@ -1556,10 +1651,10 @@ async function registerCandidate() {
 async function login(email) {
   try {
     const response = await api.requestMagicLink(email);
-           const data = await response.json();
+    const data = await response.json();
     console.log(data.message);
   } catch (error) {
-    console.error('Login request failed:', error);
+    console.error("Login request failed:", error);
   }
 }
 
@@ -1569,15 +1664,15 @@ async function verifyLogin(token) {
     const response = await api.verifyMagicLink(token);
 
     if (response.ok) {
-      console.log('Login successful!');
+      console.log("Login successful!");
       // Redirect to dashboard
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     } else {
       const error = await response.json();
-      console.error('Login verification failed:', error);
+      console.error("Login verification failed:", error);
     }
-           } catch (error) {
-    console.error('Verification error:', error);
+  } catch (error) {
+    console.error("Verification error:", error);
   }
 }
 ```
@@ -1585,14 +1680,14 @@ async function verifyLogin(token) {
 #### React Hook Example
 
 ```javascript
-import { useState, useEffect, useContext, createContext } from 'react';
+import { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -1612,7 +1707,7 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
           }
         } catch (error) {
-          console.error('Failed to get user:', error);
+          console.error("Failed to get user:", error);
         }
       }
       setLoading(false);
@@ -1657,20 +1752,16 @@ export const AuthProvider = ({ children }) => {
     logout,
     register,
     verifyMagicLink,
-    api
+    api,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Usage in components:
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -1678,9 +1769,9 @@ function LoginForm() {
     const success = await login(email);
 
     if (success) {
-      setMessage('Magic link sent! Check your email.');
+      setMessage("Magic link sent! Check your email.");
     } else {
-      setMessage('Failed to send magic link. Please try again.');
+      setMessage("Failed to send magic link. Please try again.");
     }
   };
 

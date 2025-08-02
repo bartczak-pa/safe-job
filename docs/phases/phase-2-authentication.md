@@ -1,9 +1,12 @@
 # Phase 2: Authentication & User Management - Detailed Implementation Plan
 
-**Duration**: Week 2 (7 days)  
-**Dependencies**: Phase 1 completion  
-**Risk Level**: Medium (magic link implementation complexity)  
-**Team**: 1 full-stack developer + Claude Code  
+**Duration**: Week 2 (7 days)
+
+**Dependencies**: Phase 1 completion
+
+**Risk Level**: Medium (magic link implementation complexity)
+
+**Team**: 1 full-stack developer + Claude Code
 
 ## Overview
 
@@ -23,11 +26,15 @@ Phase 2 implements the complete authentication and user management system for th
 ### 2.1 Magic Link Authentication System
 
 #### 2.1.1 Backend Authentication Infrastructure
-**Duration**: 1.5 days  
-**Priority**: Critical  
+
+**Duration**: 1.5 days
+
+**Priority**: Critical
+
 **Risk Level**: High
 
 **Tasks:**
+
 - [ ] Implement custom User model with email-based authentication
 - [ ] Create magic link token generation and validation system
 - [ ] Set up secure JWT token authentication with DRF
@@ -35,6 +42,7 @@ Phase 2 implements the complete authentication and user management system for th
 - [ ] Create authentication middleware and permissions
 
 **Acceptance Criteria:**
+
 - User model supports email-only authentication (no passwords)
 - Magic link tokens are cryptographically secure with expiration
 - JWT tokens properly signed and validated
@@ -44,6 +52,7 @@ Phase 2 implements the complete authentication and user management system for th
 **Implementation Details:**
 
 **Custom User Model (`users/models.py`):**
+
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.gis.db import models
@@ -65,12 +74,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deactivated_at = models.DateTimeField(null=True, blank=True)
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    
+
     objects = UserManager()
-    
+
     def save(self, *args, **kwargs):
         """Override save to generate username if not set"""
         if not self.username:
@@ -83,7 +92,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                     continue
             raise IntegrityError("Could not generate unique username")
         return super().save(*args, **kwargs)
-    
+
     def generate_username(self):
         """Generate unique username from email"""
         base = self.email.split('@')[0].lower()
@@ -96,6 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 ```
 
 **Magic Link System (`authentication/utils/magic_link.py`):**
+
 ```python
 import secrets
 import hashlib
@@ -110,15 +120,15 @@ User = get_user_model()
 class MagicLinkManager:
     EXPIRY_MINUTES = 15
     TOKEN_LENGTH = 32
-    
+
     @classmethod
     def generate_magic_link(cls, user, request_type='login'):
         """Generate secure magic link token"""
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
-        
+
         # Hash token for secure storage (prevents enumeration attacks)
         token_hash = hashlib.sha256(token.encode()).hexdigest()
-        
+
         # Store hashed token with expiry
         cache_key = f"magic_link:{token_hash}"
         cache_data = {
@@ -128,11 +138,11 @@ class MagicLinkManager:
             'created_at': datetime.now().isoformat()
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
-        
+
         # Generate URL with plain token (only sent in email)
         verify_url = reverse('authentication:verify-magic-link')
         return f"{settings.FRONTEND_URL}{verify_url}?token={token}"
-    
+
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
@@ -140,13 +150,13 @@ class MagicLinkManager:
         token_hash = hashlib.sha256(token.encode()).hexdigest()
         cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
-        
+
         if not data:
             return None, "Token expired or invalid"
-        
+
         # Delete token (single use)
         cache.delete(cache_key)
-        
+
         try:
             user = User.objects.get(id=data['user_id'])
             return user, None
@@ -155,6 +165,7 @@ class MagicLinkManager:
 ```
 
 **JWT Authentication (`authentication/jwt.py`):**
+
 ```python
 import jwt
 from datetime import datetime, timedelta
@@ -170,7 +181,7 @@ class JWTAuthentication(BaseAuthentication):
         auth_header = request.META.get('HTTP_AUTHORIZATION')
         if not auth_header or not auth_header.startswith('Bearer '):
             return None
-        
+
         token = auth_header.split(' ')[1]
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
@@ -178,7 +189,7 @@ class JWTAuthentication(BaseAuthentication):
             return (user, token)
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, User.DoesNotExist):
             raise AuthenticationFailed('Invalid token')
-    
+
     @staticmethod
     def generate_token(user):
         """Generate JWT token for user"""
@@ -192,10 +203,13 @@ class JWTAuthentication(BaseAuthentication):
 ```
 
 #### 2.1.2 Authentication API Endpoints
-**Duration**: 1 day  
+
+**Duration**: 1 day
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Create user registration endpoint with email verification
 - [ ] Implement magic link request endpoint
 - [ ] Build magic link validation endpoint with JWT generation
@@ -203,6 +217,7 @@ class JWTAuthentication(BaseAuthentication):
 - [ ] Add user profile management endpoints
 
 **Acceptance Criteria:**
+
 - Registration creates user and sends verification email
 - Magic link request generates and emails secure token
 - Token validation returns JWT for authenticated requests
@@ -210,6 +225,7 @@ class JWTAuthentication(BaseAuthentication):
 - Profile endpoints require authentication
 
 **API Endpoints (`authentication/api/views.py`):**
+
 ```python
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -226,11 +242,11 @@ def register(request):
     serializer = UserRegistrationSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        
+
         # Send verification email
         magic_link = MagicLinkManager.generate_magic_link(user, 'verify_email')
         EmailService.send_verification_email(user.email, magic_link)
-        
+
         return Response({
             'message': 'Registration successful. Check your email for verification link.',
             'user_id': str(user.id)
@@ -244,12 +260,12 @@ def request_magic_link(request):
     email = request.data.get('email')
     if not email:
         return Response({'error': 'Email required'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     try:
         user = User.objects.get(email__iexact=email)
         magic_link = MagicLinkManager.generate_magic_link(user, 'login')
         EmailService.send_magic_link_email(user.email, magic_link)
-        
+
         return Response({'message': 'Magic link sent to your email'})
     except User.DoesNotExist:
         # Don't reveal if user exists
@@ -262,19 +278,19 @@ def verify_magic_link(request):
     token = request.data.get('token')
     if not token:
         return Response({'error': 'Token required'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     user, error = MagicLinkManager.verify_magic_link(token)
     if error:
         return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     # Mark email as verified if this was verification link
     if not user.email_verified:
         user.email_verified = True
         user.save()
-    
+
     # Generate JWT token
     jwt_token = JWTAuthentication.generate_token(user)
-    
+
     return Response({
         'token': jwt_token,
         'user': UserSerializer(user).data
@@ -282,10 +298,13 @@ def verify_magic_link(request):
 ```
 
 #### 2.1.3 Frontend Authentication Components
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Build registration and login forms with validation
 - [ ] Implement magic link request and verification flows
 - [ ] Create protected route components and auth guards
@@ -293,6 +312,7 @@ def verify_magic_link(request):
 - [ ] Build user profile editing interface
 
 **Acceptance Criteria:**
+
 - Registration form validates input and shows success/error states
 - Magic link flow provides clear user feedback
 - Protected routes redirect unauthenticated users
@@ -300,27 +320,29 @@ def verify_magic_link(request):
 - Profile editing form updates user data
 
 **Authentication Context (`src/store/authStore.ts`):**
+
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import axios from "axios";
 
 interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  emailVerified: boolean
-  languagePreference: string
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  emailVerified: boolean;
+  languagePreference: string;
 }
 
 interface AuthState {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (token: string, user: User) => void
-  logout: () => void
-  updateUser: (userData: Partial<User>) => void
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (token: string, user: User) => void;
+  logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -330,38 +352,39 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       isLoading: false,
-      
+
       login: (token: string, user: User) => {
-        set({ token, user, isAuthenticated: true })
+        set({ token, user, isAuthenticated: true });
         // Set token in axios defaults
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       },
-      
+
       logout: () => {
-        set({ token: null, user: null, isAuthenticated: false })
-        delete axios.defaults.headers.common['Authorization']
+        set({ token: null, user: null, isAuthenticated: false });
+        delete axios.defaults.headers.common["Authorization"];
       },
-      
+
       updateUser: (userData: Partial<User>) => {
-        const currentUser = get().user
+        const currentUser = get().user;
         if (currentUser) {
-          set({ user: { ...currentUser, ...userData } })
+          set({ user: { ...currentUser, ...userData } });
         }
-      }
+      },
     }),
     {
-      name: 'auth-storage',
-      partialize: (state) => ({ 
-        token: state.token, 
-        user: state.user, 
-        isAuthenticated: state.isAuthenticated 
-      })
-    }
-  )
-)
+      name: "auth-storage",
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);
 ```
 
 **Login Component (`src/components/auth/LoginForm.tsx`):**
+
 ```typescript
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -380,11 +403,11 @@ type LoginFormData = z.infer<typeof loginSchema>
 export const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [linkSent, setLinkSent] = useState(false)
-  
+
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema)
   })
-  
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
@@ -396,7 +419,7 @@ export const LoginForm: React.FC = () => {
       setIsLoading(false)
     }
   }
-  
+
   if (linkSent) {
     return (
       <div className="text-center">
@@ -407,7 +430,7 @@ export const LoginForm: React.FC = () => {
       </div>
     )
   }
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
@@ -418,7 +441,7 @@ export const LoginForm: React.FC = () => {
           error={errors.email?.message}
         />
       </div>
-      
+
       <Button
         type="submit"
         isLoading={isLoading}
@@ -434,10 +457,13 @@ export const LoginForm: React.FC = () => {
 ### 2.2 User Profile System
 
 #### 2.2.1 User Model and Profile Architecture
-**Duration**: 1 day  
+
+**Duration**: 1 day
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Extend User model with profile-specific fields
 - [ ] Create separate profile models for candidates and employers
 - [ ] Implement profile completion workflow and validation
@@ -445,6 +471,7 @@ export const LoginForm: React.FC = () => {
 - [ ] Create profile visibility and privacy settings
 
 **Acceptance Criteria:**
+
 - User model contains all necessary profile fields
 - Candidate and employer profiles properly linked to users
 - Profile completion tracking works accurately
@@ -452,6 +479,7 @@ export const LoginForm: React.FC = () => {
 - Privacy settings control profile visibility
 
 **Profile Models:**
+
 ```python
 # candidates/models.py
 class CandidateProfile(models.Model):
@@ -462,22 +490,22 @@ class CandidateProfile(models.Model):
     city = models.CharField(max_length=100, blank=True)
     postal_code = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=100, default='Netherlands')
-    
+
     # Work preferences
     preferred_work_types = models.JSONField(default=list)  # ['temporary', 'contract', 'permanent']
     availability = models.JSONField(default=dict)  # {'days': [], 'hours': {}}
     willing_to_relocate = models.BooleanField(default=False)
     transport_available = models.BooleanField(default=False)
-    
+
     # Skills and experience
     skills = models.ManyToManyField('jobs.Skill', blank=True)
     experience_years = models.PositiveIntegerField(null=True, blank=True)
     languages = models.JSONField(default=list)  # [{'language': 'en', 'level': 'native'}]
-    
+
     # Profile completion
     profile_completion_percentage = models.PositiveIntegerField(default=0)
     onboarding_completed = models.BooleanField(default=False)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -490,44 +518,47 @@ class EmployerProfile(models.Model):
         ('verified', 'Verified'),
         ('premium', 'Premium Verified')
     ]
-    
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_profile')
     company_name = models.CharField(max_length=200)
     kvk_number = models.CharField(max_length=20, unique=True)  # Dutch Chamber of Commerce
     vat_number = models.CharField(max_length=20, blank=True)
-    
+
     # Company details
     industry = models.CharField(max_length=100, blank=True)
     company_size = models.CharField(max_length=50, blank=True)
     website = models.URLField(blank=True)
     description = models.TextField(blank=True)
-    
+
     # Contact information
     contact_person = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20)
     address = models.TextField()
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=10)
-    
+
     # Verification status
     verification_status = models.CharField(max_length=20, choices=VERIFICATION_CHOICES, default='unverified')
     verification_date = models.DateTimeField(null=True, blank=True)
     verification_notes = models.TextField(blank=True)
-    
+
     # Platform permissions
     can_post_jobs = models.BooleanField(default=False)
     can_contact_candidates = models.BooleanField(default=False)
     max_active_jobs = models.PositiveIntegerField(default=5)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 ```
 
 #### 2.2.2 Profile Management Features
-**Duration**: 1 day  
+
+**Duration**: 1 day
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Build comprehensive profile editing API endpoints
 - [ ] Implement profile completion progress tracking
 - [ ] Create profile visibility and privacy controls
@@ -535,6 +566,7 @@ class EmployerProfile(models.Model):
 - [ ] Build profile image upload with validation
 
 **Acceptance Criteria:**
+
 - Profile editing updates all relevant fields
 - Completion percentage calculates correctly
 - Privacy settings properly enforced
@@ -542,19 +574,20 @@ class EmployerProfile(models.Model):
 - Image upload validates file types and sizes
 
 **Profile API Endpoints:**
+
 ```python
 # candidates/api/views.py
 class CandidateProfileViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateProfileSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         return CandidateProfile.objects.filter(user=self.request.user)
-    
+
     def get_object(self):
         profile, created = CandidateProfile.objects.get_or_create(user=self.request.user)
         return profile
-    
+
     def perform_update(self, serializer):
         instance = serializer.save()
         # Update completion percentage
@@ -567,25 +600,26 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
         file = request.FILES.get('avatar')
         if not file:
             return Response({'error': 'No file provided'}, status=400)
-        
+
         # Validate file
         if file.size > 5 * 1024 * 1024:  # 5MB limit
             return Response({'error': 'File too large'}, status=400)
-        
+
         if not file.content_type.startswith('image/'):
             return Response({'error': 'Invalid file type'}, status=400)
-        
+
         # Upload to S3
         profile = self.get_object()
         profile.avatar = file
         profile.save()
-        
+
         return Response({'avatar_url': profile.avatar.url})
 ```
 
 ## Risk Mitigation Strategies
 
 ### Security Risks
+
 1. **Magic Link Token Security**
    - **Risk**: Tokens could be intercepted or guessed
    - **Mitigation**: Use cryptographically secure tokens, short expiry, single-use
@@ -602,6 +636,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
    - **Enforcement**: Block key features until verified
 
 ### Technical Risks
+
 1. **Email Delivery Issues**
    - **Risk**: Magic links not delivered due to SMTP issues
    - **Mitigation**: Use reliable service (Resend), implement delivery tracking
@@ -615,6 +650,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Testing Strategy
 
 ### Security Testing
+
 - [ ] Test magic link token generation and validation
 - [ ] Verify JWT token security and expiration
 - [ ] Test authentication bypass attempts
@@ -622,6 +658,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 - [ ] Test rate limiting on authentication endpoints
 
 ### Functional Testing
+
 - [ ] Complete user registration and verification flow
 - [ ] Magic link login process
 - [ ] Profile creation and editing
@@ -629,6 +666,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 - [ ] Protected route access control
 
 ### Integration Testing
+
 - [ ] Frontend-backend authentication flow
 - [ ] Email service integration
 - [ ] S3 image upload functionality
@@ -637,12 +675,14 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Performance Considerations
 
 ### Backend Optimization
+
 - Database indexing on email and user ID fields
 - Caching for frequently accessed user data
 - Connection pooling for database operations
 - Rate limiting to prevent abuse
 
 ### Frontend Optimization
+
 - Lazy loading of profile components
 - Optimistic updates for profile changes
 - Image optimization and compression
@@ -651,6 +691,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Security Audit Checklist
 
 ### Authentication Security
+
 - [ ] Magic link tokens are cryptographically secure
 - [ ] Token expiration properly enforced
 - [ ] JWT tokens properly signed and validated
@@ -658,6 +699,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 - [ ] Password-related vulnerabilities N/A (passwordless)
 
 ### Data Protection
+
 - [ ] Profile data properly encrypted in transit
 - [ ] Sensitive data not logged
 - [ ] File uploads validated and sanitized
@@ -667,12 +709,14 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Documentation Requirements
 
 ### API Documentation
+
 - [ ] Authentication endpoint documentation
 - [ ] Profile management API documentation
 - [ ] Error response documentation
 - [ ] Rate limiting documentation
 
 ### Frontend Documentation
+
 - [ ] Component library documentation
 - [ ] State management guide
 - [ ] Authentication flow documentation
@@ -681,6 +725,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Deliverables Checklist
 
 ### Backend Deliverables
+
 - [ ] Complete User model with authentication
 - [ ] Magic link authentication system
 - [ ] JWT token management
@@ -688,6 +733,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 - [ ] Email service integration
 
 ### Frontend Deliverables
+
 - [ ] Authentication components and forms
 - [ ] State management for authentication
 - [ ] Protected route system
@@ -695,6 +741,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 - [ ] Image upload functionality
 
 ### Security Deliverables
+
 - [ ] Security audit report
 - [ ] Penetration testing results
 - [ ] Authentication flow documentation
@@ -703,6 +750,7 @@ class CandidateProfileViewSet(viewsets.ModelViewSet):
 ## Next Phase Preparation
 
 ### Phase 3 Prerequisites
+
 - [ ] Employer verification workflow designed
 - [ ] Document upload system planned
 - [ ] Job posting model structure defined
