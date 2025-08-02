@@ -122,7 +122,7 @@ class MagicLinkManager:
             'user_id': str(user.id),
             'email': user.email,
             'type': request_type,
-            'created_at': timezone.now().isoformat()
+            'created_at': timezone.now()  # Native datetime for cache serialization
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
 

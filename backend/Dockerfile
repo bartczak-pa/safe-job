@@ -48,7 +48,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH" \
-    MODE=$MODE
+    MODE=$MODE \
+    DJANGO_SETTINGS_MODULE=config.settings.production
 
 # Install runtime system dependencies
 # hadolint ignore=DL3008
@@ -90,4 +91,15 @@ EXPOSE 8000
 
 # Default command - use production-ready server
 # For development, override with: docker run --env MODE=dev <image>
-CMD ["sh", "-c", "if [ \"$MODE\" = \"dev\" ]; then export DJANGO_SETTINGS_MODULE=config.settings.development && python manage.py runserver 0.0.0.0:8000; else export DJANGO_SETTINGS_MODULE=config.settings.production && gunicorn --bind 0.0.0.0:8000 --workers 4 --threads 2 --max-requests 1000 --max-requests-jitter 100 --timeout 30 --keep-alive 5 --log-level info --access-logfile - --error-logfile - config.wsgi:application; fi"]
+CMD ["sh", "-c", "if [ \"$MODE\" = \"dev\" ]; then \
+      export DJANGO_SETTINGS_MODULE=config.settings.development && \
+      exec python manage.py runserver 0.0.0.0:8000; \
+    else \
+      export DJANGO_SETTINGS_MODULE=config.settings.production && \
+      exec gunicorn --bind 0.0.0.0:8000 \
+           --workers 4 --threads 2 \
+           --max-requests 1000 --max-requests-jitter 100 \
+           --timeout 30 --keep-alive 5 \
+           --log-level info --access-logfile - --error-logfile - \
+           config.wsgi:application; \
+    fi"]
