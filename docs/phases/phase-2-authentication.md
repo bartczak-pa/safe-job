@@ -56,12 +56,13 @@ Phase 2 implements the complete authentication and user management system for th
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.gis.db import models
+from django.db import IntegrityError, transaction
 import uuid
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, db_index=True)
-    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    username = models.CharField(max_length=150, unique=True, editable=False)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(default=True)
@@ -79,12 +80,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    def save(self, *args, **kwargs):
+        """Override save to generate username if not set"""
+        if not self.username:
+            for _ in range(5):  # give up after a few attempts
+                self.username = self.generate_username()
+                try:
+                    with transaction.atomic():
+                        return super().save(*args, **kwargs)
+                except IntegrityError:
+                    continue
+            raise IntegrityError("Could not generate unique username")
+        return super().save(*args, **kwargs)
+
     def generate_username(self):
         """Generate unique username from email"""
         base = self.email.split('@')[0].lower()
         username = base
         counter = 1
-        while User.objects.filter(username=username).exists():
+        while User.objects.filter(username=username).exclude(pk=self.pk).exists():
             username = f"{base}{counter}"
             counter += 1
         return username
@@ -112,8 +126,11 @@ class MagicLinkManager:
         """Generate secure magic link token"""
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
 
-        # Store token with expiry
-        cache_key = f"magic_link:{token}"
+        # Hash token for secure storage (prevents enumeration attacks)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+        # Store hashed token with expiry
+        cache_key = f"magic_link:{token_hash}"
         cache_data = {
             'user_id': str(user.id),
             'email': user.email,
@@ -122,14 +139,16 @@ class MagicLinkManager:
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
 
-        # Generate URL
+        # Generate URL with plain token (only sent in email)
         verify_url = reverse('authentication:verify-magic-link')
         return f"{settings.FRONTEND_URL}{verify_url}?token={token}"
 
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
-        cache_key = f"magic_link:{token}"
+        # Hash the incoming token to match stored hash
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
 
         if not data:
