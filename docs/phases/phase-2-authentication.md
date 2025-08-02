@@ -55,7 +55,7 @@ Phase 2 implements the complete authentication and user management system for th
 
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.contrib.gis.db import models
+from django.db import models
 from django.db import IntegrityError, transaction
 import uuid
 
