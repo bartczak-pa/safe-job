@@ -1,6 +1,8 @@
 # MkDocs Documentation Setup
 
-This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](https://squidfunk.github.io/mkdocs-material/) to generate and deploy professional documentation to GitHub Pages.
+This project uses [MkDocs](https://www.mkdocs.org/) with the
+[Material theme](https://squidfunk.github.io/mkdocs-material/) to generate and
+deploy professional documentation to GitHub Pages.
 
 ## 🚀 Quick Start
 
@@ -114,14 +116,14 @@ This is a tip box
 
 **Code Blocks with Language**
 
-````markdown
+```markdown
 ```python
 def hello_world():
     print("Hello, World!")
 ```
-````
+```
 
-````
+```
 
 **Tabbed Content**
 ```markdown
@@ -130,19 +132,19 @@ def hello_world():
 
 === "Tab 2"
     Content for tab 2
-````
+```
 
 **Mermaid Diagrams**
 
-````markdown
+```markdown
 ```mermaid
 graph TD
     A[Start] --> B[Decision]
     B --> C[End]
 ```
-````
+```
 
-````
+```
 
 ### Navigation
 
@@ -153,7 +155,7 @@ nav:
   - Home: index.md
   - Section:
     - Page: section/page.md
-````
+```
 
 ## 🔍 Local Testing
 

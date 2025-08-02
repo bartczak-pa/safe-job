@@ -1,6 +1,8 @@
 # Docker Development Guide
 
-The Safe Job Platform uses a sophisticated Docker setup with multi-stage builds, orchestrated services, and optimized development workflows. This guide covers everything from basic usage to advanced container management.
+The Safe Job Platform uses a sophisticated Docker setup with multi-stage builds,
+orchestrated services, and optimized development workflows. This guide covers
+everything from basic usage to advanced container management.
 
 ## 🐳 Overview
 
@@ -78,8 +80,8 @@ docker compose up -d
 
 - 🌐 **Frontend**: [http://localhost:3000](http://localhost:3000)
 - 🔧 **Backend API**: [http://localhost:8000](http://localhost:8000)
-- 📊 **Database**: [localhost:5432](localhost:5432)
-- 🔴 **Redis**: [localhost:6379](localhost:6379)
+- 📊 **Database**: localhost:5432
+- 🔴 **Redis**: localhost:6379
 - 📖 **Documentation**: [http://localhost:8001](http://localhost:8001)
 
 ### Stopping the Environment
