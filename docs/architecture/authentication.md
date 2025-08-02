@@ -228,13 +228,20 @@ class SafeJobTokenService:
         )
 
         # Log token revocation for audit trail
+        metadata = {
+            'token_id': token_id,
+            'reason': reason,
+            'revoked_at': timezone.now().isoformat()
+        }
+
+        # Add actor context if available
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            metadata['performed_by'] = str(request.user.id)
+            metadata['performed_by_email'] = request.user.email
+
         SecurityEvent.objects.create(
             event_type='TOKEN_REVOKED',
-            metadata={
-                'token_id': token_id,
-                'reason': reason,
-                'revoked_at': timezone.now().isoformat()
-            },
+            metadata=metadata,
             ip_address=get_client_ip(request) if request else None,
             user_agent=request.META.get('HTTP_USER_AGENT') if request else None,
             severity='INFO'
@@ -1533,13 +1540,28 @@ class SafeJobAPI {
 
   getSecureToken(key) {
     try {
-      // In production, consider using secure storage like encrypted localStorage
-      // or secure HTTP-only cookies with CSRF protection
-      return localStorage.getItem(key);
+      // SECURITY WARNING: localStorage is vulnerable to XSS attacks
+      // In production, use HTTP-only cookies or encrypted storage instead
+      // This is for development/documentation purposes only
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return localStorage.getItem(key);
+      }
+      return null;
     } catch (error) {
       console.warn(`Failed to retrieve ${key}:`, error);
       return null;
     }
+  }
+
+  // Production-ready secure token storage (recommended)
+  getSecureTokenProduction(key) {
+    // For production: Use HTTP-only cookies with CSRF protection
+    // Tokens stored in HTTP-only cookies are not accessible via JavaScript
+    // and therefore protected from XSS attacks
+
+    // Alternative: Use encrypted session storage with Web Crypto API
+    // or delegate to a secure token service
+    throw new Error('Production secure storage not implemented - use HTTP-only cookies');
   }
 
   async request(endpoint, options = {}) {
@@ -1577,6 +1599,12 @@ class SafeJobAPI {
           throw new Error('Request retry failed');
         }
       }
+    }
+
+    // Throw for non-OK responses to maintain consistent API ergonomics
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unknown error');
+      throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorBody}`);
     }
 
     return response;
