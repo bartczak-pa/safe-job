@@ -52,7 +52,7 @@ import uuid
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, db_index=True)
-    username = models.CharField(max_length=150, unique=True, blank=True)
+    username = models.CharField(max_length=150, unique=True, editable=False)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(default=True)
@@ -70,12 +70,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     objects = UserManager()
     
+    def save(self, *args, **kwargs):
+        """Override save to generate username if not set"""
+        if not self.username:
+            self.username = self.generate_username()
+        super().save(*args, **kwargs)
+    
     def generate_username(self):
         """Generate unique username from email"""
         base = self.email.split('@')[0].lower()
         username = base
         counter = 1
-        while User.objects.filter(username=username).exists():
+        while User.objects.filter(username=username).exclude(pk=self.pk).exists():
             username = f"{base}{counter}"
             counter += 1
         return username
@@ -89,6 +95,9 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class MagicLinkManager:
     EXPIRY_MINUTES = 15
@@ -99,8 +108,11 @@ class MagicLinkManager:
         """Generate secure magic link token"""
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
         
-        # Store token with expiry
-        cache_key = f"magic_link:{token}"
+        # Hash token for secure storage (prevents enumeration attacks)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        
+        # Store hashed token with expiry
+        cache_key = f"magic_link:{token_hash}"
         cache_data = {
             'user_id': str(user.id),
             'email': user.email,
@@ -109,14 +121,16 @@ class MagicLinkManager:
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
         
-        # Generate URL
+        # Generate URL with plain token (only sent in email)
         verify_url = reverse('authentication:verify-magic-link')
         return f"{settings.FRONTEND_URL}{verify_url}?token={token}"
     
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
-        cache_key = f"magic_link:{token}"
+        # Hash the incoming token to match stored hash
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
         
         if not data:
@@ -139,6 +153,9 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):

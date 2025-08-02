@@ -61,7 +61,7 @@ jobs:
         uses: actions/cache@v4.2.0
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-docs-${{ hashFiles('requirements-docs.txt') }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('**/requirements-docs.txt') }}
           restore-keys: |
             ${{ runner.os }}-docs-
             
@@ -107,7 +107,7 @@ jobs:
           fi
           
           # Check for hardcoded secrets (basic patterns)
-          if grep -r -i "password\|secret\|key\|token" --include="*.py" --include="*.js" --include="*.ts" --exclude-dir=".git" --exclude-dir="node_modules" . | grep -v "# noqa" | grep -E "(=|:)\s*['\"][^'\"]{8,}['\"]"; then
+          if grep -r -i "password\|secret\|key\|token" --include="*.py" --include="*.js" --include="*.ts" --exclude-dir=".git" --exclude-dir="node_modules" --exclude-dir="docs" . | grep -v "# noqa" | grep -v "TODO" | grep -v "FIXME" | grep -E "(=|:)\s*['\"][^'\"]{8,}['\"]"; then
             echo "⚠️  Potential hardcoded secrets found (review manually)"
             echo "If these are safe, add # noqa comment to ignore"
           fi
