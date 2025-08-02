@@ -202,7 +202,7 @@ class SafeJobTokenService:
             user=user,
             token_id=str(refresh['jti']),
             ip_address=get_client_ip(request) if request else None,
-            user_agent=request.META.get('HTTP_USER_AGENT', '') if request else '',
+            user_agent=request.META.get('HTTP_USER_AGENT') if request else None,
             event_type='TOKEN_GENERATED',
             metadata={
                 'token_type': 'refresh',
@@ -210,7 +210,7 @@ class SafeJobTokenService:
                 'user_type': user.user_type,
                 'login_method': 'magic_link'
             },
-            expires_at=refresh['exp']
+            expires_at=datetime.fromtimestamp(refresh['exp'], tz=timezone.utc)
         )
 
         return {
@@ -236,6 +236,7 @@ class SafeJobTokenService:
                 'revoked_at': timezone.now().isoformat()
             },
             ip_address=get_client_ip(request) if request else None,
+            user_agent=request.META.get('HTTP_USER_AGENT') if request else None,
             severity='INFO'
         )
 ```

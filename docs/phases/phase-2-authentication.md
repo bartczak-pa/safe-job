@@ -110,8 +110,6 @@ class MagicLinkManager:
     @classmethod
     def generate_magic_link(cls, user, request_type='login'):
         """Generate secure magic link token"""
-        import hashlib
-
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
 
         # Hash token for secure storage (prevents enumeration attacks)
@@ -134,8 +132,6 @@ class MagicLinkManager:
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
-        import hashlib
-
         # Hash the incoming token to match stored hash
         token_hash = hashlib.sha256(token.encode()).hexdigest()
         cache_key = f"magic_link:{token_hash}"

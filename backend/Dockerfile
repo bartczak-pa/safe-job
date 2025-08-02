@@ -89,4 +89,4 @@ EXPOSE 8000
 
 # Default command - use production-ready server
 # For development, override with: docker run --env MODE=dev <image>
-CMD ["sh", "-c", "if [ \"$MODE\" = \"dev\" ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-connections 1000 --max-requests 1000 --max-requests-jitter 100 --timeout 30 --keep-alive 5 --log-level info --access-logfile - --error-logfile - config.wsgi:application; fi"]
+CMD ["sh", "-c", "if [ \"$MODE\" = \"dev\" ]; then python manage.py runserver 0.0.0.0:8000; else gunicorn --bind 0.0.0.0:8000 --workers 4 --threads 2 --max-requests 1000 --max-requests-jitter 100 --timeout 30 --keep-alive 5 --log-level info --access-logfile - --error-logfile - config.wsgi:application; fi"]
