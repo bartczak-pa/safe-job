@@ -235,9 +235,12 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install Poetry 1.8.3 (via pip, pinned)
-        run: |
-          pip install poetry==1.8.3
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4.1
+        with:
+          version: 1.8.3
+          virtualenvs-create: "true"
+          virtualenvs-in-project: "true"
 
       - name: Install dependencies
         working-directory: ./backend
