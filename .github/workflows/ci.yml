@@ -235,12 +235,9 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install Poetry 1.8.3 (pinned)
-        env:
-          POETRY_VERSION: 1.8.3
+      - name: Install Poetry 1.8.3 (via pip, pinned)
         run: |
-          curl -sSL "https://install.python-poetry.org" | python3 - --version $POETRY_VERSION
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          pip install poetry==1.8.3
 
       - name: Install dependencies
         working-directory: ./backend
