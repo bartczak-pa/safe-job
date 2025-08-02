@@ -95,11 +95,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 ```python
 import secrets
 import hashlib
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.core.cache import cache
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -112,24 +113,29 @@ class MagicLinkManager:
         """Generate secure magic link token"""
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
 
-        # Store token with expiry
-        cache_key = f"magic_link:{token}"
+        # Hash token for secure storage (prevents enumeration attacks)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+        # Store hashed token with expiry
+        cache_key = f"magic_link:{token_hash}"
         cache_data = {
             'user_id': str(user.id),
             'email': user.email,
             'type': request_type,
-            'created_at': datetime.now().isoformat()
+            'created_at': timezone.now()  # Native datetime for cache serialization
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
 
-        # Generate URL
+        # Generate URL with plain token (only sent in email)
         verify_url = reverse('authentication:verify-magic-link')
         return f"{settings.FRONTEND_URL}{verify_url}?token={token}"
 
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
-        cache_key = f"magic_link:{token}"
+        # Hash the incoming token to match stored hash
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
 
         if not data:
