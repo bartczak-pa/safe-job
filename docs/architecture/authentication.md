@@ -186,8 +186,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 class SafeJobTokenService:
     @staticmethod
-    def generate_tokens(user):
-        """Generate secure JWT token pair"""
+    def generate_tokens(user, request=None):
+        """Generate secure JWT token pair with comprehensive audit logging"""
         refresh = RefreshToken.for_user(user)
 
         # Add custom claims
@@ -197,11 +197,19 @@ class SafeJobTokenService:
         # Access token inherits claims from refresh
         access = refresh.access_token
 
-        # Log token generation for audit
+        # Enhanced audit logging
         TokenGenerationEvent.objects.create(
             user=user,
             token_id=str(refresh['jti']),
-            ip_address=get_client_ip(),
+            ip_address=get_client_ip(request) if request else None,
+            user_agent=request.META.get('HTTP_USER_AGENT', '') if request else '',
+            event_type='TOKEN_GENERATED',
+            metadata={
+                'token_type': 'refresh',
+                'expires_at': refresh['exp'],
+                'user_type': user.user_type,
+                'login_method': 'magic_link'
+            },
             expires_at=refresh['exp']
         )
 
@@ -211,11 +219,24 @@ class SafeJobTokenService:
         }
 
     @staticmethod
-    def revoke_token(token_id: str):
-        """Immediately revoke token by blacklisting"""
+    def revoke_token(token_id: str, reason: str = 'user_requested', request=None):
+        """Immediately revoke token by blacklisting with audit trail"""
         BlacklistedToken.objects.create(
             token_id=token_id,
-            revoked_at=timezone.now()
+            revoked_at=timezone.now(),
+            reason=reason
+        )
+
+        # Log token revocation for audit trail
+        SecurityEvent.objects.create(
+            event_type='TOKEN_REVOKED',
+            metadata={
+                'token_id': token_id,
+                'reason': reason,
+                'revoked_at': timezone.now().isoformat()
+            },
+            ip_address=get_client_ip(request) if request else None,
+            severity='INFO'
         )
 ```
 
@@ -1505,8 +1526,19 @@ Retry-After: 60
 class SafeJobAPI {
   constructor(baseURL = "http://localhost:8000") {
     this.baseURL = baseURL;
-    this.accessToken = localStorage.getItem("access_token");
-    this.refreshToken = localStorage.getItem("refresh_token");
+    this.accessToken = this.getSecureToken("access_token");
+    this.refreshToken = this.getSecureToken("refresh_token");
+  }
+
+  getSecureToken(key) {
+    try {
+      // In production, consider using secure storage like encrypted localStorage
+      // or secure HTTP-only cookies with CSRF protection
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.warn(`Failed to retrieve ${key}:`, error);
+      return null;
+    }
   }
 
   async request(endpoint, options = {}) {
@@ -1524,14 +1556,25 @@ class SafeJobAPI {
       config.headers.Authorization = `Bearer ${this.accessToken}`;
     }
 
-    let response = await fetch(url, config);
+    let response;
+    try {
+      response = await fetch(url, config);
+    } catch (networkError) {
+      console.error('Network error:', networkError);
+      throw new Error('Network request failed');
+    }
 
     // Handle token refresh if needed
     if (response.status === 401 && this.refreshToken) {
       const refreshed = await this.refreshAccessToken();
       if (refreshed) {
         config.headers.Authorization = `Bearer ${this.accessToken}`;
-        response = await fetch(url, config);
+        try {
+          response = await fetch(url, config);
+        } catch (retryError) {
+          console.error('Retry request failed:', retryError);
+          throw new Error('Request retry failed');
+        }
       }
     }
 

@@ -46,6 +46,7 @@ services:
     env_file:
       - .envs/.env.development.local
     environment:
+      - MODE=dev  # Use development server in docker-compose
       - DEBUG=${DEBUG:-1}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-safejob}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-safejob}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0

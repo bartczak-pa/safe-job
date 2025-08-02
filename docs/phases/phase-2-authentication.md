@@ -110,10 +110,15 @@ class MagicLinkManager:
     @classmethod
     def generate_magic_link(cls, user, request_type='login'):
         """Generate secure magic link token"""
+        import hashlib
+
         token = secrets.token_urlsafe(cls.TOKEN_LENGTH)
 
-        # Store token with expiry
-        cache_key = f"magic_link:{token}"
+        # Hash token for secure storage (prevents enumeration attacks)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+        # Store hashed token with expiry
+        cache_key = f"magic_link:{token_hash}"
         cache_data = {
             'user_id': str(user.id),
             'email': user.email,
@@ -122,14 +127,18 @@ class MagicLinkManager:
         }
         cache.set(cache_key, cache_data, timeout=cls.EXPIRY_MINUTES * 60)
 
-        # Generate URL
+        # Generate URL with plain token (only sent in email)
         verify_url = reverse('authentication:verify-magic-link')
         return f"{settings.FRONTEND_URL}{verify_url}?token={token}"
 
     @classmethod
     def verify_magic_link(cls, token):
         """Verify and consume magic link token"""
-        cache_key = f"magic_link:{token}"
+        import hashlib
+
+        # Hash the incoming token to match stored hash
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
 
         if not data:
