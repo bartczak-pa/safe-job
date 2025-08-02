@@ -207,6 +207,7 @@ class SafeJobTokenService:
             event_type='TOKEN_GENERATED',
             metadata={
                 'token_type': 'refresh',
+                'expires_at': refresh['exp'],
                 'user_type': user.user_type,
                 'login_method': 'magic_link'
             },

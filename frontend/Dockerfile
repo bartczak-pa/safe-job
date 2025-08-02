@@ -18,7 +18,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci
+RUN npm ci --include=dev
 
 # Copy source code
 COPY . .
@@ -61,11 +61,26 @@ CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 # Stage 3: Production stage with Nginx
 FROM nginx:alpine AS production
 
+# Create non-root user for security
+RUN addgroup -g 1001 -S appuser && \
+    adduser -u 1001 -S appuser -G appuser
+
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Change ownership of Nginx directories to non-root user
+RUN chown -R appuser:appuser /usr/share/nginx/html && \
+    chown -R appuser:appuser /var/cache/nginx && \
+    chown -R appuser:appuser /var/log/nginx && \
+    chown -R appuser:appuser /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R appuser:appuser /var/run/nginx.pid
+
+# Switch to non-root user
+USER 1001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
