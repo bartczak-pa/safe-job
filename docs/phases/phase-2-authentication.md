@@ -98,11 +98,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def generate_username(self):
         """Generate unique username from email"""
-        base = self.email.split('@')[0].lower()[:140]  # leave room for a numeric suffix
+        base = self.email.split('@')[0].lower()[:140]  # initial trim, final trim happens below
         username = base
         counter = 1
         while User.objects.filter(username=username).exclude(pk=self.pk).exists():
-            username = f"{base}{counter}"
+            suffix = str(counter)
+            trimmed_base = base[:150 - len(suffix)]  # guarantee max_length
+            username = f"{trimmed_base}{suffix}"
             counter += 1
         return username
 ```
