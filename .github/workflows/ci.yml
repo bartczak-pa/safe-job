@@ -114,16 +114,12 @@ jobs:
         run: |
           poetry run python manage.py check --deploy --fail-level=WARNING
 
-      - name: Run Django tests
+      - name: Run Django tests with coverage
         working-directory: ./backend
         run: |
-          poetry run python manage.py test --verbosity=2 --parallel
-
-      - name: Generate coverage report
-        working-directory: ./backend
-        run: |
-          poetry add coverage
-          poetry run coverage run --source='.' manage.py test
+          # Run tests with coverage in parallel mode and generate reports
+          poetry run coverage run --parallel-mode manage.py test --verbosity=2 --parallel
+          poetry run coverage combine
           poetry run coverage xml
           poetry run coverage report
 
@@ -306,7 +302,7 @@ jobs:
           docker build \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --tag safe-job-backend:${{ github.sha }} \
-            --tag safe-job-backend:latest \
+            --tag safe-job-backend:build-${{ github.run_number }} \
             ./backend
 
       - name: Build frontend image
@@ -314,7 +310,7 @@ jobs:
           docker build \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --tag safe-job-frontend:${{ github.sha }} \
-            --tag safe-job-frontend:latest \
+            --tag safe-job-frontend:build-${{ github.run_number }} \
             --target development \
             ./frontend
 

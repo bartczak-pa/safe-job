@@ -195,7 +195,7 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "config.wsgi:applic
     [
       {
         "name": "backend",
-        "image": "ACCOUNT.dkr.ecr.REGION.amazonaws.com/safejob-backend:latest",
+        "image": "ACCOUNT.dkr.ecr.REGION.amazonaws.com/safejob-backend:${IMAGE_TAG}",
         "portMappings": [{ "containerPort": 8000, "protocol": "tcp" }],
         "environment":
           [
@@ -276,8 +276,6 @@ jobs:
           aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Deploy to ECS
         run: |
