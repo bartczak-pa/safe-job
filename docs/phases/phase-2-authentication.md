@@ -137,9 +137,6 @@ class MagicLinkManager:
         cache_key = f"magic_link:{token_hash}"
         data = cache.get(cache_key)
 
-        # Note: Direct cache lookup is timing-safe since we're using the hash as the key
-        # If implementing fallback token comparison, use secrets.compare_digest()
-
         if not data:
             return None, "Token expired or invalid"
 

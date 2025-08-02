@@ -221,11 +221,20 @@ class SafeJobTokenService:
     @staticmethod
     def revoke_token(token_id: str, reason: str = 'user_requested', request=None):
         """Immediately revoke token by blacklisting with audit trail"""
-        BlacklistedToken.objects.create(
-            token_id=token_id,
-            revoked_at=timezone.now(),
-            reason=reason
-        )
+        from django.db import transaction, IntegrityError
+
+        try:
+            with transaction.atomic():
+                BlacklistedToken.objects.get_or_create(
+                    token_id=token_id,
+                    defaults={
+                        "revoked_at": timezone.now(),
+                        "reason": reason,
+                    },
+                )
+        except IntegrityError:
+            # Already revoked – continue to log the event
+            pass
 
         # Log token revocation for audit trail
         metadata = {
@@ -1538,17 +1547,18 @@ class SafeJobAPI {
     this.refreshToken = this.getSecureToken("refresh_token");
   }
 
+  // ⚠️ DEV-ONLY: NOT SAFE FOR PRODUCTION ⚠️
   getSecureToken(key) {
     try {
-      // SECURITY WARNING: localStorage is vulnerable to XSS attacks
-      // In production, use HTTP-only cookies or encrypted storage instead
-      // This is for development/documentation purposes only
+      // 🚨 CRITICAL SECURITY WARNING: localStorage is vulnerable to XSS attacks
+      // 🚨 DO NOT USE IN PRODUCTION - tokens exposed to malicious scripts
+      // 🚨 FOR DEVELOPMENT/DOCUMENTATION PURPOSES ONLY
       if (typeof window !== 'undefined' && window.localStorage) {
         return localStorage.getItem(key);
       }
       return null;
     } catch (error) {
-      console.warn(`Failed to retrieve ${key}:`, error);
+      console.warn(`[DEV-ONLY] Failed to retrieve ${key}:`, error);
       return null;
     }
   }
@@ -1561,7 +1571,8 @@ class SafeJobAPI {
 
     // Alternative: Use encrypted session storage with Web Crypto API
     // or delegate to a secure token service
-    throw new Error('Production secure storage not implemented - use HTTP-only cookies');
+    console.warn('TODO: Implement production secure storage using HTTP-only cookies');
+    return null; // Return null instead of throwing to prevent crashes
   }
 
   async request(endpoint, options = {}) {
@@ -1603,7 +1614,8 @@ class SafeJobAPI {
 
     // Throw for non-OK responses to maintain consistent API ergonomics
     if (!response.ok) {
-      const errorBody = await response.text().catch(() => 'Unknown error');
+      const errorClone = response.clone();
+      const errorBody = await errorClone.text().catch(() => '');
       throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorBody}`);
     }
 
