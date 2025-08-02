@@ -40,7 +40,14 @@ jobs:
             find . -name "*.key" -o -name "*.pem" -o -name ".env.*.local"
             exit 1
           fi
-          echo "✅ No sensitive files found"
+
+          # Check for hardcoded secrets (basic patterns)
+          if grep -r -i "password\|secret\|key\|token" --include="*.py" --include="*.js" --include="*.ts" --exclude-dir=".git" --exclude-dir="node_modules" --exclude-dir="docs" . | grep -v "# noqa" | grep -v "TODO" | grep -v "FIXME" | grep -E "(=|:)\s*['\"][^'\"]{8,}['\"]"; then
+            echo "⚠️  Potential hardcoded secrets found (review manually)"
+            echo "If these are safe, add # noqa comment to ignore"
+          fi
+
+          echo "✅ Basic security checks passed"
 
   # Defer comprehensive testing to the main CI workflow
   ci-trigger:

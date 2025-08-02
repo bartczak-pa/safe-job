@@ -56,12 +56,13 @@ Phase 2 implements the complete authentication and user management system for th
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.gis.db import models
+from django.db import IntegrityError, transaction
 import uuid
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, db_index=True)
-    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    username = models.CharField(max_length=150, unique=True, editable=False)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(default=True)
@@ -79,12 +80,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    def save(self, *args, **kwargs):
+        """Override save to generate username if not set"""
+        if not self.username:
+            for _ in range(5):  # give up after a few attempts
+                self.username = self.generate_username()
+                try:
+                    with transaction.atomic():
+                        return super().save(*args, **kwargs)
+                except IntegrityError:
+                    continue
+            raise IntegrityError("Could not generate unique username")
+        return super().save(*args, **kwargs)
+
     def generate_username(self):
         """Generate unique username from email"""
         base = self.email.split('@')[0].lower()
         username = base
         counter = 1
-        while User.objects.filter(username=username).exists():
+        while User.objects.filter(username=username).exclude(pk=self.pk).exists():
             username = f"{base}{counter}"
             counter += 1
         return username

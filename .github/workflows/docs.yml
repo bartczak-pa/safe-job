@@ -103,7 +103,6 @@ jobs:
         uses: actions/setup-python@v5.6.0
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -123,7 +122,7 @@ jobs:
           # Wait for server to start
           sleep 5
 
-          # Test that server is running (MkDocs serves with site_url path)
+          # Test that server is running (MkDocs serves with /safe-job/ path)
           curl -f http://127.0.0.1:8000/safe-job/ || exit 1
 
           # Kill server
