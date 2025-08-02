@@ -47,6 +47,7 @@ Phase 2 implements the complete authentication and user management system for th
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.gis.db import models
+from django.db import IntegrityError, transaction
 import uuid
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -73,8 +74,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         """Override save to generate username if not set"""
         if not self.username:
-            self.username = self.generate_username()
-        super().save(*args, **kwargs)
+            for _ in range(5):  # give up after a few attempts
+                self.username = self.generate_username()
+                try:
+                    with transaction.atomic():
+                        return super().save(*args, **kwargs)
+                except IntegrityError:
+                    continue
+            raise IntegrityError("Could not generate unique username")
+        return super().save(*args, **kwargs)
     
     def generate_username(self):
         """Generate unique username from email"""
