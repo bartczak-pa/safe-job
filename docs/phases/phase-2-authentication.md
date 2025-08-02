@@ -82,17 +82,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         """Override save to generate username if not set"""
+        from django.conf import settings
+
+        MAX_RETRIES = getattr(settings, "USERNAME_COLLISION_RETRIES", 10)
         if not self.username:
-            for attempt in range(10):  # double the retries for high concurrency
+            for attempt in range(MAX_RETRIES):
                 self.username = self.generate_username()
                 try:
                     with transaction.atomic():
-                        return super().save(*args, **kwargs)
+                        break        # success, fall through to single save
                 except IntegrityError:
-                    if attempt == 9:
+                    if attempt == MAX_RETRIES - 1:
                         raise
-                    # loop and try a new candidate
-        # updates also run in a transaction for consistency
+        # always end with a single save path (updates or post-generation)
         with transaction.atomic():
             return super().save(*args, **kwargs)
 
