@@ -1572,7 +1572,7 @@ class SafeJobAPI {
 
     // Alternative: Use encrypted session storage with Web Crypto API
     // or delegate to a secure token service
-    console.warn('TODO: Implement production secure storage using HTTP-only cookies');
+    // Note: In production, consider using HTTP-only cookies for secure storage
     return null; // Return null instead of throwing to prevent crashes
   }
 
