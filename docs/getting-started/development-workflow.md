@@ -6,13 +6,13 @@ This guide outlines the development workflow for the Safe Job Platform, includin
 
 ### Branch Types
 
-| Branch Type | Pattern | Purpose | Lifespan |
-|-------------|---------|---------|----------|
-| **Main** | `main` | Production-ready releases | Permanent |
-| **Develop** | `develop` | Integration of completed features | Permanent |
-| **Feature** | `feature/description` | Individual feature development | Temporary |
-| **Hotfix** | `hotfix/description` | Emergency production fixes | Temporary |
-| **Documentation** | `docs/description` | Documentation updates | Temporary |
+| Branch Type       | Pattern               | Purpose                           | Lifespan  |
+| ----------------- | --------------------- | --------------------------------- | --------- |
+| **Main**          | `main`                | Production-ready releases         | Permanent |
+| **Develop**       | `develop`             | Integration of completed features | Permanent |
+| **Feature**       | `feature/description` | Individual feature development    | Temporary |
+| **Hotfix**        | `hotfix/description`  | Emergency production fixes        | Temporary |
+| **Documentation** | `docs/description`    | Documentation updates             | Temporary |
 
 ### Branch Flow Diagram
 
@@ -22,35 +22,35 @@ gitGraph
     branch develop
     checkout develop
     commit id: "Setup development"
-    
+
     branch feature/auth
     checkout feature/auth
     commit id: "Add magic link auth"
     commit id: "Add JWT tokens"
-    
+
     checkout develop
     merge feature/auth
     commit id: "Integrate auth system"
-    
+
     branch feature/jobs
     checkout feature/jobs
     commit id: "Add job models"
     commit id: "Add job API"
-    
+
     checkout develop
     merge feature/jobs
-    
+
     checkout main
     merge develop
     commit id: "Release v1.0.0"
-    
+
     branch hotfix/security
     checkout hotfix/security
     commit id: "Fix security issue"
-    
+
     checkout main
     merge hotfix/security
-    
+
     checkout develop
     merge hotfix/security
 ```
@@ -81,7 +81,7 @@ git checkout -b docs/api-documentation
 git add .
 git commit -m "feat: implement magic link authentication
 
-- Add email verification system  
+- Add email verification system
 - Create JWT token management
 - Add rate limiting for auth endpoints
 
@@ -94,39 +94,46 @@ git push -u origin feature/authentication-system
 ### 3. Creating Pull Requests
 
 #### PR Title Format
+
 ```
 type(scope): brief description
 
 Examples:
 feat(auth): implement magic link authentication
-fix(jobs): resolve location search bug  
+fix(jobs): resolve location search bug
 docs(api): add authentication endpoints
 refactor(models): optimize database queries
 ```
 
 #### PR Description Template
+
 ```markdown
 ## 📋 Summary
+
 Brief description of changes and motivation.
 
 ## 🔄 Type of Change
+
 - [ ] Bug fix
-- [ ] New feature  
+- [ ] New feature
 - [ ] Documentation update
 - [ ] Refactoring
 - [ ] Performance improvement
 
 ## 🧪 Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 
 ## 📚 Documentation
+
 - [ ] Code comments updated
 - [ ] API documentation updated
 - [ ] User documentation updated
 
 ## 🔍 Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Breaking changes documented
@@ -136,14 +143,17 @@ Brief description of changes and motivation.
 ### 4. Review and Merge Process
 
 #### Automated Checks
+
 Every PR triggers these checks:
+
 - **Build validation** - Code compiles/builds successfully
 - **Test suite** - All tests pass
-- **Documentation** - Docs build without errors  
+- **Documentation** - Docs build without errors
 - **Security scan** - No obvious security issues
 - **Code quality** - Linting and formatting checks
 
 #### Manual Review Process
+
 1. **Self-review** - Review your own PR first
 2. **Request review** - Assign reviewers (yourself for solo development)
 3. **Address feedback** - Make requested changes
@@ -152,28 +162,33 @@ Every PR triggers these checks:
 #### Merge Strategies
 
 **For Feature Branches → Develop:**
+
 - Use **"Squash and merge"** to keep clean history
 - Ensure commit message follows conventional format
 
 **For Develop → Main:**
+
 - Use **"Create a merge commit"** to preserve feature history
 - Tag releases after merging to main
 
 ## 🛡️ Branch Protection Rules
 
 ### Main Branch Protection
+
 - ✅ Require pull request reviews (1 reviewer)
 - ✅ Require status checks to pass
 - ✅ Require up-to-date branches
 - ✅ Include administrators
 - ✅ Require conversation resolution
 
-### Develop Branch Protection  
+### Develop Branch Protection
+
 - ✅ Require status checks to pass
 - ❌ Require pull request reviews (flexibility for solo dev)
 - ✅ Require up-to-date branches
 
 ### Feature Branch Guidelines
+
 - No protection rules (development flexibility)
 - Automated checks still run on push
 - Regular cleanup of merged branches
@@ -181,6 +196,7 @@ Every PR triggers these checks:
 ## 📋 Phase-Based Development
 
 ### Phase Workflow
+
 Each development phase follows this pattern:
 
 ```bash
@@ -196,7 +212,7 @@ git checkout -b feature/phase-1-foundation
 git add .
 git commit -m "feat(foundation): complete Docker setup"
 
-git add .  
+git add .
 git commit -m "feat(foundation): add CI/CD pipeline"
 
 # Complete phase
@@ -207,6 +223,7 @@ git push origin feature/phase-1-foundation
 ```
 
 ### Phase Completion Checklist
+
 - [ ] All phase tasks completed
 - [ ] Tests written and passing
 - [ ] Documentation updated
@@ -230,7 +247,7 @@ git add .
 git commit -m "fix: resolve critical authentication vulnerability
 
 - Patch JWT token validation
-- Add input sanitization  
+- Add input sanitization
 - Update security headers
 
 Security advisory: SA-2024-001"
@@ -258,7 +275,7 @@ git push origin develop
 
 2. **Test Coverage**
    - Unit tests pass
-   - Integration tests pass  
+   - Integration tests pass
    - Minimum coverage thresholds met
 
 3. **Documentation Standards**
@@ -280,13 +297,14 @@ git push origin develop
 
 - **Functionality** - Feature works as intended
 - **User Experience** - Good UX/UI implementation
-- **Performance** - No obvious performance issues  
+- **Performance** - No obvious performance issues
 - **Security** - Security considerations addressed
 - **Documentation** - Clear and complete documentation
 
 ## 🏷️ Release Management
 
 ### Versioning Strategy
+
 - **Semantic Versioning** (MAJOR.MINOR.PATCH)
 - **v1.0.0** - Initial MVP release
 - **v1.1.0** - New features added
@@ -337,6 +355,7 @@ git remote prune origin
 ```
 
 ### Weekly Review
+
 - Clean up merged branches
 - Review open PRs
 - Update documentation

@@ -1,9 +1,12 @@
 # Phase 5: Real-time Messaging System - Detailed Implementation Plan
 
-**Duration**: Week 5 (7 days)  
-**Dependencies**: Phase 4 completion  
-**Risk Level**: High (Django Channels complexity, WebSocket management)  
-**Team**: 1 full-stack developer + Claude Code  
+**Duration**: Week 5 (7 days)
+
+**Dependencies**: Phase 4 completion
+
+**Risk Level**: High (Django Channels complexity, WebSocket management)
+
+**Team**: 1 full-stack developer + Claude Code
 
 ## Overview
 
@@ -23,11 +26,15 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 ### 5.1 Django Channels Setup
 
 #### 5.1.1 Real-time Infrastructure Setup
-**Duration**: 2 days  
-**Priority**: Critical  
+
+**Duration**: 2 days
+
+**Priority**: Critical
+
 **Risk Level**: High
 
 **Tasks:**
+
 - [ ] Configure Django Channels with Redis channel layer
 - [ ] Set up WebSocket routing and authentication
 - [ ] Create message queue system for reliable delivery
@@ -35,6 +42,7 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 - [ ] Build WebSocket authentication and authorization system
 
 **Acceptance Criteria:**
+
 - WebSocket connections establish reliably across different browsers
 - Redis channel layer handles message routing efficiently
 - Authentication prevents unauthorized access to conversations
@@ -44,6 +52,7 @@ Phase 5 implements the secure real-time messaging system that enables communicat
 **Implementation Details:**
 
 **Django Channels Configuration (`config/settings/base.py`):**
+
 ```python
 # Add to INSTALLED_APPS
 INSTALLED_APPS += [
@@ -73,6 +82,7 @@ WEBSOCKET_ALLOWED_ORIGINS = [
 ```
 
 **ASGI Routing Configuration (`config/routing.py`):**
+
 ```python
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
@@ -91,11 +101,13 @@ application = ProtocolTypeRouter({
 ```
 
 **WebSocket Consumer (`messaging/consumers.py`):**
+
 ```python
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
 from .models import Conversation, Message
 from .services import MessageEncryptionService, ModerationService
 
@@ -172,7 +184,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_chat_message(self, data):
         """Handle incoming chat message"""
         content = data.get('content', '').strip()
-        
+
         if not content:
             await self.send_error('Message content cannot be empty')
             return
@@ -187,11 +199,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send_error(f'Message blocked: {moderation_result["reason"]}')
             return
 
-        # Save message to database
-        message = await self.save_message(content, moderation_result.get('filtered_content'))
-
-        # Encrypt message for storage
+        # Encrypt message before persisting
         encrypted_content = await self.encrypt_message_content(content)
+
+        # Save encrypted content to database
+        message = await self.save_message(
+            encrypted_content,
+            moderation_result.get('filtered_content')
+        )
 
         # Broadcast message to conversation group
         await self.channel_layer.group_send(
@@ -212,7 +227,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_typing_indicator(self, data):
         """Handle typing indicator"""
         is_typing = data.get('is_typing', False)
-        
+
         await self.channel_layer.group_send(
             self.conversation_group_name,
             {
@@ -222,6 +237,98 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'is_typing': is_typing
             }
         )
+
+    async def handle_mark_read(self, data):
+        """Handle marking messages as read"""
+        message_id = data.get('message_id')
+
+        if not message_id:
+            # If no specific message_id, mark all unread messages in conversation as read
+            await self.mark_conversation_read()
+            return
+
+        try:
+            # Mark message as read
+            await self.mark_message_read(message_id)
+
+            # Broadcast read receipt to other participants
+            await self.channel_layer.group_send(
+                self.conversation_group_name,
+                {
+                    'type': 'read_receipt_broadcast',
+                    'message_id': message_id,
+                    'read_by_user_id': str(self.user.id),
+                    'read_by_name': self.user.get_full_name(),
+                    'read_at': timezone.now().isoformat()
+                }
+            )
+
+        except Exception as e:
+            await self.send_error(f'Error marking message as read: {str(e)}')
+
+    async def read_receipt_broadcast(self, event):
+        """Send read receipt to WebSocket"""
+        # Don't send read receipt to the user who marked it as read
+        if event['read_by_user_id'] != str(self.user.id):
+            await self.send(text_data=json.dumps({
+                'type': 'read_receipt',
+                'data': {
+                    'message_id': event['message_id'],
+                    'read_by_user_id': event['read_by_user_id'],
+                    'read_by_name': event['read_by_name'],
+                    'read_at': event['read_at']
+                }
+            }))
+
+    @database_sync_to_async
+    def mark_message_read(self, message_id):
+        """Mark a specific message as read by current user"""
+        from .models import Message, MessageReadReceipt
+
+        try:
+            message = Message.objects.get(
+                id=message_id,
+                conversation_id=self.conversation_id
+            )
+
+            # Create or update read receipt
+            receipt, created = MessageReadReceipt.objects.get_or_create(
+                message=message,
+                user=self.user,
+                defaults={'read_at': timezone.now()}
+            )
+            if not created:
+                receipt.read_at = timezone.now()
+                receipt.save(update_fields=["read_at"])
+
+        except Message.DoesNotExist:
+            raise Exception('Message not found')
+
+    @database_sync_to_async
+    def mark_conversation_read(self):
+        """Mark all messages in conversation as read by current user"""
+        from .models import Message, MessageReadReceipt
+
+        # Get all unread messages in the conversation
+        unread_messages = Message.objects.filter(
+            conversation_id=self.conversation_id
+        ).exclude(
+            messagereadreceipt__user=self.user
+        )
+
+        # Create read receipts for all unread messages
+        receipts_to_create = []
+        for message in unread_messages:
+            receipts_to_create.append(
+                MessageReadReceipt(
+                    message=message,
+                    user=self.user,
+                    read_at=timezone.now()
+                )
+            )
+
+        if receipts_to_create:
+            MessageReadReceipt.objects.bulk_create(receipts_to_create)
 
     async def chat_message_broadcast(self, event):
         """Send message to WebSocket"""
@@ -266,7 +373,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, content, filtered_content=None):
         """Save message to database"""
         conversation = Conversation.objects.get(id=self.conversation_id)
-        
+
         message = Message.objects.create(
             conversation=conversation,
             sender=self.user,
@@ -274,11 +381,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             original_content=content if filtered_content else None,
             message_type='text'
         )
-        
+
         # Update conversation last activity
         conversation.last_activity_at = timezone.now()
         conversation.save()
-        
+
         return message
 
     @database_sync_to_async
@@ -292,6 +399,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 ```
 
 **Message Models (`messaging/models.py`):**
+
 ```python
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
@@ -307,9 +415,9 @@ class Conversation(models.Model):
         ('blocked', 'Blocked'),
         ('reported', 'Reported')
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Participants
     candidate = models.ForeignKey(
         'candidates.CandidateProfile',
@@ -321,7 +429,7 @@ class Conversation(models.Model):
         on_delete=models.CASCADE,
         related_name='conversations'
     )
-    
+
     # Related job application (if any)
     job_application = models.ForeignKey(
         'applications.JobApplication',
@@ -329,30 +437,30 @@ class Conversation(models.Model):
         null=True, blank=True,
         related_name='conversations'
     )
-    
+
     # Conversation metadata
     status = models.CharField(max_length=20, choices=CONVERSATION_STATUS_CHOICES, default='active')
     subject = models.CharField(max_length=200, blank=True)
-    
+
     # Activity tracking
     last_activity_at = models.DateTimeField(auto_now=True)
     last_message_at = models.DateTimeField(null=True, blank=True)
     message_count = models.PositiveIntegerField(default=0)
-    
+
     # Read status tracking
     candidate_last_read_at = models.DateTimeField(null=True, blank=True)
     employer_last_read_at = models.DateTimeField(null=True, blank=True)
-    
+
     # Moderation
     is_flagged = models.BooleanField(default=False)
     flagged_reason = models.TextField(blank=True)
     flagged_at = models.DateTimeField(null=True, blank=True)
     flagged_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         db_table = 'messaging_conversation'
         unique_together = ['candidate', 'employer', 'job_application']
@@ -362,10 +470,10 @@ class Conversation(models.Model):
             models.Index(fields=['last_activity_at']),
         ]
         ordering = ['-last_activity_at']
-    
+
     def __str__(self):
         return f"Conversation: {self.candidate.user.get_full_name()} ↔ {self.employer.company_name}"
-    
+
     def get_unread_count_for_user(self, user):
         """Get unread message count for specific user"""
         if hasattr(user, 'candidate_profile') and user.candidate_profile == self.candidate:
@@ -374,21 +482,21 @@ class Conversation(models.Model):
             last_read = self.employer_last_read_at
         else:
             return 0
-        
+
         if not last_read:
             return self.message_count
-        
+
         return self.messages.filter(created_at__gt=last_read).count()
-    
+
     def mark_read_for_user(self, user):
         """Mark conversation as read for specific user"""
         now = timezone.now()
-        
+
         if hasattr(user, 'candidate_profile') and user.candidate_profile == self.candidate:
             self.candidate_last_read_at = now
         elif hasattr(user, 'employer_profile') and user.employer_profile == self.employer:
             self.employer_last_read_at = now
-        
+
         self.save(update_fields=['candidate_last_read_at', 'employer_last_read_at'])
 
 class Message(models.Model):
@@ -399,56 +507,56 @@ class Message(models.Model):
         ('interview_invite', 'Interview Invitation'),
         ('status_update', 'Status Update')
     ]
-    
+
     MESSAGE_STATUS_CHOICES = [
         ('sent', 'Sent'),
         ('delivered', 'Delivered'),
         ('read', 'Read'),
         ('failed', 'Failed')
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    
+
     # Message content
     content = models.TextField(max_length=2000)
     original_content = models.TextField(blank=True, help_text="Original content before moderation")
     message_type = models.CharField(max_length=20, choices=MESSAGE_TYPE_CHOICES, default='text')
-    
+
     # File attachment (if applicable)
     attachment = models.FileField(upload_to='message_attachments/%Y/%m/', null=True, blank=True)
     attachment_name = models.CharField(max_length=255, blank=True)
     attachment_size = models.PositiveIntegerField(null=True, blank=True)
-    
+
     # Message status
     status = models.CharField(max_length=20, choices=MESSAGE_STATUS_CHOICES, default='sent')
-    
+
     # Encryption
     is_encrypted = models.BooleanField(default=False)
     encryption_key_id = models.CharField(max_length=100, blank=True)
-    
+
     # Moderation
     is_flagged = models.BooleanField(default=False)
     moderation_score = models.FloatField(null=True, blank=True)
     was_filtered = models.BooleanField(default=False)
-    
+
     # Read receipts
     read_at = models.DateTimeField(null=True, blank=True)
     read_by = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        null=True, blank=True, 
+        User,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
         related_name='read_messages'
     )
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     # Soft delete
     deleted_at = models.DateTimeField(null=True, blank=True)
-    
+
     class Meta:
         db_table = 'messaging_message'
         indexes = [
@@ -457,14 +565,14 @@ class Message(models.Model):
             models.Index(fields=['status']),
         ]
         ordering = ['created_at']
-    
+
     def __str__(self):
         return f"Message from {self.sender.get_full_name()} at {self.created_at}"
-    
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        
+
         if is_new:
             # Update conversation message count and last message time
             self.conversation.message_count += 1
@@ -477,16 +585,19 @@ class UserPresence(models.Model):
     is_online = models.BooleanField(default=False)
     last_seen_at = models.DateTimeField(auto_now=True)
     active_conversations = models.JSONField(default=list, help_text="List of conversation IDs user is actively viewing")
-    
+
     class Meta:
         db_table = 'messaging_user_presence'
 ```
 
 #### 5.1.2 Messaging Models and API
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Create comprehensive Message and Conversation models
 - [ ] Implement message encryption for sensitive communications
 - [ ] Build message history and search functionality
@@ -494,6 +605,7 @@ class UserPresence(models.Model):
 - [ ] Create message moderation and safety features
 
 **Acceptance Criteria:**
+
 - Message models support various content types and metadata
 - Encryption protects sensitive conversation data
 - Message history loads efficiently with pagination
@@ -501,6 +613,7 @@ class UserPresence(models.Model):
 - Moderation prevents harmful content automatically
 
 **Message Services (`messaging/services.py`):**
+
 ```python
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -510,26 +623,26 @@ from typing import Dict, List
 
 class MessageEncryptionService:
     """Handle message encryption/decryption"""
-    
+
     @classmethod
     def encrypt_message(cls, content: str) -> str:
         """Encrypt message content"""
         if not settings.MESSAGE_ENCRYPTION_KEY:
             # Development mode - no encryption
             return content
-        
+
         key = settings.MESSAGE_ENCRYPTION_KEY.encode()
         f = Fernet(key)
         encrypted_content = f.encrypt(content.encode())
         return base64.urlsafe_b64encode(encrypted_content).decode()
-    
+
     @classmethod
     def decrypt_message(cls, encrypted_content: str) -> str:
         """Decrypt message content"""
         if not settings.MESSAGE_ENCRYPTION_KEY:
             # Development mode - no encryption
             return encrypted_content
-        
+
         try:
             key = settings.MESSAGE_ENCRYPTION_KEY.encode()
             f = Fernet(key)
@@ -541,25 +654,25 @@ class MessageEncryptionService:
 
 class ModerationService:
     """Content moderation for messages"""
-    
+
     # Basic profanity filter - in production, use more sophisticated service
     BLOCKED_WORDS = [
         # Add inappropriate words here
         'spam', 'scam', 'fraud'
     ]
-    
+
     SUSPICIOUS_PATTERNS = [
         r'\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b',  # Credit card numbers
         r'\b\d{3}-\d{2}-\d{4}\b',  # SSN patterns
         r'whatsapp.*\+?\d+',  # WhatsApp sharing
         r'telegram.*@\w+',  # Telegram sharing
     ]
-    
+
     @classmethod
     def moderate_message_content(cls, content: str) -> Dict:
         """Check message content for policy violations"""
         content_lower = content.lower()
-        
+
         # Check for blocked words
         for word in cls.BLOCKED_WORDS:
             if word in content_lower:
@@ -568,7 +681,7 @@ class ModerationService:
                     'reason': 'Contains inappropriate content',
                     'violation_type': 'profanity'
                 }
-        
+
         # Check for suspicious patterns
         for pattern in cls.SUSPICIOUS_PATTERNS:
             if re.search(pattern, content, re.IGNORECASE):
@@ -577,7 +690,7 @@ class ModerationService:
                     'reason': 'Contains potentially sensitive information',
                     'violation_type': 'personal_info'
                 }
-        
+
         # Check for excessive caps (potential spam)
         if len(content) > 20 and sum(1 for c in content if c.isupper()) / len(content) > 0.7:
             filtered_content = content.lower().capitalize()
@@ -586,12 +699,12 @@ class ModerationService:
                 'filtered_content': filtered_content,
                 'reason': 'Excessive capitals filtered'
             }
-        
+
         return {
             'allowed': True,
             'reason': None
         }
-    
+
     @classmethod
     def flag_conversation(cls, conversation, reason: str, flagged_by):
         """Flag conversation for admin review"""
@@ -600,27 +713,27 @@ class ModerationService:
         conversation.flagged_at = timezone.now()
         conversation.flagged_by = flagged_by
         conversation.save()
-        
+
         # Notify admin team
         NotificationService.notify_admin_conversation_flagged(conversation, reason)
 
 class ConversationService:
     """Business logic for conversation management"""
-    
+
     @classmethod
     def create_conversation(cls, candidate, employer, job_application=None, subject=''):
         """Create new conversation between candidate and employer"""
-        
+
         # Check if conversation already exists
         existing = Conversation.objects.filter(
             candidate=candidate,
             employer=employer,
             job_application=job_application
         ).first()
-        
+
         if existing:
             return existing
-        
+
         # Create new conversation
         conversation = Conversation.objects.create(
             candidate=candidate,
@@ -628,34 +741,34 @@ class ConversationService:
             job_application=job_application,
             subject=subject or f"Regarding: {job_application.job.title if job_application else 'General Inquiry'}"
         )
-        
+
         # Send system message
         if job_application:
             system_message = f"Conversation started regarding application for {job_application.job.title}"
         else:
             system_message = "Conversation started"
-        
+
         Message.objects.create(
             conversation=conversation,
             sender=candidate.user,  # Use candidate as initial sender
             content=system_message,
             message_type='system'
         )
-        
+
         return conversation
-    
+
     @classmethod
     def get_conversations_for_user(cls, user, status='active'):
         """Get conversations for specific user"""
         conversations = Conversation.objects.filter(status=status)
-        
+
         if hasattr(user, 'candidate_profile'):
             conversations = conversations.filter(candidate=user.candidate_profile)
         elif hasattr(user, 'employer_profile'):
             conversations = conversations.filter(employer=user.employer_profile)
         else:
             return Conversation.objects.none()
-        
+
         return conversations.select_related(
             'candidate__user',
             'employer__user',
@@ -666,10 +779,13 @@ class ConversationService:
 ### 5.2 Real-time Frontend Integration
 
 #### 5.2.1 WebSocket Client Implementation
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: Critical
 
 **Tasks:**
+
 - [ ] Build WebSocket connection management with reconnection logic
 - [ ] Create real-time message sending and receiving
 - [ ] Implement typing indicators and user presence
@@ -677,6 +793,7 @@ class ConversationService:
 - [ ] Build chat interface with message history
 
 **Acceptance Criteria:**
+
 - WebSocket connections are stable with automatic reconnection
 - Messages send and receive in real-time without delays
 - Typing indicators provide smooth user experience
@@ -684,211 +801,219 @@ class ConversationService:
 - Chat interface is intuitive and responsive
 
 **WebSocket Client (`frontend/src/services/websocketService.ts`):**
+
 ```typescript
 interface WebSocketMessage {
-  type: 'message' | 'typing_indicator' | 'presence_update' | 'error'
-  data: any
+  type: "message" | "typing_indicator" | "presence_update" | "error";
+  data: any;
 }
 
 interface MessageData {
-  id: string
-  content: string
-  sender_id: string
-  sender_name: string
-  timestamp: string
-  message_type: 'text' | 'file' | 'system'
+  id: string;
+  content: string;
+  sender_id: string;
+  sender_name: string;
+  timestamp: string;
+  message_type: "text" | "file" | "system";
 }
 
 class WebSocketService {
-  private ws: WebSocket | null = null
-  private conversationId: string | null = null
-  private reconnectAttempts = 0
-  private maxReconnectAttempts = 5
-  private reconnectDelay = 1000
-  private messageQueue: any[] = []
-  private listeners: Map<string, Function[]> = new Map()
-  
+  private ws: WebSocket | null = null;
+  private conversationId: string | null = null;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 1000;
+  private messageQueue: any[] = [];
+  private listeners: Map<string, Function[]> = new Map();
+
   constructor() {
-    this.setupEventListeners()
+    this.setupEventListeners();
   }
-  
+
   connect(conversationId: string, token: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.conversationId = conversationId
-      const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/chat/${conversationId}/?token=${token}`
-      
-      this.ws = new WebSocket(wsUrl)
-      
+      this.conversationId = conversationId;
+      const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/chat/${conversationId}/?token=${token}`;
+
+      this.ws = new WebSocket(wsUrl);
+
       this.ws.onopen = () => {
-        console.log('WebSocket connected')
-        this.reconnectAttempts = 0
-        this.flushMessageQueue()
-        resolve()
-      }
-      
+        console.log("WebSocket connected");
+        this.reconnectAttempts = 0;
+        this.flushMessageQueue();
+        resolve();
+      };
+
       this.ws.onmessage = (event) => {
         try {
-          const message: WebSocketMessage = JSON.parse(event.data)
-          this.handleMessage(message)
+          const message: WebSocketMessage = JSON.parse(event.data);
+          this.handleMessage(message);
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error)
+          console.error("Error parsing WebSocket message:", error);
         }
-      }
-      
+      };
+
       this.ws.onclose = (event) => {
-        console.log('WebSocket disconnected:', event.code, event.reason)
-        this.handleDisconnection()
-      }
-      
+        console.log("WebSocket disconnected:", event.code, event.reason);
+        this.handleDisconnection();
+      };
+
       this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error)
-        reject(error)
-      }
-    })
+        console.error("WebSocket error:", error);
+        reject(error);
+      };
+    });
   }
-  
+
   disconnect(): void {
     if (this.ws) {
-      this.ws.close(1000, 'User initiated disconnect')
-      this.ws = null
+      this.ws.close(1000, "User initiated disconnect");
+      this.ws = null;
     }
   }
-  
+
   sendMessage(content: string): void {
     const message = {
-      type: 'chat_message',
-      content: content.trim()
-    }
-    
-    this.sendWebSocketMessage(message)
+      type: "chat_message",
+      content: content.trim(),
+    };
+
+    this.sendWebSocketMessage(message);
   }
-  
+
   sendTypingIndicator(isTyping: boolean): void {
     const message = {
-      type: 'typing_indicator',
-      is_typing: isTyping
-    }
-    
-    this.sendWebSocketMessage(message)
+      type: "typing_indicator",
+      is_typing: isTyping,
+    };
+
+    this.sendWebSocketMessage(message);
   }
-  
+
   markAsRead(): void {
     const message = {
-      type: 'mark_read'
-    }
-    
-    this.sendWebSocketMessage(message)
+      type: "mark_read",
+    };
+
+    this.sendWebSocketMessage(message);
   }
-  
+
   private sendWebSocketMessage(message: any): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message))
+      this.ws.send(JSON.stringify(message));
     } else {
       // Queue message for when connection is restored
-      this.messageQueue.push(message)
+      this.messageQueue.push(message);
     }
   }
-  
+
   private handleMessage(message: WebSocketMessage): void {
     switch (message.type) {
-      case 'message':
-        this.emit('newMessage', message.data)
-        this.showNotification(message.data)
-        break
-      case 'typing_indicator':
-        this.emit('typingIndicator', message.data)
-        break
-      case 'presence_update':
-        this.emit('presenceUpdate', message.data)
-        break
-      case 'error':
-        this.emit('error', message.data)
-        break
+      case "message":
+        this.emit("newMessage", message.data);
+        this.showNotification(message.data);
+        break;
+      case "typing_indicator":
+        this.emit("typingIndicator", message.data);
+        break;
+      case "presence_update":
+        this.emit("presenceUpdate", message.data);
+        break;
+      case "error":
+        this.emit("error", message.data);
+        break;
     }
   }
-  
+
   private handleDisconnection(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      setTimeout(() => {
-        this.reconnectAttempts++
-        if (this.conversationId) {
-          const token = localStorage.getItem('auth_token')
-          if (token) {
-            this.connect(this.conversationId, token)
+      setTimeout(
+        () => {
+          this.reconnectAttempts++;
+          if (this.conversationId) {
+            const token = localStorage.getItem("auth_token");
+            if (token) {
+              this.connect(this.conversationId, token);
+            }
           }
-        }
-      }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts))
+        },
+        this.reconnectDelay * Math.pow(2, this.reconnectAttempts),
+      );
     } else {
-      this.emit('connectionLost', {})
+      this.emit("connectionLost", {});
     }
   }
-  
+
   private flushMessageQueue(): void {
     while (this.messageQueue.length > 0) {
-      const message = this.messageQueue.shift()
-      this.sendWebSocketMessage(message)
+      const message = this.messageQueue.shift();
+      this.sendWebSocketMessage(message);
     }
   }
-  
+
   private showNotification(messageData: MessageData): void {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      if (document.hidden) { // Only show if tab is not active
+    if ("Notification" in window && Notification.permission === "granted") {
+      if (document.hidden) {
+        // Only show if tab is not active
         new Notification(`New message from ${messageData.sender_name}`, {
           body: messageData.content.substring(0, 100),
-          icon: '/notification-icon.png',
-          tag: `message-${messageData.id}`
-        })
+          icon: "/notification-icon.png",
+          tag: `message-${messageData.id}`,
+        });
       }
     }
   }
-  
+
   private setupEventListeners(): void {
     // Request notification permission
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission()
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
     }
-    
+
     // Handle page visibility changes
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         // Page became visible, mark messages as read
-        this.markAsRead()
+        this.markAsRead();
       }
-    })
+    });
   }
-  
+
   // Event system
   on(event: string, callback: Function): void {
     if (!this.listeners.has(event)) {
-      this.listeners.set(event, [])
+      this.listeners.set(event, []);
     }
-    this.listeners.get(event)!.push(callback)
+    this.listeners.get(event)!.push(callback);
   }
-  
+
   off(event: string, callback: Function): void {
-    const callbacks = this.listeners.get(event)
+    const callbacks = this.listeners.get(event);
     if (callbacks) {
-      const index = callbacks.indexOf(callback)
+      const index = callbacks.indexOf(callback);
       if (index > -1) {
-        callbacks.splice(index, 1)
+        callbacks.splice(index, 1);
       }
     }
   }
-  
+
   private emit(event: string, data: any): void {
-    const callbacks = this.listeners.get(event) || []
-    callbacks.forEach(callback => callback(data))
+    const callbacks = this.listeners.get(event) || [];
+    callbacks.forEach((callback) => callback(data));
   }
 }
 
-export const websocketService = new WebSocketService()
+export const websocketService = new WebSocketService();
 ```
 
 #### 5.2.2 Messaging UI Components
-**Duration**: 1.5 days  
+
+**Duration**: 1.5 days
+
 **Priority**: High
 
 **Tasks:**
+
 - [ ] Create conversation list with unread message indicators
 - [ ] Build message input with file attachment support
 - [ ] Implement message bubbles with status indicators
@@ -896,6 +1021,7 @@ export const websocketService = new WebSocketService()
 - [ ] Create conversation search and filtering
 
 **Acceptance Criteria:**
+
 - Conversation list shows real-time updates and unread counts
 - Message input supports text and file attachments
 - Message bubbles display clearly with proper formatting
@@ -905,6 +1031,7 @@ export const websocketService = new WebSocketService()
 **Chat Interface Components (`frontend/src/components/messaging/`):**
 
 **ChatRoom Component:**
+
 ```typescript
 import React, { useState, useEffect, useRef } from 'react'
 import { websocketService } from '../../services/websocketService'
@@ -934,38 +1061,38 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
   const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { user, token } = useAuthStore()
-  
+
   useEffect(() => {
     connectToWebSocket()
-    
+
     return () => {
       websocketService.disconnect()
     }
   }, [conversationId])
-  
+
   const connectToWebSocket = async () => {
     try {
       await websocketService.connect(conversationId, token!)
       setIsConnected(true)
       setError(null)
-      
+
       // Set up event listeners
       websocketService.on('newMessage', handleNewMessage)
       websocketService.on('typingIndicator', handleTypingIndicator)
       websocketService.on('error', handleError)
       websocketService.on('connectionLost', handleConnectionLost)
-      
+
     } catch (error) {
       setError('Failed to connect to chat')
       setIsConnected(false)
     }
   }
-  
+
   const handleNewMessage = (messageData: Message) => {
     setMessages(prev => [...prev, messageData])
     scrollToBottom()
   }
-  
+
   const handleTypingIndicator = (data: { user_id: string, user_name: string, is_typing: boolean }) => {
     setTypingUsers(prev => {
       if (data.is_typing) {
@@ -975,28 +1102,28 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
       }
     })
   }
-  
+
   const handleError = (error: any) => {
     setError(error.message || 'An error occurred')
   }
-  
+
   const handleConnectionLost = () => {
     setIsConnected(false)
     setError('Connection lost. Please refresh the page.')
   }
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  
+
   const sendMessage = (content: string) => {
     websocketService.sendMessage(content)
   }
-  
+
   const sendTypingIndicator = (isTyping: boolean) => {
     websocketService.sendTypingIndicator(isTyping)
   }
-  
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -1012,7 +1139,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
       </div>
     )
   }
-  
+
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
@@ -1031,7 +1158,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
           </button>
         </div>
       </div>
-      
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
@@ -1041,14 +1168,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
             isOwn={message.sender_id === user?.id}
           />
         ))}
-        
+
         {typingUsers.length > 0 && (
           <TypingIndicator users={typingUsers} />
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
-      
+
       {/* Message Input */}
       <div className="border-t p-4">
         <MessageInput
@@ -1065,6 +1192,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Risk Mitigation Strategies
 
 ### Technical Risks
+
 1. **WebSocket Connection Stability**
    - **Risk**: Unreliable connections causing message loss
    - **Mitigation**: Automatic reconnection, message queuing, fallback to HTTP polling
@@ -1081,6 +1209,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
    - **Fallback**: Store messages without encryption in development
 
 ### Security Risks
+
 1. **WebSocket Authentication**
    - **Risk**: Unauthorized access to conversations
    - **Mitigation**: Token-based authentication, conversation access validation
@@ -1094,6 +1223,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Testing Strategy
 
 ### WebSocket Testing
+
 - [ ] Test connection establishment and authentication
 - [ ] Test message sending and receiving reliability
 - [ ] Test reconnection logic with various failure scenarios
@@ -1101,6 +1231,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Test performance under high message volume
 
 ### Message System Testing
+
 - [ ] Test message encryption and decryption
 - [ ] Test content moderation rules
 - [ ] Test conversation access permissions
@@ -1108,6 +1239,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Test file attachment handling
 
 ### Frontend Testing
+
 - [ ] Test UI responsiveness across different screen sizes
 - [ ] Test real-time updates and state synchronization
 - [ ] Test error handling and user feedback
@@ -1117,12 +1249,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Performance Considerations
 
 ### Backend Optimization
+
 - Redis connection pooling and cluster configuration
 - Database indexing for message queries
 - Efficient WebSocket connection management
 - Message queuing for high-volume scenarios
 
 ### Frontend Optimization
+
 - Virtual scrolling for long message histories
 - Message batching for better performance
 - Efficient state updates and re-renders
@@ -1131,12 +1265,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Documentation Requirements
 
 ### Technical Documentation
+
 - [ ] WebSocket API documentation
 - [ ] Message encryption implementation guide
 - [ ] Real-time architecture overview
 - [ ] Performance tuning guidelines
 
 ### User Documentation
+
 - [ ] Chat interface user guide
 - [ ] Notification settings documentation
 - [ ] Privacy and security information
@@ -1145,6 +1281,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Deliverables Checklist
 
 ### Backend Deliverables
+
 - [ ] Django Channels WebSocket infrastructure
 - [ ] Message and conversation models
 - [ ] Real-time message handling
@@ -1152,6 +1289,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Message encryption implementation
 
 ### Frontend Deliverables
+
 - [ ] WebSocket client service
 - [ ] Chat interface components
 - [ ] Real-time state management
@@ -1159,6 +1297,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 - [ ] Message history and search
 
 ### Security Deliverables
+
 - [ ] Authentication and authorization system
 - [ ] Content moderation rules
 - [ ] Encryption implementation
@@ -1167,6 +1306,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ conversationId, onClose }) =
 ## Next Phase Preparation
 
 ### Phase 6 Prerequisites
+
 - [ ] Document upload requirements for messaging
 - [ ] S3 integration architecture defined
 - [ ] File security and validation strategies planned

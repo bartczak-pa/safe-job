@@ -1,0 +1,100 @@
+# Pre-commit hooks for Safe Job Platform
+# Install with: pre-commit install
+
+repos:
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: ^mkdocs\.yml$
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+      - id: check-json
+      - id: pretty-format-json
+        args: ['--autofix']
+      - id: check-toml
+
+  # Python code formatting
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        files: ^backend/
+        language_version: python3.13
+
+  # Python import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        files: ^backend/
+        args: ["--profile", "black"]
+
+  # Python linting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.5
+    hooks:
+      - id: ruff
+        files: ^backend/
+        args: [--fix, --exit-non-zero-on-fix]
+
+  # Django-specific checks (disabled for pre-commit due to Poetry env requirements)
+  # Run manually with: cd backend && poetry run python manage.py check
+  # - repo: local
+  #   hooks:
+  #     - id: django-check
+  #       name: Django Check
+  #       entry: bash -c 'cd backend && poetry run python manage.py check'
+  #       language: system
+  #       files: ^backend/
+  #       types: [python]
+  #       pass_filenames: false
+
+  # Security scanning
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        files: ^backend/
+        args: ['-r', '--skip', 'B101,B601']
+        exclude: ^backend/.*/(migrations|tests)/.*$
+
+  # Frontend code formatting - Prettier (using local config)
+  - repo: local
+    hooks:
+      - id: prettier-frontend
+        name: Format frontend code with prettier
+        entry: sh -c 'cd frontend && npx prettier --write $(echo "$@" | sed "s|frontend/||g")'
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md|yml|yaml)$
+        exclude: ^frontend/(dist|node_modules|coverage)/
+        pass_filenames: true
+        args: ['--']
+
+  # Frontend linting - ESLint (handled by GitHub Actions)
+  # Note: ESLint is handled in the CI/CD pipeline to avoid Node.js dependency issues in pre-commit
+
+  # Environment file checks
+  - repo: local
+    hooks:
+      - id: check-env-files
+        name: Check for committed .env files
+        entry: sh -c 'echo "❌ .env.*.local files should not be committed"; exit 1'
+        language: system
+        files: '\.env.*\.local$'
+        pass_filenames: false
+
+  # Docker checks
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        files: ^.*Dockerfile.*$
+
+# Configure pre-commit to run on all files during initial setup
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit]

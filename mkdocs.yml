@@ -78,6 +78,17 @@ nav:
     - System Architecture: architecture/architecture.md
     - Authentication: architecture/authentication.md
     - Internationalization: architecture/internationalization.md
+  - API Documentation:
+    - API Overview: api/overview.md
+  - Development:
+    - Setup Guide: development/setup.md
+    - Backend Development: development/backend.md
+    - Frontend Development: development/frontend.md
+    - Docker Guide: development/docker.md
+    - Code Quality: development/code-quality.md
+    - Testing Guide: development/testing.md
+    - Deployment Guide: development/deployment.md
+    - CI/CD Pipeline: development/ci-cd.md
   - Implementation:
     - Project Plan: plan.md
     - Phase 1 - Foundation: phases/phase-1-foundation.md
