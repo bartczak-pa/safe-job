@@ -80,8 +80,8 @@ docker compose up -d
 
 - 🌐 **Frontend**: [http://localhost:3000](http://localhost:3000)
 - 🔧 **Backend API**: [http://localhost:8000](http://localhost:8000)
-- 📊 **Database**: localhost:5432
-- 🔴 **Redis**: localhost:6379
+- 📊 **Database**: `localhost:5432`
+- 🔴 **Redis**: `localhost:6379`
 - 📖 **Documentation**: [http://localhost:8001](http://localhost:8001)
 
 ### Stopping the Environment

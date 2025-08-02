@@ -116,14 +116,12 @@ This is a tip box
 
 **Code Blocks with Language**
 
-```markdown
+````markdown
 ```python
 def hello_world():
     print("Hello, World!")
 ```
-```
-
-```
+````
 
 **Tabbed Content**
 ```markdown
@@ -136,13 +134,13 @@ def hello_world():
 
 **Mermaid Diagrams**
 
-```markdown
+````markdown
 ```mermaid
 graph TD
     A[Start] --> B[Decision]
     B --> C[End]
 ```
-```
+````
 
 ```
 
