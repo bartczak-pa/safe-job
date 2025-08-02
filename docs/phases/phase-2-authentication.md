@@ -85,18 +85,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         from django.conf import settings
 
         MAX_RETRIES = getattr(settings, "USERNAME_COLLISION_RETRIES", 10)
-        if not self.username:
-            for attempt in range(MAX_RETRIES):
+        attempt = 0
+        while attempt < MAX_RETRIES:
+            if not self.username:
                 self.username = self.generate_username()
-                try:
-                    with transaction.atomic():
-                        break        # success, fall through to single save
-                except IntegrityError:
-                    if attempt == MAX_RETRIES - 1:
-                        raise
-        # always end with a single save path (updates or post-generation)
-        with transaction.atomic():
-            return super().save(*args, **kwargs)
+
+            try:
+                with transaction.atomic():
+                    return super().save(*args, **kwargs)
+            except IntegrityError:
+                if attempt == MAX_RETRIES - 1:
+                    raise
+                # clear username so the next iteration generates a fresh one
+                self.username = ""
+                attempt += 1
 
     def generate_username(self):
         """Generate unique username from email"""
