@@ -115,9 +115,6 @@ jobs:
 
       - name: Test internal links
         run: |
-          # Install link checker
-          pip install pytest-html-report
-
           # Start local server in background
           mkdocs serve &
           SERVER_PID=$!
@@ -126,7 +123,7 @@ jobs:
           sleep 5
 
           # Test that server is running (MkDocs serves with /safe-job/ path)
-          curl -f http://localhost:8000/safe-job/ || exit 1
+          curl -f http://127.0.0.1:8000/safe-job/ || exit 1
 
           # Kill server
           kill $SERVER_PID

@@ -207,6 +207,13 @@ class EmployerProfile(models.Model):
                 'can_view_candidate_details': True,
                 'max_active_jobs': 50,
                 'max_monthly_job_posts': 100
+            },
+            'suspended': {
+                'can_post_jobs': False,
+                'can_contact_candidates': False,
+                'can_view_candidate_details': False,
+                'max_active_jobs': 0,
+                'max_monthly_job_posts': 0
             }
         }
 
@@ -214,6 +221,29 @@ class EmployerProfile(models.Model):
             permissions = permission_matrix[self.verification_tier]
             for key, value in permissions.items():
                 setattr(self, key, value)
+
+            # Handle suspension workflow
+            if self.verification_tier == 'suspended':
+                self._handle_suspension()
+
+    def _handle_suspension(self):
+        """Handle account suspension workflow"""
+        # Deactivate account
+        self.is_active = False
+
+        # Pause all active jobs
+        from safe_job.jobs.models import Job
+        active_jobs = Job.objects.filter(
+            employer=self,
+            status='active'
+        )
+        active_jobs.update(
+            status='paused',
+            paused_reason='Account suspended'
+        )
+
+        # Reset active jobs count
+        self.active_jobs_count = 0
 
 class EmployerVerificationDocument(models.Model):
     DOCUMENT_TYPES = [

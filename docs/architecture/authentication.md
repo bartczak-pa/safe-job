@@ -186,8 +186,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 class SafeJobTokenService:
     @staticmethod
-    def generate_tokens(user):
-        """Generate secure JWT token pair"""
+    def generate_tokens(user, request=None):
+        """Generate secure JWT token pair with comprehensive audit logging"""
         refresh = RefreshToken.for_user(user)
 
         # Add custom claims
@@ -197,12 +197,20 @@ class SafeJobTokenService:
         # Access token inherits claims from refresh
         access = refresh.access_token
 
-        # Log token generation for audit
+        # Enhanced audit logging
         TokenGenerationEvent.objects.create(
             user=user,
             token_id=str(refresh['jti']),
-            ip_address=get_client_ip(),
-            expires_at=refresh['exp']
+            ip_address=get_client_ip(request) if request else None,
+            user_agent=request.META.get('HTTP_USER_AGENT') if request else None,
+            event_type='TOKEN_GENERATED',
+            metadata={
+                'token_type': 'refresh',
+                'expires_at': refresh['exp'],
+                'user_type': user.user_type,
+                'login_method': 'magic_link'
+            },
+            expires_at=datetime.fromtimestamp(refresh['exp'], tz=timezone.utc)
         )
 
         return {
@@ -211,11 +219,41 @@ class SafeJobTokenService:
         }
 
     @staticmethod
-    def revoke_token(token_id: str):
-        """Immediately revoke token by blacklisting"""
-        BlacklistedToken.objects.create(
-            token_id=token_id,
-            revoked_at=timezone.now()
+    def revoke_token(token_id: str, reason: str = 'user_requested', request=None):
+        """Immediately revoke token by blacklisting with audit trail"""
+        from django.db import transaction, IntegrityError
+
+        try:
+            with transaction.atomic():
+                BlacklistedToken.objects.get_or_create(
+                    token_id=token_id,
+                    defaults={
+                        "revoked_at": timezone.now(),
+                        "reason": reason,
+                    },
+                )
+        except IntegrityError:
+            # Already revoked – continue to log the event
+            pass
+
+        # Log token revocation for audit trail
+        metadata = {
+            'token_id': token_id,
+            'reason': reason,
+            'revoked_at': timezone.now().isoformat()
+        }
+
+        # Add actor context if available
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            metadata['performed_by'] = str(request.user.id)
+            metadata['performed_by_email'] = request.user.email
+
+        SecurityEvent.objects.create(
+            event_type='TOKEN_REVOKED',
+            metadata=metadata,
+            ip_address=get_client_ip(request) if request else None,
+            user_agent=request.META.get('HTTP_USER_AGENT') if request else None,
+            severity='INFO'
         )
 ```
 
@@ -1505,8 +1543,36 @@ Retry-After: 60
 class SafeJobAPI {
   constructor(baseURL = "http://localhost:8000") {
     this.baseURL = baseURL;
-    this.accessToken = localStorage.getItem("access_token");
-    this.refreshToken = localStorage.getItem("refresh_token");
+    this.accessToken = this.getSecureToken("access_token");
+    this.refreshToken = this.getSecureToken("refresh_token");
+  }
+
+  // ⚠️ DEV-ONLY: NOT SAFE FOR PRODUCTION ⚠️
+  getSecureToken(key) {
+    try {
+      // 🚨 CRITICAL SECURITY WARNING: localStorage is vulnerable to XSS attacks
+      // 🚨 DO NOT USE IN PRODUCTION - tokens exposed to malicious scripts
+      // 🚨 FOR DEVELOPMENT/DOCUMENTATION PURPOSES ONLY
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return localStorage.getItem(key);
+      }
+      return null;
+    } catch (error) {
+      console.warn(`[DEV-ONLY] Failed to retrieve ${key}:`, error);
+      return null;
+    }
+  }
+
+  // Production-ready secure token storage (recommended)
+  getSecureTokenProduction(key) {
+    // For production: Use HTTP-only cookies with CSRF protection
+    // Tokens stored in HTTP-only cookies are not accessible via JavaScript
+    // and therefore protected from XSS attacks
+
+    // Alternative: Use encrypted session storage with Web Crypto API
+    // or delegate to a secure token service
+    console.warn('TODO: Implement production secure storage using HTTP-only cookies');
+    return null; // Return null instead of throwing to prevent crashes
   }
 
   async request(endpoint, options = {}) {
@@ -1524,15 +1590,33 @@ class SafeJobAPI {
       config.headers.Authorization = `Bearer ${this.accessToken}`;
     }
 
-    let response = await fetch(url, config);
+    let response;
+    try {
+      response = await fetch(url, config);
+    } catch (networkError) {
+      console.error('Network error:', networkError);
+      throw new Error('Network request failed');
+    }
 
     // Handle token refresh if needed
     if (response.status === 401 && this.refreshToken) {
       const refreshed = await this.refreshAccessToken();
       if (refreshed) {
         config.headers.Authorization = `Bearer ${this.accessToken}`;
-        response = await fetch(url, config);
+        try {
+          response = await fetch(url, config);
+        } catch (retryError) {
+          console.error('Retry request failed:', retryError);
+          throw new Error('Request retry failed');
+        }
       }
+    }
+
+    // Throw for non-OK responses to maintain consistent API ergonomics
+    if (!response.ok) {
+      const errorClone = response.clone();
+      const errorBody = await errorClone.text().catch(() => '');
+      throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorBody}`);
     }
 
     return response;

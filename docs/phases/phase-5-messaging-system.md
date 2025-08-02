@@ -238,6 +238,98 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def handle_mark_read(self, data):
+        """Handle marking messages as read"""
+        message_id = data.get('message_id')
+
+        if not message_id:
+            # If no specific message_id, mark all unread messages in conversation as read
+            await self.mark_conversation_read()
+            return
+
+        try:
+            # Mark message as read
+            await self.mark_message_read(message_id)
+
+            # Broadcast read receipt to other participants
+            await self.channel_layer.group_send(
+                self.conversation_group_name,
+                {
+                    'type': 'read_receipt_broadcast',
+                    'message_id': message_id,
+                    'read_by_user_id': str(self.user.id),
+                    'read_by_name': self.user.get_full_name(),
+                    'read_at': timezone.now().isoformat()
+                }
+            )
+
+        except Exception as e:
+            await self.send_error(f'Error marking message as read: {str(e)}')
+
+    async def read_receipt_broadcast(self, event):
+        """Send read receipt to WebSocket"""
+        # Don't send read receipt to the user who marked it as read
+        if event['read_by_user_id'] != str(self.user.id):
+            await self.send(text_data=json.dumps({
+                'type': 'read_receipt',
+                'data': {
+                    'message_id': event['message_id'],
+                    'read_by_user_id': event['read_by_user_id'],
+                    'read_by_name': event['read_by_name'],
+                    'read_at': event['read_at']
+                }
+            }))
+
+    @database_sync_to_async
+    def mark_message_read(self, message_id):
+        """Mark a specific message as read by current user"""
+        from .models import Message, MessageReadReceipt
+
+        try:
+            message = Message.objects.get(
+                id=message_id,
+                conversation_id=self.conversation_id
+            )
+
+            # Create or update read receipt
+            receipt, created = MessageReadReceipt.objects.get_or_create(
+                message=message,
+                user=self.user,
+                defaults={'read_at': timezone.now()}
+            )
+            if not created:
+                receipt.read_at = timezone.now()
+                receipt.save(update_fields=["read_at"])
+
+        except Message.DoesNotExist:
+            raise Exception('Message not found')
+
+    @database_sync_to_async
+    def mark_conversation_read(self):
+        """Mark all messages in conversation as read by current user"""
+        from .models import Message, MessageReadReceipt
+
+        # Get all unread messages in the conversation
+        unread_messages = Message.objects.filter(
+            conversation_id=self.conversation_id
+        ).exclude(
+            messagereadreceipt__user=self.user
+        )
+
+        # Create read receipts for all unread messages
+        receipts_to_create = []
+        for message in unread_messages:
+            receipts_to_create.append(
+                MessageReadReceipt(
+                    message=message,
+                    user=self.user,
+                    read_at=timezone.now()
+                )
+            )
+
+        if receipts_to_create:
+            MessageReadReceipt.objects.bulk_create(receipts_to_create)
+
     async def chat_message_broadcast(self, event):
         """Send message to WebSocket"""
         await self.send(text_data=json.dumps({

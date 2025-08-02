@@ -46,8 +46,7 @@ FROM python:3.13-slim as runtime
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH" \
-    DJANGO_SETTINGS_MODULE=config.settings.development
+    PATH="/app/.venv/bin:$PATH"
 
 # Install runtime system dependencies
 # hadolint ignore=DL3008
@@ -87,5 +86,6 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 8000
 
-# Default command for development
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Default command - use production-ready server
+# For development, override with: docker run --env MODE=dev <image>
+CMD ["sh", "-c", "if [ \"$MODE\" = \"dev\" ]; then export DJANGO_SETTINGS_MODULE=config.settings.development && python manage.py runserver 0.0.0.0:8000; else export DJANGO_SETTINGS_MODULE=config.settings.production && gunicorn --bind 0.0.0.0:8000 --workers 4 --threads 2 --max-requests 1000 --max-requests-jitter 100 --timeout 30 --keep-alive 5 --log-level info --access-logfile - --error-logfile - config.wsgi:application; fi"]
