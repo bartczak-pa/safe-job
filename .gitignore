@@ -71,3 +71,8 @@ docker-compose.override.yml
 *.pem
 *.key
 secrets/
+
+# Environment files with secrets
+.envs/.env.*.local
+.envs/.env.production
+.env.local
