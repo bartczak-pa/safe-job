@@ -43,10 +43,12 @@ RUN poetry config virtualenvs.create true \
 FROM python:3.13-slim as runtime
 
 # Set environment variables
+ARG MODE=prod
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    MODE=$MODE
 
 # Install runtime system dependencies
 # hadolint ignore=DL3008
